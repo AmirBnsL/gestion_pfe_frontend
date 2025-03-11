@@ -11,7 +11,7 @@ export default function ResponsiveLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0F1022] p-4">
-      <div className="w-full max-w-[900px] min-h-[620px] bg-[#0F1022] rounded-[40px] shadow-[0px_0px_70px_rgba(99,65,236,0.1)] relative p-10 md:p-14 overflow-hidden">
+       <div className="w-full max-w-[900px] min-h-[620px] bg-[#0F1022] rounded-[40px] shadow-[0px_0px_70px_rgba(99,65,236,0.1)] relative px-2 py-10 md:px-4 md:py-14 overflow-hidden">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
       
           <div className="w-full md:w-auto mb-12 md:mb-0">
