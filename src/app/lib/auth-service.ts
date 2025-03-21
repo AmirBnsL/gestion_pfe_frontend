@@ -24,7 +24,7 @@ interface LoginCredentials {
   export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       // Replace with your actual API endpoint
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
