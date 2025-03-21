@@ -1,16 +1,57 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect, useRef } from "react"
 import { Mail, Lock, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/app/hooks/use-auth"
 
 export default function AnimatedLoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  // Form state
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [formError, setFormError] = useState("")
+
+  // Auth hook and router
+  const { login, isLoading, error, isAuthenticated } = useAuth()
+  const router = useRouter()
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard")
+    }
+  }, [isAuthenticated, router])
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Form validation
+    if (!email || !password) {
+      setFormError("Please enter both email and password")
+      return
+    }
+
+    if (!agreed) {
+      setFormError("Please agree to the terms and conditions")
+      return
+    }
+
+    setFormError("")
+
+    // Attempt login using React Query mutation
+    login({ email, password })
+  }
 
   // Animation for the background
   useEffect(() => {
@@ -167,7 +208,6 @@ export default function AnimatedLoginPage() {
                 alt="Login Illustration"
                 width={520}
                 height={520}
-                layout="intrinsic" 
                 className="w-full h-full object-cover"
               />
             </div>
@@ -179,7 +219,7 @@ export default function AnimatedLoginPage() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="w-full md:w-[300px]"
           >
-            <div className="flex flex-col gap-10 md:gap-[60px]">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-10 md:gap-[60px]">
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -193,6 +233,17 @@ export default function AnimatedLoginPage() {
               </motion.div>
 
               <div className="space-y-5">
+                {/* Show form errors or API errors */}
+                {(formError || error) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-red-500/20 border border-red-500/50 text-white px-4 py-2 rounded-md text-sm"
+                  >
+                    {formError || error}
+                  </motion.div>
+                )}
+
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -204,7 +255,10 @@ export default function AnimatedLoginPage() {
                   <input
                     type="email"
                     placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-transparent text-white focus:outline-none"
+                    required
                   />
                 </motion.div>
 
@@ -219,7 +273,10 @@ export default function AnimatedLoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full bg-transparent text-white focus:outline-none"
+                    required
                   />
                   <motion.button
                     whileTap={{ scale: 0.9 }}
@@ -259,7 +316,10 @@ export default function AnimatedLoginPage() {
                   transition={{ duration: 0.5, delay: 1.0 }}
                   className="text-left"
                 >
-                  <Link href="#" className="text-[#6C63FF] text-sm hover:underline inline-block relative group">
+                  <Link
+                    href="/forgot-password"
+                    className="text-[#6C63FF] text-sm hover:underline inline-block relative group"
+                  >
                     Forgot Password ?
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6C63FF] group-hover:w-full transition-all duration-300"></span>
                   </Link>
@@ -299,7 +359,7 @@ export default function AnimatedLoginPage() {
                   </div>
                   <label htmlFor="terms" className="text-sm text-gray-300">
                     I agree to the{" "}
-                    <Link href="#" className="text-[#6C63FF] hover:underline relative inline-block group">
+                    <Link href="/terms" className="text-[#6C63FF] hover:underline relative inline-block group">
                       terms & conditions
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6C63FF] group-hover:w-full transition-all duration-300"></span>
                     </Link>
@@ -315,15 +375,16 @@ export default function AnimatedLoginPage() {
                     boxShadow: "0 8px 20px rgba(108,99,255,0.3)",
                   }}
                   whileTap={{ scale: 0.97 }}
-                  type="button"
-                  className="w-full py-3 bg-[#6C63FF] text-white rounded-md hover:bg-[#5b54ff] transition-all duration-300 shadow-[0_4px_6px_rgba(108,99,255,0.2)] relative overflow-hidden group"
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-3 bg-[#6C63FF] text-white rounded-md hover:bg-[#5b54ff] transition-all duration-300 shadow-[0_4px_6px_rgba(108,99,255,0.2)] relative overflow-hidden group disabled:opacity-70"
                 >
-                  <span className="relative z-10">Login</span>
+                  <span className="relative z-10">{isLoading ? "Logging in..." : "Login"}</span>
                   <span className="absolute top-0 left-0 w-0 h-full bg-[#5b54ff] group-hover:w-full transition-all duration-500 ease-in-out z-0"></span>
                   <span className="absolute top-0 right-0 w-0 h-full bg-[#4a43ff] group-hover:w-full transition-all duration-500 ease-in-out delay-100 z-0"></span>
                 </motion.button>
               </div>
-            </div>
+            </form>
           </motion.div>
         </div>
       </motion.div>
