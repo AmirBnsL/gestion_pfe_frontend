@@ -29,7 +29,7 @@ export function useAuth() {
         // Invalidate any user-related queries
         queryClient.invalidateQueries({ queryKey: ["user"] })
         // Redirect to dashboard
-        router.push("/dashboard")
+        router.push("/admin/dashboard")
       }
     },
   })
