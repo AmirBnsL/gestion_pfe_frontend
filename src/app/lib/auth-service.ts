@@ -19,9 +19,10 @@ interface LoginCredentials {
   }
   
   // Replace this URL with your actual external API endpoint
-  const API_URL = "http://localhost:3000"
+  const API_URL = "http://localhost:8080/api"
   
   export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
+  console.log({credentials})
     try {
       // Replace with your actual API endpoint
       const response = await fetch(`${API_URL}/login`, {
