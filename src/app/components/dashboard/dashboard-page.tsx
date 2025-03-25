@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { DashboardHeader } from "./dashboard-header"
-import { DashboardSidebar } from "./dashboard-sidebar"
+
 import { StatCard } from "./stat-card"
 import { ProjectsOverviewChart } from "./projects-overview-chart"
 import { RecentProjectsTable } from "./recent-projects-table"
@@ -41,8 +41,7 @@ export function DashboardPage() {
       </div>
 
       <div className="flex">
-        {/* Sidebar */}
-        <DashboardSidebar />
+ 
 
         {/* Main content */}
         <div className="flex-1 p-6">
