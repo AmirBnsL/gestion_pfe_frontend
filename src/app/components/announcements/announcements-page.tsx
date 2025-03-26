@@ -7,7 +7,6 @@ import { Button } from "@/app/components/ui/button"
 import { AnnouncementsList } from "./announcements-list"
 import { CreateAnnouncementDialog } from "./create-announcement-dialog"
 import { ParticleBackground } from "@/app/components/ui/particle-background"
-import { AnnouncementsHeader } from "./announcements-header"
 import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
 
 // Sample announcements data
@@ -119,12 +118,12 @@ export function AnnouncementsPage() {
   const filteredAnnouncements = announcements.filter(
     (announcement) =>
       announcement.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      announcement.audience.toLowerCase().includes(searchQuery.toLowerCase()),
+      announcement.audience.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
-      {/* Ambient light effect */}
+      {/* Ambient light effects */}
       <div className="fixed top-1/4 right-1/4 w-1/2 h-1/2 bg-purple-500/10 blur-[180px] rounded-full pointer-events-none animate-pulse" />
       <div
         className="fixed bottom-1/4 left-1/4 w-1/3 h-1/3 bg-blue-500/10 blur-[150px] rounded-full pointer-events-none animate-pulse"
@@ -141,10 +140,7 @@ export function AnnouncementsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Header - Using the same header component as pending approvals */}
-        <AnnouncementsHeader />
-
-        {/* Search and Filters - Using the same search component as pending approvals */}
+        {/* Search and Filters */}
         <PendingApprovalsSearch
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -180,9 +176,11 @@ export function AnnouncementsPage() {
         </motion.div>
 
         {/* Create Announcement Dialog */}
-        <CreateAnnouncementDialog open={isCreateDialogOpen} onClose={() => setIsCreateDialogOpen(false)} />
+        <CreateAnnouncementDialog
+          open={isCreateDialogOpen}
+          onClose={() => setIsCreateDialogOpen(false)}
+        />
       </div>
     </div>
   )
 }
-

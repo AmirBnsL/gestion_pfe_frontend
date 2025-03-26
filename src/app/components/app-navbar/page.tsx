@@ -1,10 +1,35 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 import { Bell } from "lucide-react"
 import Image from "next/image"
 
-export function PendingApprovalsHeader() {
+export function AppNavbar() {
+  const pathname = usePathname()
+
+  // Get the page title based on the current path
+  const getPageTitle = () => {
+    switch (pathname) {
+      case "/dashboard":
+        return "Dashboard"
+      case "/pending-approvals":
+        return "Pending Approvals"
+      case "/announcements":
+        return "Announcements"
+      case "/project-management":
+        return "Project Management"
+      case "/messages":
+        return "Messages"
+      case "/help":
+        return "Help"
+      case "/settings":
+        return "Settings"
+      default:
+        return "Dashboard"
+    }
+  }
+
   return (
     <motion.div
       initial={{ y: -20, opacity: 0 }}
@@ -13,7 +38,7 @@ export function PendingApprovalsHeader() {
       className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
     >
       <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">
-        Pending Approvals
+        {getPageTitle()}
       </h1>
 
       <div className="flex items-center gap-4">

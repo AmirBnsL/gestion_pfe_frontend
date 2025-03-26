@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { DashboardHeader } from "./dashboard-header"
+
 
 import { StatCard } from "./stat-card"
 import { ProjectsOverviewChart } from "./projects-overview-chart"
@@ -45,8 +45,7 @@ export function DashboardPage() {
 
         {/* Main content */}
         <div className="flex-1 p-6">
-          {/* Header */}
-          <DashboardHeader />
+  
 
           {/* Dashboard grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { PendingApprovalsHeader } from "./pending-approvals-header"
 import { PendingApprovalsSearch } from "./pending-approvals-search"
 import { PendingApprovalsTabs } from "./pending-approvals-tabs"
 import { ApprovalHistory } from "./approval-history"
@@ -71,7 +70,7 @@ export function PendingApprovalsPage() {
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
-      {/* Ambient light effect */}
+      {/* Ambient light effects */}
       <div className="fixed top-1/4 right-1/4 w-1/2 h-1/2 bg-purple-500/10 blur-[180px] rounded-full pointer-events-none animate-pulse" />
       <div
         className="fixed bottom-1/4 left-1/4 w-1/3 h-1/3 bg-blue-500/10 blur-[150px] rounded-full pointer-events-none animate-pulse"
@@ -88,9 +87,6 @@ export function PendingApprovalsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <PendingApprovalsHeader />
-
         {/* Search and Filters */}
         <PendingApprovalsSearch
           searchQuery={searchQuery}
@@ -115,13 +111,20 @@ export function PendingApprovalsPage() {
           handleTeacherSelect={handleTeacherSelect}
           isLoaded={isLoaded}
           setSelectedStudents={setSelectedStudents}
-          setSelectedTeachers={setSelectedTeachers} filteredProjects={[]} selectedProjects={[]} handleSelectAllProjects={function (checked: boolean): void {
+          setSelectedTeachers={setSelectedTeachers}
+          // These project-related props are optional or can be omitted if not needed:
+          filteredProjects={[]} 
+          selectedProjects={[]} 
+          handleSelectAllProjects={function (checked: boolean): void {
             throw new Error("Function not implemented.")
-          } } handleProjectSelect={function (id: string, checked: boolean): void {
+          }}
+          handleProjectSelect={function (id: string, checked: boolean): void {
             throw new Error("Function not implemented.")
-          } } setSelectedProjects={function (projects: string[]): void {
+          }}
+          setSelectedProjects={function (projects: string[]): void {
             throw new Error("Function not implemented.")
-          } }        />
+          }}
+        />
 
         {/* Approval History */}
         <ApprovalHistory approvalHistory={approvalHistory} />
@@ -129,4 +132,3 @@ export function PendingApprovalsPage() {
     </div>
   )
 }
-

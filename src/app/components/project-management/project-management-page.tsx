@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ParticleBackground } from "@/app/components/ui/particle-background"
-import { ProjectManagementHeader } from "./project-management-header"
+
 import { ProjectCard } from "./project-card"
 import { ProjectDetailsModal } from "./project-details-modal"
 import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
@@ -95,7 +95,7 @@ export function ProjectManagementPage() {
       project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.leader.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.supervisor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.category.toLowerCase().includes(searchQuery.toLowerCase()),
+      project.category.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const handleViewProject = (project: any) => {
@@ -118,7 +118,7 @@ export function ProjectManagementPage() {
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
-      {/* Ambient light effect */}
+      {/* Ambient light effects */}
       <div className="fixed top-1/4 right-1/4 w-1/2 h-1/2 bg-purple-500/10 blur-[180px] rounded-full pointer-events-none animate-pulse" />
       <div
         className="fixed bottom-1/4 left-1/4 w-1/3 h-1/3 bg-blue-500/10 blur-[150px] rounded-full pointer-events-none animate-pulse"
@@ -135,9 +135,6 @@ export function ProjectManagementPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <ProjectManagementHeader />
-
         {/* Search and Filters */}
         <PendingApprovalsSearch
           searchQuery={searchQuery}
@@ -168,9 +165,10 @@ export function ProjectManagementPage() {
         </motion.div>
 
         {/* Project Details Modal */}
-        {selectedProject && <ProjectDetailsModal project={selectedProject} onClose={handleCloseModal} />}
+        {selectedProject && (
+          <ProjectDetailsModal project={selectedProject} onClose={handleCloseModal} />
+        )}
       </div>
     </div>
   )
 }
-
