@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useMemo } from "react"
 import { motion } from "framer-motion"
 
 interface CompletionRateItem {
@@ -11,7 +12,28 @@ interface ProjectCompletionRateProps {
   data: CompletionRateItem[]
 }
 
-export default function ProjectCompletionRate({ data }: ProjectCompletionRateProps) {
+function ProjectCompletionRate({ data }: ProjectCompletionRateProps) {
+  // Memoize derived values to avoid recalculations on each render
+  const average = useMemo(() => {
+    return Math.round(data.reduce((acc, curr) => acc + curr.value, 0) / data.length)
+  }, [data])
+
+  const highest = useMemo(() => Math.max(...data.map(r => r.value)), [data])
+
+  const growth = useMemo(() => data[data.length - 1].value - data[0].value, [data])
+
+  const pathData = useMemo(() => {
+    // Assumes data always contains 6 items
+    if (data.length < 6) return ""
+    const scale = 100 / (data.length - 1)
+    return `M 0,${100 - data[0].value * 0.8} 
+                ${scale},${100 - data[1].value * 0.8} 
+                ${2 * scale},${100 - data[2].value * 0.8} 
+                ${3 * scale},${100 - data[3].value * 0.8} 
+                ${4 * scale},${100 - data[4].value * 0.8} 
+                ${5 * scale},${100 - data[5].value * 0.8}`
+  }, [data])
+
   return (
     <div className="bg-[#161A35]/60 backdrop-blur-md rounded-xl border border-[#2A2F52] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -38,12 +60,7 @@ export default function ProjectCompletionRate({ data }: ProjectCompletionRatePro
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 1 }}
             transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
-            d={`M 0,${100 - data[0].value * 0.8} 
-                ${100 / (data.length - 1)},${100 - data[1].value * 0.8} 
-                ${200 / (data.length - 1)},${100 - data[2].value * 0.8} 
-                ${300 / (data.length - 1)},${100 - data[3].value * 0.8} 
-                ${400 / (data.length - 1)},${100 - data[4].value * 0.8} 
-                ${500 / (data.length - 1)},${100 - data[5].value * 0.8}`}
+            d={pathData}
             fill="none"
             stroke="url(#completionGradient)"
             strokeWidth="3"
@@ -74,7 +91,7 @@ export default function ProjectCompletionRate({ data }: ProjectCompletionRatePro
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: [1, 1.5, 1] }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: i * 0.2 }}
+                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
                   className="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 rounded-full bg-purple-400 shadow-[0_0_10px_rgba(139,92,246,0.8)]"
                 />
               </motion.div>
@@ -107,20 +124,19 @@ export default function ProjectCompletionRate({ data }: ProjectCompletionRatePro
       <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-[#2A2F52]">
         <div className="text-center">
           <div className="text-xs text-slate-400">Average</div>
-          <div className="text-lg font-bold text-purple-400">
-            {Math.round(data.reduce((acc, curr) => acc + curr.value, 0) / data.length)}%
-          </div>
+          <div className="text-lg font-bold text-purple-400">{average}%</div>
         </div>
         <div className="text-center">
           <div className="text-xs text-slate-400">Highest</div>
-          <div className="text-lg font-bold text-green-400">{Math.max(...data.map((r) => r.value))}%</div>
+          <div className="text-lg font-bold text-green-400">{highest}%</div>
         </div>
         <div className="text-center">
           <div className="text-xs text-slate-400">Growth</div>
-          <div className="text-lg font-bold text-blue-400">+{data[data.length - 1].value - data[0].value}%</div>
+          <div className="text-lg font-bold text-blue-400">+{growth}%</div>
         </div>
       </div>
     </div>
   )
 }
 
+export default React.memo(ProjectCompletionRate)
