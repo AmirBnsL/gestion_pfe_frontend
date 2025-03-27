@@ -1,6 +1,9 @@
-import { DashboardPage } from "@/app/components/dashboard/dashboard-page"
+import dynamic from "next/dynamic";
 
-export default function Dashboard() {
-  return <DashboardPage />
-}
+// Dynamically import the DashboardPage component
+const DashboardPage = dynamic(() => import("../../components/dashboard/dashboard-page"), {
+  loading: () => <p>Loading dashboard...</p>,
+  ssr: false, // if you want to disable SSR for this page
+});
 
+export default DashboardPage;

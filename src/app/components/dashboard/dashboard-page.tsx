@@ -19,7 +19,7 @@ const ParticleBackground = dynamic(
 
 import { projectData, years, recentProjects, upcomingDeadlines, completionRate } from "./dashboard-data"
 
-export function DashboardPage() {
+export default function DashboardPage() {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
