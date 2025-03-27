@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import dynamic from "next/dynamic"
 
-import { StatCard } from "./stat-card"
+import  StatCard  from "./stat-card"
 
 // Dynamically import heavy components with fallback loading indicators
 const ProjectsOverviewChart = dynamic(() => import("./projects-overview-chart"));

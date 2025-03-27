@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useMemo } from "react"
 import { motion } from "framer-motion"
 import { ChevronUp } from "lucide-react"
 
@@ -12,7 +13,10 @@ interface StatCardProps {
   delay: number
 }
 
-export function StatCard({ title, value, description, change, positive, delay }: StatCardProps) {
+function StatCard({ title, value, description, change, positive, delay }: StatCardProps) {
+  // Memoize the random counter so it's computed only once
+  const randomToday = useMemo(() => Math.floor(Math.random() * 10) + 1, [])
+
   return (
     <motion.div
       initial={{ y: 50, opacity: 0 }}
@@ -34,14 +38,13 @@ export function StatCard({ title, value, description, change, positive, delay }:
           {value}
         </motion.span>
 
-        {/* Animated counter effect */}
         <motion.span
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: delay + 0.4 }}
           className="text-sm text-purple-400 font-medium"
         >
-          +{Math.floor(Math.random() * 10) + 1} today
+          +{randomToday} today
         </motion.span>
       </div>
       <p className="text-xs text-slate-400 mb-2">{description}</p>
@@ -68,3 +71,4 @@ export function StatCard({ title, value, description, change, positive, delay }:
   )
 }
 
+export default React.memo(StatCard)
