@@ -2,7 +2,7 @@
 
 
 
-export function ParticleBackground() {
+export default function ParticleBackground() {
 
   return (
     <div className="absolute inset-0 overflow-hidden">

@@ -12,7 +12,7 @@ interface ProjectsOverviewChartProps {
   years: string[]
 }
 
-export function ProjectsOverviewChart({ data, years }: ProjectsOverviewChartProps) {
+export default function ProjectsOverviewChart({ data, years }: ProjectsOverviewChartProps) {
   return (
     <div className="bg-slate-900/60 backdrop-blur-md rounded-xl border border-slate-800 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

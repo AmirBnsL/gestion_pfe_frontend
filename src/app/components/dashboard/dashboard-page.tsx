@@ -2,16 +2,20 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-
+import dynamic from "next/dynamic"
 
 import { StatCard } from "./stat-card"
-import { ProjectsOverviewChart } from "./projects-overview-chart"
-import { RecentProjectsTable } from "./recent-projects-table"
-import { UpcomingDeadlines } from "./upcoming-deadlines"
-import { StudentsDistribution } from "./students-distribution"
-import { ProjectCompletionRate } from "./project-completion-rate"
-import { ParticleBackground } from "@/app/components/ui/particle-background"
 
+// Dynamically import heavy components with fallback loading indicators
+const ProjectsOverviewChart = dynamic(() => import("./projects-overview-chart"));
+const RecentProjectsTable = dynamic(() => import("./recent-projects-table"));
+const UpcomingDeadlines = dynamic(() => import("./upcoming-deadlines"));
+const StudentsDistribution = dynamic(() => import("./students-distribution"));
+const ProjectCompletionRate = dynamic(() => import("./project-completion-rate"));
+const ParticleBackground = dynamic(
+  () => import("@/app/components/ui/particle-background"),
+  { loading: () => null }
+)
 
 import { projectData, years, recentProjects, upcomingDeadlines, completionRate } from "./dashboard-data"
 
@@ -41,12 +45,8 @@ export function DashboardPage() {
       </div>
 
       <div className="flex">
- 
-
         {/* Main content */}
         <div className="flex-1 p-6">
-  
-
           {/* Dashboard grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left column */}
@@ -61,7 +61,6 @@ export function DashboardPage() {
                   positive={true}
                   delay={0.1}
                 />
-
                 <StatCard
                   title="Total Students"
                   value="222"
@@ -70,7 +69,6 @@ export function DashboardPage() {
                   positive={true}
                   delay={0.2}
                 />
-
                 <StatCard
                   title="Total Teachers"
                   value="222"
@@ -120,7 +118,6 @@ export function DashboardPage() {
               >
                 {/* Students Distribution */}
                 <StudentsDistribution />
-
                 {/* Project Completion Rate */}
                 <ProjectCompletionRate data={completionRate} />
               </motion.div>
@@ -131,4 +128,3 @@ export function DashboardPage() {
     </div>
   )
 }
-

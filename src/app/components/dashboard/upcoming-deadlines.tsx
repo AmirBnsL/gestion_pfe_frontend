@@ -15,7 +15,7 @@ interface UpcomingDeadlinesProps {
   isLoaded: boolean
 }
 
-export function UpcomingDeadlines({ deadlines, isLoaded }: UpcomingDeadlinesProps) {
+export default function UpcomingDeadlines({ deadlines, isLoaded }: UpcomingDeadlinesProps) {
   return (
     <div className="bg-slate-900/60 backdrop-blur-md rounded-xl border border-slate-800 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
