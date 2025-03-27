@@ -12,7 +12,7 @@ import { StudentsDistribution } from "./students-distribution"
 import { ProjectCompletionRate } from "./project-completion-rate"
 import { ParticleBackground } from "@/app/components/ui/particle-background"
 
-// Sample data
+
 import { projectData, years, recentProjects, upcomingDeadlines, completionRate } from "./dashboard-data"
 
 export function DashboardPage() {

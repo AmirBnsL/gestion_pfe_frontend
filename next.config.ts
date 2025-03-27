@@ -39,4 +39,51 @@ const nextConfig:NextConfig = {
     },
 };
 
+
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: process.env.ANALYZE === "true",
+  });
+
+//tryin my shit here 
+module.exports =withBundleAnalyzer( {
+    webpack: (config, { isServer }) => {
+      if (!isServer) {
+        config.optimization.splitChunks = {
+          chunks: "all",
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            framework: {
+              chunks: "all",
+              name: "framework",
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types)[\\/]/,
+              priority: 40,
+              enforce: true,
+            },
+            lib: {
+              test(module) {
+                return (
+                  module.size() > 160000 &&
+                  /node_modules[/\\]/.test(module.identifier())
+                );
+              },
+              name(module) {
+                const hash = require("crypto")
+                  .createHash("sha1")
+                  .update(module.libIdent({ context: __dirname }))
+                  .digest("hex")
+                  .substring(0, 8);
+                return `lib.${hash}`;
+              },
+              priority: 30,
+              minChunks: 1,
+              reuseExistingChunk: true,
+            },
+          },
+        };
+      }
+      return config;
+    },
+  });
+
 export default nextConfig;
