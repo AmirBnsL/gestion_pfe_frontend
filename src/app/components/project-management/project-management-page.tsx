@@ -1,26 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { ParticleBackground } from "@/app/components/ui/particle-background"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import ParticleBackground from "@/app/components/ui/particle-background";
 
-import { ProjectCard } from "./project-card"
-import { ProjectDetailsModal } from "./project-details-modal"
-import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
-import { projects } from "../project-management/projectData"
+import { ProjectCard } from "./project-card";
+import { ProjectDetailsModal } from "./project-details-modal";
+import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search";
+import { projects } from "../project-management/projectData";
 // Sample project data
 
-
 export function ProjectManagementPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filterType, setFilterType] = useState("all")
-  const [sortOrder, setSortOrder] = useState("newest")
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [selectedProject, setSelectedProject] = useState<any>(null)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
 
   useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+    setIsLoaded(true);
+  }, []);
 
   // Filter projects based on search query
   const filteredProjects = projects.filter(
@@ -29,25 +28,25 @@ export function ProjectManagementPage() {
       project.leader.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.supervisor.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.category.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  );
 
   const handleViewProject = (project: any) => {
-    setSelectedProject(project)
-  }
+    setSelectedProject(project);
+  };
 
   const handleCloseModal = () => {
-    setSelectedProject(null)
-  }
+    setSelectedProject(null);
+  };
 
   const handleApproveProject = (projectId: string) => {
-    console.log(`Approving project ${projectId}`)
+    console.log(`Approving project ${projectId}`);
     // Implement approval logic here
-  }
+  };
 
   const handleDeleteProject = (projectId: string) => {
-    console.log(`Deleting project ${projectId}`)
+    console.log(`Deleting project ${projectId}`);
     // Implement delete logic here
-  }
+  };
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
@@ -99,9 +98,12 @@ export function ProjectManagementPage() {
 
         {/* Project Details Modal */}
         {selectedProject && (
-          <ProjectDetailsModal project={selectedProject} onClose={handleCloseModal} />
+          <ProjectDetailsModal
+            project={selectedProject}
+            onClose={handleCloseModal}
+          />
         )}
       </div>
     </div>
-  )
+  );
 }

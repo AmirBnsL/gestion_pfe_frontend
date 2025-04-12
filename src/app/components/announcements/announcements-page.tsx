@@ -1,33 +1,32 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Plus } from "lucide-react"
-import { Button } from "@/app/components/ui/button"
-import { AnnouncementsList } from "./announcements-list"
-import { CreateAnnouncementDialog } from "./create-announcement-dialog"
-import { ParticleBackground } from "@/app/components/ui/particle-background"
-import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
-import { announcements } from "./announcementsData"
-
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
+import { AnnouncementsList } from "./announcements-list";
+import { CreateAnnouncementDialog } from "./create-announcement-dialog";
+import ParticleBackground from "@/app/components/ui/particle-background";
+import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search";
+import { announcements } from "./announcementsData";
 
 export function AnnouncementsPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [filterType, setFilterType] = useState("all")
-  const [sortOrder, setSortOrder] = useState("newest")
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [filterType, setFilterType] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+    setIsLoaded(true);
+  }, []);
 
   // Filter announcements based on search query
   const filteredAnnouncements = announcements.filter(
     (announcement) =>
       announcement.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       announcement.audience.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  );
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
@@ -90,5 +89,5 @@ export function AnnouncementsPage() {
         />
       </div>
     </div>
-  )
+  );
 }

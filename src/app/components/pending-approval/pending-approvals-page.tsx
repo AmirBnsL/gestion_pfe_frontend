@@ -1,72 +1,80 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { PendingApprovalsSearch } from "./pending-approvals-search"
-import { PendingApprovalsTabs } from "./pending-approvals-tabs"
-import { ApprovalHistory } from "./approval-history"
-import { ParticleBackground } from "@/app/components/ui/particle-background"
+import { useState, useEffect } from "react";
+import { PendingApprovalsSearch } from "./pending-approvals-search";
+import { PendingApprovalsTabs } from "./pending-approvals-tabs";
+import { ApprovalHistory } from "./approval-history";
+import ParticleBackground from "@/app/components/ui/particle-background";
 
 // Sample data
-import { pendingStudents, pendingTeachers, approvalHistory } from "./pending-approvals-data"
+import {
+  pendingStudents,
+  pendingTeachers,
+  approvalHistory,
+} from "./pending-approvals-data";
 
 export function PendingApprovalsPage() {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [activeTab, setActiveTab] = useState("students")
-  const [selectedStudents, setSelectedStudents] = useState<string[]>([])
-  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filterType, setFilterType] = useState("all")
-  const [sortOrder, setSortOrder] = useState("newest")
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [activeTab, setActiveTab] = useState("students");
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
 
   // Filter data based on search query and filters
   const filteredStudents = pendingStudents.filter(
     (student) =>
       student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+      student.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const filteredTeachers = pendingTeachers.filter(
     (teacher) =>
       teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      teacher.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+      teacher.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+    setIsLoaded(true);
+  }, []);
 
   // Handle bulk selection
   const handleSelectAllStudents = (checked: boolean) => {
     if (checked) {
-      setSelectedStudents(filteredStudents.map((student) => student.id))
+      setSelectedStudents(filteredStudents.map((student) => student.id));
     } else {
-      setSelectedStudents([])
+      setSelectedStudents([]);
     }
-  }
+  };
 
   const handleSelectAllTeachers = (checked: boolean) => {
     if (checked) {
-      setSelectedTeachers(filteredTeachers.map((teacher) => teacher.id))
+      setSelectedTeachers(filteredTeachers.map((teacher) => teacher.id));
     } else {
-      setSelectedTeachers([])
+      setSelectedTeachers([]);
     }
-  }
+  };
 
   const handleStudentSelect = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedStudents([...selectedStudents, id])
+      setSelectedStudents([...selectedStudents, id]);
     } else {
-      setSelectedStudents(selectedStudents.filter((studentId) => studentId !== id))
+      setSelectedStudents(
+        selectedStudents.filter((studentId) => studentId !== id)
+      );
     }
-  }
+  };
 
   const handleTeacherSelect = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedTeachers([...selectedTeachers, id])
+      setSelectedTeachers([...selectedTeachers, id]);
     } else {
-      setSelectedTeachers(selectedTeachers.filter((teacherId) => teacherId !== id))
+      setSelectedTeachers(
+        selectedTeachers.filter((teacherId) => teacherId !== id)
+      );
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
@@ -113,16 +121,16 @@ export function PendingApprovalsPage() {
           setSelectedStudents={setSelectedStudents}
           setSelectedTeachers={setSelectedTeachers}
           // These project-related props are optional or can be omitted if not needed:
-          filteredProjects={[]} 
-          selectedProjects={[]} 
+          filteredProjects={[]}
+          selectedProjects={[]}
           handleSelectAllProjects={function (checked: boolean): void {
-            throw new Error("Function not implemented.")
+            throw new Error("Function not implemented.");
           }}
           handleProjectSelect={function (id: string, checked: boolean): void {
-            throw new Error("Function not implemented.")
+            throw new Error("Function not implemented.");
           }}
           setSelectedProjects={function (projects: string[]): void {
-            throw new Error("Function not implemented.")
+            throw new Error("Function not implemented.");
           }}
         />
 
@@ -130,5 +138,5 @@ export function PendingApprovalsPage() {
         <ApprovalHistory approvalHistory={approvalHistory} />
       </div>
     </div>
-  )
+  );
 }
