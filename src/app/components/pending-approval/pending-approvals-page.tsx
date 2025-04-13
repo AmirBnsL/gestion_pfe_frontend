@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { PendingApprovalsSearch } from "./pending-approvals-search"
 import { PendingApprovalsTabs } from "./pending-approvals-tabs"
 import { ApprovalHistory } from "./approval-history"
-import { ParticleBackground } from "@/app/components/ui/particle-background"
+import ParticleBackground  from "@/app/components/ui/particle-background"
 
 // Sample data
 import { pendingStudents, pendingTeachers, approvalHistory } from "./pending-approvals-data"

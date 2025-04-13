@@ -90,3 +90,6 @@ export const announcements = [
         "New AICTE rules for project submissions have been announced. All projects must comply with the new guidelines.",
     },
   ]
+
+
+  

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { ParticleBackground } from "@/app/components/ui/particle-background"
+import  ParticleBackground  from "@/app/components/ui/particle-background"
 
 import { ProjectCard } from "./project-card"
 import { ProjectDetailsModal } from "./project-details-modal"

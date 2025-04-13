@@ -30,7 +30,7 @@ export function AppSidebar() {
         <span className="text-white font-bold">logo</span>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="z-10 flex flex-col gap-6">
         {navItems.map((item, index) => (
           <SidebarIcon
             key={item.path}
@@ -42,7 +42,7 @@ export function AppSidebar() {
         ))}
       </div>
 
-      <div className="mt-auto flex flex-col gap-6">
+      <div className="z-10 mt-auto flex flex-col gap-6">
         <SidebarIcon
           icon={<Settings className="h-6 w-6" />}
           active={pathname === "/settings"}
