@@ -1,5 +1,6 @@
 import type React from "react"
 import { StudentSidebar } from "../components/student/student-sidebar"
+import { StudentNavbar } from "../components/student/student-navbar"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -26,7 +27,10 @@ export default function StudentLayout({
           className="fixed top-1/3 left-1/3 w-1/4 h-1/4 bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none animate-pulse"
           style={{ animationDelay: "1s" }}
         />
-        <div className="p-6">{children}</div>
+        <div className="p-6">
+          <StudentNavbar />
+          {children}
+        </div>
       </main>
     </div>
   )
