@@ -1,11 +1,5 @@
-import { StudentNavbar } from "../../components/student/student-navbar"
-import { ProjectOverview } from "../../components/student/project-overview"
+import { ProjectOverviewPage } from "../../components/student/project-overview/project-overview-page"
 
-export default function StudentDashboard() {
-  return (
-    <>
-      <StudentNavbar />
-      <ProjectOverview />
-    </>
-  )
+export default function StudentProjectOverviewPage() {
+  return <ProjectOverviewPage />
 }

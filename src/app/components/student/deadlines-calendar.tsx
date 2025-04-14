@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
 import { CalendarIcon } from "lucide-react"
-
+import React from "react"
 // Sample deadlines data
 const deadlines = [
   {

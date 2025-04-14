@@ -1,18 +1,18 @@
 "use client"
-import { Badge } from "../../components/ui/badge"
-import { Button } from "../../components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { Progress } from "../../components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import { CalendarIcon, Clock, Mail, MessageSquare, Upload } from "lucide-react"
-import { TeamMembers } from "../../components/student/team-members"
-import { TaskBoard } from "../../components/student/task-board"
-import { SubmissionHistory } from "../../components/student/submission-history"
-import { DeadlinesCalendar } from "../../components/student/deadlines-calendar"
-import React from "react"
 
-export function ProjectOverview() {
+import { Badge } from "../../../components/ui/badge"
+import { Button } from "../../../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
+import { Progress } from "../../../components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
+import { CalendarIcon, Clock, Mail, MessageSquare, Upload } from "lucide-react"
+import { TeamMembers } from "./team-members"
+import { TaskBoard } from "./task-board"
+import { SubmissionHistory } from "./submission-history"
+import { DeadlinesCalendar } from "./deadlines-calendar"
+
+export function ProjectOverviewPage() {
   // Project completion percentage
   const projectProgress = 68
 
