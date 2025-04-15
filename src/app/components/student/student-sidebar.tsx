@@ -4,7 +4,7 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { BookOpen, Home, List, MessageSquare, Users } from "lucide-react"
+import { BookOpen, Home, MessageSquare, Users } from "lucide-react"
 
 export function StudentSidebar() {
   const pathname = usePathname()
@@ -13,7 +13,6 @@ export function StudentSidebar() {
   const navItems = [
     { icon: Home, path: "/student", label: "Project Overview" },
     { icon: Users, path: "/student/teams-list", label: "Teams List" },
-    { icon: List, path: "/student/teams-list", label: "Teams List" },
     { icon: BookOpen, path: "/student/my-project", label: "My Project" },
     { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" },
   ]
