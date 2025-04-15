@@ -1,17 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { Suspense, useState, useMemo, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Plus } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { AnnouncementsList } from "./announcements-list"
-import { CreateAnnouncementDialog } from "./create-announcement-dialog"
-import  ParticleBackground  from "@/app/components/ui/particle-background"
+import ParticleBackground from "@/app/components/ui/particle-background"
 import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
 import { announcements } from "./announcementsData"
 
+// Lazy load the CreateAnnouncementDialog
+const CreateAnnouncementDialog = React.lazy(() => import("./create-announcement-dialog"));
 
-export function AnnouncementsPage() {
+export default function AnnouncementsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [filterType, setFilterType] = useState("all")
@@ -22,16 +23,17 @@ export function AnnouncementsPage() {
     setIsLoaded(true)
   }, [])
 
-  // Filter announcements based on search query
-  const filteredAnnouncements = announcements.filter(
-    (announcement) =>
-      announcement.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      announcement.audience.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredAnnouncements = useMemo(() => {
+    return announcements.filter(
+      (announcement) =>
+        announcement.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        announcement.audience.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [announcements, searchQuery])
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
-      {/* Ambient light effects */}
+      {/* Ambient light and particle background */}
       <div className="fixed top-1/4 right-1/4 w-1/2 h-1/2 bg-purple-500/10 blur-[180px] rounded-full pointer-events-none animate-pulse" />
       <div
         className="fixed bottom-1/4 left-1/4 w-1/3 h-1/3 bg-blue-500/10 blur-[150px] rounded-full pointer-events-none animate-pulse"
@@ -41,14 +43,11 @@ export function AnnouncementsPage() {
         className="fixed top-1/3 left-1/3 w-1/4 h-1/4 bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none animate-pulse"
         style={{ animationDelay: "1s" }}
       />
-
-      {/* Particle overlay */}
       <div className="absolute inset-0 z-0 opacity-30 pointer-events-none">
         <ParticleBackground />
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
         <PendingApprovalsSearch
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -58,7 +57,6 @@ export function AnnouncementsPage() {
           setSortOrder={setSortOrder}
         />
 
-        {/* Create New Announcement Button (centered) */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -74,7 +72,6 @@ export function AnnouncementsPage() {
           </Button>
         </motion.div>
 
-        {/* Announcements List */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -83,11 +80,18 @@ export function AnnouncementsPage() {
           <AnnouncementsList announcements={filteredAnnouncements} />
         </motion.div>
 
-        {/* Create Announcement Dialog */}
-        <CreateAnnouncementDialog
-          open={isCreateDialogOpen}
-          onClose={() => setIsCreateDialogOpen(false)}
-        />
+        {/*
+          Wrap the lazy component with Suspense so that a fallback UI
+          displays while CreateAnnouncementDialog is being loaded.
+        */}
+        {isCreateDialogOpen && (
+          <Suspense fallback={<div>Loading dialog...</div>}>
+            <CreateAnnouncementDialog
+              open={isCreateDialogOpen}
+              onClose={() => setIsCreateDialogOpen(false)}
+            />
+          </Suspense>
+        )}
       </div>
     </div>
   )

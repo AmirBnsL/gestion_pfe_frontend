@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/components/ui/dialog"
 import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
@@ -15,17 +14,17 @@ interface CreateAnnouncementDialogProps {
   onClose: () => void
 }
 
-export function CreateAnnouncementDialog({ open, onClose }: CreateAnnouncementDialogProps) {
+export default function CreateAnnouncementDialog({ open, onClose }: CreateAnnouncementDialogProps) {
   const [title, setTitle] = useState("")
   const [message, setMessage] = useState("")
   const [audience, setAudience] = useState("all")
   const [priority, setPriority] = useState("medium")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault()
     console.log({ title, message, audience, priority })
     onClose()
-  }
+  }, [title, message, audience, priority, onClose])
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -71,7 +70,6 @@ export function CreateAnnouncementDialog({ open, onClose }: CreateAnnouncementDi
                   <SelectItem value="all">All Users</SelectItem>
                   <SelectItem value="students">Students Only</SelectItem>
                   <SelectItem value="teachers">Teachers Only</SelectItem>
-
                 </SelectContent>
               </Select>
             </div>
