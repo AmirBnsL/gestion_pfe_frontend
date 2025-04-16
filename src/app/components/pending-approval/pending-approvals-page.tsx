@@ -1,12 +1,27 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { PendingApprovalsSearch } from "./pending-approvals-search"
-import { PendingApprovalsTabs } from "./pending-approvals-tabs"
-import { ApprovalHistory } from "./approval-history"
-import ParticleBackground  from "@/app/components/ui/particle-background"
+import { useState, useEffect, useMemo } from "react"
+import dynamic from "next/dynamic"
 
-// Sample data
+// Dynamically import sub-components:
+const PendingApprovalsSearch = dynamic(
+  () => import("./pending-approvals-search"), 
+  { ssr: true, loading: () => <div className="text-white p-4">Loading search...</div> }
+)
+const PendingApprovalsTabs = dynamic(
+  () => import("./pending-approvals-tabs"),
+  { ssr: true, loading: () => <div className="text-white p-4">Loading tabs...</div> }
+)
+const ApprovalHistory = dynamic(
+  () => import("./approval-history"),
+  { ssr: false, loading: () => <div className="text-white p-4">Loading history...</div> }
+)
+const ParticleBackground = dynamic(
+  () => import("@/app/components/ui/particle-background"),
+  { ssr: false, loading: () => null }
+)
+
+// Sample data:
 import { pendingStudents, pendingTeachers, approvalHistory } from "./pending-approvals-data"
 
 export function PendingApprovalsPage() {
@@ -18,24 +33,28 @@ export function PendingApprovalsPage() {
   const [filterType, setFilterType] = useState("all")
   const [sortOrder, setSortOrder] = useState("newest")
 
-  // Filter data based on search query and filters
-  const filteredStudents = pendingStudents.filter(
-    (student) =>
-      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  // Memoize filtered results to avoid recomputation on each render:
+  const filteredStudents = useMemo(() => {
+    return pendingStudents.filter(
+      (student) =>
+        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.email.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [searchQuery])
 
-  const filteredTeachers = pendingTeachers.filter(
-    (teacher) =>
-      teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      teacher.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  const filteredTeachers = useMemo(() => {
+    return pendingTeachers.filter(
+      (teacher) =>
+        teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        teacher.email.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [searchQuery])
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
 
-  // Handle bulk selection
+  // Handle bulk selection:
   const handleSelectAllStudents = (checked: boolean) => {
     if (checked) {
       setSelectedStudents(filteredStudents.map((student) => student.id))
@@ -52,6 +71,7 @@ export function PendingApprovalsPage() {
     }
   }
 
+  // Handle individual selection:
   const handleStudentSelect = (id: string, checked: boolean) => {
     if (checked) {
       setSelectedStudents([...selectedStudents, id])
@@ -81,13 +101,13 @@ export function PendingApprovalsPage() {
         style={{ animationDelay: "1s" }}
       />
 
-      {/* Particle overlay */}
+      {/* Particle overlay (lazy load visuals, SSR disabled) */}
       <div className="absolute inset-0 z-0 opacity-30">
         <ParticleBackground />
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
+        {/* Search and Filters (SSR enabled) */}
         <PendingApprovalsSearch
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -112,7 +132,7 @@ export function PendingApprovalsPage() {
           isLoaded={isLoaded}
           setSelectedStudents={setSelectedStudents}
           setSelectedTeachers={setSelectedTeachers}
-          // These project-related props are optional or can be omitted if not needed:
+          // The project-related props below are optional:
           filteredProjects={[]} 
           selectedProjects={[]} 
           handleSelectAllProjects={function (checked: boolean): void {
@@ -126,7 +146,7 @@ export function PendingApprovalsPage() {
           }}
         />
 
-        {/* Approval History */}
+        {/* Approval History (lazy load, SSR disabled) */}
         <ApprovalHistory approvalHistory={approvalHistory} />
       </div>
     </div>

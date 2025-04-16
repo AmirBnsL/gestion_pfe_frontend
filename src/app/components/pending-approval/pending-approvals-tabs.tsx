@@ -29,7 +29,7 @@ interface PendingApprovalTabsProps {
   setSelectedProjects: (projects: string[]) => void
 }
 
-export function PendingApprovalsTabs({
+export default  function PendingApprovalsTabs({
   activeTab,
   setActiveTab,
   filteredStudents,

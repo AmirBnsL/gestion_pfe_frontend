@@ -8,7 +8,7 @@ interface ApprovalHistoryProps {
   approvalHistory: any[]
 }
 
-export function ApprovalHistory({ approvalHistory }: ApprovalHistoryProps) {
+export default function ApprovalHistory({ approvalHistory }: ApprovalHistoryProps) {
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}

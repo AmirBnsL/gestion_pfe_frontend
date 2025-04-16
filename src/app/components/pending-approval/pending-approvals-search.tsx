@@ -14,7 +14,7 @@ interface PendingApprovalsSearchProps {
   setSortOrder: (order: string) => void
 }
 
-export function PendingApprovalsSearch({
+export default function PendingApprovalsSearch({
   searchQuery,
   setSearchQuery,
   filterType,
