@@ -1,15 +1,34 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
-import  ParticleBackground  from "@/app/components/ui/particle-background"
+import dynamic from "next/dynamic"
 
+// Lazy load components according to preferences:
+
+// Heavy visual component; SSR disabled.
+const ParticleBackground = dynamic(
+  () => import("@/app/components/ui/particle-background"),
+  { ssr: false, loading: () => null }
+)
+
+// Search component; SSR enabled.
+const PendingApprovalsSearch = dynamic(
+  () => import("../pending-approval/pending-approvals-search"),
+  { ssr: true, loading: () => <div className="text-white p-4">Loading search...</div> }
+)
+
+// Modal shown only when project is selected; lazy load it.
+const ProjectDetailsModal = dynamic(
+  () => import("./project-details-modal"),
+  { ssr: false,}
+)
+
+// ProjectCard remains in the main bundle.
 import { ProjectCard } from "./project-card"
-import { ProjectDetailsModal } from "./project-details-modal"
-import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
-import { projects } from "../project-management/projectData"
-// Sample project data
 
+// Sample project data
+import { projects } from "../project-management/projectData"
 
 export function ProjectManagementPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -22,14 +41,16 @@ export function ProjectManagementPage() {
     setIsLoaded(true)
   }, [])
 
-  // Filter projects based on search query
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.leader.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.supervisor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.category.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // Memoize filtered projects so filtering recalculates only when searchQuery changes.
+  const filteredProjects = useMemo(() => {
+    return projects.filter(
+      (project) =>
+        project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.leader.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.supervisor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.category.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [searchQuery])
 
   const handleViewProject = (project: any) => {
     setSelectedProject(project)
@@ -62,13 +83,13 @@ export function ProjectManagementPage() {
         style={{ animationDelay: "1s" }}
       />
 
-      {/* Particle overlay */}
+      {/* Particle overlay (lazy-loaded, SSR disabled) */}
       <div className="absolute inset-0 z-0 opacity-30">
         <ParticleBackground />
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
+        {/* Search and Filters (lazy-loaded, SSR enabled) */}
         <PendingApprovalsSearch
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -97,7 +118,7 @@ export function ProjectManagementPage() {
           ))}
         </motion.div>
 
-        {/* Project Details Modal */}
+        {/* Project Details Modal (lazy-loaded) */}
         {selectedProject && (
           <ProjectDetailsModal project={selectedProject} onClose={handleCloseModal} />
         )}

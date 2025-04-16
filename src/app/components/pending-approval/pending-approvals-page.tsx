@@ -6,15 +6,15 @@ import dynamic from "next/dynamic"
 // Dynamically import sub-components:
 const PendingApprovalsSearch = dynamic(
   () => import("./pending-approvals-search"), 
-  { ssr: true, loading: () => <div className="text-white p-4">Loading search...</div> }
+  { ssr: true, }
 )
 const PendingApprovalsTabs = dynamic(
   () => import("./pending-approvals-tabs"),
-  { ssr: true, loading: () => <div className="text-white p-4">Loading tabs...</div> }
+  { ssr: true, }
 )
 const ApprovalHistory = dynamic(
   () => import("./approval-history"),
-  { ssr: false, loading: () => <div className="text-white p-4">Loading history...</div> }
+  { ssr: false,  }
 )
 const ParticleBackground = dynamic(
   () => import("@/app/components/ui/particle-background"),

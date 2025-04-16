@@ -12,7 +12,7 @@ interface ProjectDetailsModalProps {
   onClose: () => void
 }
 
-export function ProjectDetailsModal({ project, onClose }: ProjectDetailsModalProps) {
+export default function ProjectDetailsModal({ project, onClose }: ProjectDetailsModalProps) {
   const [activeTab, setActiveTab] = useState("details")
 
   return (
