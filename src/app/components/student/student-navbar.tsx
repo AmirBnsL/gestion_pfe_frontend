@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { Bell, Search } from "lucide-react"
+import { Bell } from "lucide-react"
 import Image from "next/image"
 
 export function StudentNavbar() {
@@ -45,14 +45,7 @@ export function StudentNavbar() {
         </h1>
 
         <div className="flex items-center gap-4">
-          <div className="relative hidden md:flex items-center">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="bg-slate-800/50 border border-slate-700 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 w-[180px] pl-9"
-            />
-            <Search className="absolute left-3 h-4 w-4 text-slate-400" />
-          </div>
+
           <div className="relative">
             <Bell className="h-5 w-5 text-slate-400 hover:text-white transition-colors cursor-pointer" />
             <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border border-slate-900"></span>
