@@ -5,7 +5,7 @@ import { Badge } from "../../../components/ui/badge"
 import { CalendarIcon, Clock } from "lucide-react"
 import { projectOverviewData } from "./project-overview-data"
 
-export function DeadlinesCalendar() {
+export default function DeadlinesCalendar() {
   const { deadlines } = projectOverviewData
 
   // Sort deadlines by date

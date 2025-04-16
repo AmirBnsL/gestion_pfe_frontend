@@ -1,5 +1,9 @@
 "use client"
 
+import { useMemo } from "react"
+import { motion } from "framer-motion"
+import dynamic from "next/dynamic"
+
 import { Badge } from "../../../components/ui/badge"
 import { Button } from "../../../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
@@ -7,24 +11,38 @@ import { Progress } from "../../../components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 import { CalendarIcon, Clock, Mail, MessageSquare, Upload } from "lucide-react"
-import { TeamMembers } from "./team-members"
-import { TaskBoard } from "./task-board"
-import { SubmissionHistory } from "./submission-history"
-import { DeadlinesCalendar } from "./deadlines-calendar"
+
+// Dynamic imports for lazy components:
+const TeamMembers = dynamic(() => import("./team-members"), { 
+  ssr: true, 
+ 
+})
+const TaskBoard = dynamic(() => import("./task-board"), {
+  ssr: true,
+
+})
+const SubmissionHistory = dynamic(() => import("./submission-history"), {
+  ssr: true,
+
+})
+const DeadlinesCalendar = dynamic(() => import("./deadlines-calendar"), {
+  ssr: true,
+
+})
+
 
 export function ProjectOverviewPage() {
-  // Project completion percentage
-  const projectProgress = 68
-
-  // Project status options
-  const statusOptions = {
+  // Memoize static objects to avoid recreating them on every render.
+  const statusOptions = useMemo(() => ({
     ongoing: { label: "Ongoing", color: "bg-blue-500" },
     submitted: { label: "Submitted", color: "bg-yellow-500" },
     approved: { label: "Approved", color: "bg-green-500" },
-    needsRevision: { label: "Needs Revision", color: "bg-red-500" },
-  }
+    needsRevision: { label: "Needs Revision", color: "bg-red-500" }
+  }), [])
 
-  // Current project status
+  // For example purpose, assume projectProgress is a constant.
+  const projectProgress = 68
+  // Set current status
   const currentStatus = statusOptions.ongoing
 
   return (
@@ -65,10 +83,10 @@ export function ProjectOverviewPage() {
           </CardContent>
         </Card>
 
-        {/* Team Members Section */}
+        {/* Team Members Section (lazy-loaded) */}
         <TeamMembers />
 
-        {/* Tabs for Task Board and Submission History */}
+        {/* Tabs for Task Board and Submission History (lazy-loaded components) */}
         <Tabs defaultValue="tasks" className="w-full">
           <TabsList className="grid grid-cols-2 w-full max-w-md bg-[#161A35]/50 border border-[#2A2F52] p-1 rounded-lg">
             <TabsTrigger
@@ -92,13 +110,13 @@ export function ProjectOverviewPage() {
           </TabsContent>
         </Tabs>
 
-        {/* Deadlines & Important Dates */}
+        {/* Deadlines & Important Dates (lazy-loaded) */}
         <DeadlinesCalendar />
       </div>
 
       {/* Sidebar - 1/3 width on desktop */}
       <div className="space-y-6">
-        {/* Supervisor Information */}
+        {/* Supervisor Information - kept in main bundle for immediate render */}
         <Card className="bg-[#161A35]/60 backdrop-blur-md border border-[#2A2F52] shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 blur-sm"></div>
@@ -164,36 +182,7 @@ export function ProjectOverviewPage() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <Card className="bg-[#161A35]/60 backdrop-blur-md border border-[#2A2F52] shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div className="absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 blur-sm"></div>
-          <CardHeader>
-            <CardTitle className="text-xl bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.3)]">
-              Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
-              <Upload className="h-4 w-4" />
-              Submit New Document
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full flex items-center gap-2 bg-[#161A35] border-[#2A2F52] hover:bg-[#1F2347] text-white"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Message Team
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full flex items-center gap-2 bg-[#161A35] border-[#2A2F52] hover:bg-[#1F2347] text-white"
-            >
-              <CalendarIcon className="h-4 w-4" />
-              Schedule Team Meeting
-            </Button>
-          </CardContent>
-        </Card>
+
       </div>
     </div>
   )

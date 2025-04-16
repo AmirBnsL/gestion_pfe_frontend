@@ -5,7 +5,7 @@ import { Badge } from "../../../components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 import { projectOverviewData } from "./project-overview-data"
 
-export function TaskBoard() {
+export default function TaskBoard() {
   const { tasks } = projectOverviewData
 
   // Group tasks by status

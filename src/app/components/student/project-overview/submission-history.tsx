@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avat
 import { FileText } from "lucide-react"
 import { projectOverviewData } from "./project-overview-data"
 
-export function SubmissionHistory() {
+export default function SubmissionHistory() {
   const { submissions } = projectOverviewData
 
   // Get status color based on submission status

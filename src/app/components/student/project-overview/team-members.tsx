@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avat
 import { Badge } from "../../../components/ui/badge"
 import { projectOverviewData } from "./project-overview-data"
 
-export function TeamMembers() {
+export default function TeamMembers() {
   const { teamMembers } = projectOverviewData
 
   return (
