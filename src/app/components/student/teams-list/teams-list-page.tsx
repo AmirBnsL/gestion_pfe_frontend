@@ -1,26 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState, Suspense } from "react"
+import dynamic from "next/dynamic"
 import { Button } from "../../../components/ui/button"
 import { Input } from "../../../components/ui/input"
 import { Plus, Search } from "lucide-react"
-import { TeamCard } from "./team-card"
-import { TeamDetailsModal } from "./team-details-modal"
-import { CreateTeamModal } from "./create-team-modal"
 import { teamsData, type Team } from "./teams-list-data"
 
-export function TeamsListPage() {
+const TeamCard = dynamic(() => import("./team-card").then(mod => mod.TeamCard), { ssr: false })
+const TeamDetailsModal = dynamic(() => import("./team-details-modal").then(mod => mod.TeamDetailsModal), { ssr: false })
+const CreateTeamModal = dynamic(() => import("./create-team-modal").then(mod => mod.CreateTeamModal), { ssr: false })
+
+export default function TeamsListPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
-  // Filter teams based on search query
-  const filteredTeams = teamsData.filter(
-    (team) =>
-      team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      team.project.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  const filteredTeams = useMemo(() => {
+    return teamsData.filter(
+      (team) =>
+        team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        team.project.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [searchQuery])
 
   const handleViewDetails = (team: Team) => {
     setSelectedTeam(team)
@@ -28,13 +31,11 @@ export function TeamsListPage() {
   }
 
   const handleRequestJoin = (team: Team) => {
-    // In a real app, this would send a request to the backend
     alert(`Request to join ${team.name} sent!`)
   }
 
   return (
     <div className="container mx-auto">
-      {/* Header with search and create button */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.3)]">
           Teams List
@@ -61,19 +62,18 @@ export function TeamsListPage() {
         </div>
       </div>
 
-      {/* Teams grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredTeams.map((team) => (
-          <TeamCard
-            key={team.id}
-            team={team}
-            onViewDetails={() => handleViewDetails(team)}
-            onRequestJoin={() => handleRequestJoin(team)}
-          />
+          <Suspense fallback={<div className="h-40 bg-muted rounded-lg animate-pulse" />} key={team.id}>
+            <TeamCard
+              team={team}
+              onViewDetails={() => handleViewDetails(team)}
+              onRequestJoin={() => handleRequestJoin(team)}
+            />
+          </Suspense>
         ))}
       </div>
 
-      {/* Empty state */}
       {filteredTeams.length === 0 && (
         <div className="text-center py-16">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#1A1F3D] mb-4">
@@ -92,20 +92,21 @@ export function TeamsListPage() {
         </div>
       )}
 
-      {/* Modals */}
-      <TeamDetailsModal
-        isOpen={isDetailsModalOpen}
-        onClose={() => setIsDetailsModalOpen(false)}
-        team={selectedTeam}
-        onRequestJoin={() => {
-          if (selectedTeam) {
-            handleRequestJoin(selectedTeam)
-            setIsDetailsModalOpen(false)
-          }
-        }}
-      />
+      <Suspense fallback={null}>
+        <TeamDetailsModal
+          isOpen={isDetailsModalOpen}
+          onClose={() => setIsDetailsModalOpen(false)}
+          team={selectedTeam}
+          onRequestJoin={() => {
+            if (selectedTeam) {
+              handleRequestJoin(selectedTeam)
+              setIsDetailsModalOpen(false)
+            }
+          }}
+        />
 
-      <CreateTeamModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+        <CreateTeamModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+      </Suspense>
     </div>
   )
 }
