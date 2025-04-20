@@ -4,6 +4,17 @@ import ChatBox from "./chat-box";
 import dynamic from "next/dynamic";
 import ChatTopicAnchor from "./chat-topic-anchor";
 
+const topics = [
+  { id: "1", name: "General" },
+  { id: "2", name: "Support" },
+  { id: "3", name: "Feedback" },
+  { id: "4", name: "Updates" },
+  { id: "5", name: "Announcements" },
+  { id: "6", name: "Events" },
+  { id: "7", name: "Resources" },
+  { id: "8", name: "Community" },
+  { id: "9", name: "Collaboration" },
+];
 // Particle background (optional for visual consistency with dashboard)
 const ParticleBackground = dynamic(
   () => import("@/app/components/ui/particle-background"),
@@ -32,12 +43,7 @@ const CommunicationPage: React.FC = () => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
         <div className="w-full max-w-4xl">
-          <ChatTopicAnchor
-            topics={[
-              { id: "1", name: "General" },
-              { id: "2", name: "Support" },
-            ]}
-          />
+          <ChatTopicAnchor topics={topics} />
           <ChatBox />
         </div>
       </div>
