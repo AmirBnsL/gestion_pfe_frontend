@@ -1,6 +1,7 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+@import "tailwindcss";
 
 :root {
   --background: 0 0% 100%;
@@ -53,4 +54,3 @@
     color: white;
   }
 }
-

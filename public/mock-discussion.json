@@ -1,0 +1,16 @@
+[
+  {
+    "sender": "Assistant",
+    "text": "Welcome! This is a test conversation.",
+    "timestamp": "10:00 AM",
+    "avatar": "/api/placeholder/40/40",
+    "isSentByUser": false
+  },
+  {
+    "sender": "You",
+    "text": "Hi! Just testing this out.",
+    "timestamp": "10:01 AM",
+    "avatar": "/api/placeholder/40/40",
+    "isSentByUser": true
+  }
+]

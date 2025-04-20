@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import dynamic from "next/dynamic"
+import dynamic from "next/dynamic";
 
 const MyProjectPage = dynamic(
   () =>
@@ -9,10 +9,9 @@ const MyProjectPage = dynamic(
     ),
   {
     ssr: true, // This enables server-side rendering for MyProjectPage
-    
   }
-)
+);
 
 export default function MyProject() {
-  return <MyProjectPage />
+  return <MyProjectPage />;
 }
