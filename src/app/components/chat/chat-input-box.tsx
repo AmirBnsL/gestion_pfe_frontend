@@ -1,6 +1,8 @@
 "use client";
-import React, { useState, useRef } from "react";
-import { Send, Paperclip, Mic } from "lucide-react"; // Additional icons
+import { useState, useRef } from "react";
+import type React from "react";
+
+import { Send, Paperclip, Mic } from "lucide-react";
 
 interface ChatInputBoxProps {
   onSend?: (msg: string) => void;
@@ -65,20 +67,20 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({
 
       <div
         className={`flex items-center p-2 transition-all duration-200 ${
-          isFocused ? "bg-gray-700/30" : "bg-gray-700/20"
-        } rounded-2xl`}
+          isFocused ? "bg-slate-800/50" : "bg-slate-800/30"
+        } rounded-xl border ${
+          isFocused ? "border-purple-500/30" : "border-slate-700"
+        }`}
       >
         {/* Attachment button */}
         <button
           onClick={handleAttachmentClick}
           disabled={disabled}
-          className="p-2 rounded-full hover:bg-gray-300/20 transition-colors"
+          className="p-2 rounded-full hover:bg-slate-700/50 transition-colors"
           title="Attach file"
         >
-          <Paperclip className="text-white w-5 h-5" />
+          <Paperclip className="text-slate-400 w-5 h-5" />
         </button>
-
-        {/* Emoji picker (placeholder - would integrate with a library like emoji-picker-react) */}
 
         {/* Main input */}
         <input
@@ -91,7 +93,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
           disabled={disabled}
-          className="flex-1 text-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none bg-transparent"
+          className="flex-1 text-slate-200 px-3 py-2 text-sm placeholder:text-slate-500 focus:outline-none bg-transparent"
         />
 
         {/* Voice message or send button */}
@@ -99,26 +101,26 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({
           <button
             onClick={handleSend}
             disabled={disabled}
-            className="p-2 rounded-full hover:bg-blue-500/20 transition-colors"
+            className="p-2 rounded-full hover:bg-purple-500/20 transition-colors"
             title="Send"
           >
-            <Send className="text-blue-400 w-5 h-5" />
+            <Send className="text-purple-400 w-5 h-5" />
           </button>
         ) : (
           <button
             onClick={onVoiceMessage}
             disabled={disabled}
-            className="p-2 rounded-full hover:bg-red-500/20 transition-colors"
+            className="p-2 rounded-full hover:bg-purple-500/20 transition-colors"
             title="Record voice message"
           >
-            <Mic className="text-red-400 w-5 h-5" />
+            <Mic className="text-purple-400 w-5 h-5" />
           </button>
         )}
       </div>
 
       {/* Character counter (optional) */}
       {isFocused && (
-        <div className="absolute bottom-full right-0 mb-1 text-xs text-gray-400">
+        <div className="absolute bottom-full right-0 mb-1 text-xs text-slate-400">
           {message.length}/500
         </div>
       )}

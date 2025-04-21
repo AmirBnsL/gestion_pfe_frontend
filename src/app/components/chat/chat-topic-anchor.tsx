@@ -1,7 +1,14 @@
+"use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
-import TestDialog from "./create-topic-chart"; // Import your CreateTopicChart component
-// Replace this with your actual component when you create it
+import dynamic from "next/dynamic";
+
+// Dynamically import the CreateTopicChart component with no SSR
+const CreateTopicChart = dynamic(() => import("./create-topic-chart"), {
+  ssr: false,
+  loading: () => <p className="text-white">Loading chart creator...</p>,
+});
 
 interface ChatTopicAnchorProps {
   topics: { id: string; name: string }[];
@@ -36,7 +43,9 @@ const ChatTopicAnchor: React.FC<ChatTopicAnchorProps> = ({ topics }) => {
         ))}
       </div>
       {/* Conditional rendering of the CreateTopicChart component */}
-      {showCreateTopic && <TestDialog />}
+      {showCreateTopic && (
+        <CreateTopicChart open={showCreateTopic} onClose={toggleCreateTopic} />
+      )}
     </div>
   );
 };

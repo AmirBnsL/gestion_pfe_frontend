@@ -1,4 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+"use client";
+
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface ChatMessageProps {
   avatarUrl?: string;
@@ -11,7 +14,7 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({
-  avatarUrl = "/api/placeholder/40/40",
+  avatarUrl = "/placeholder.svg?height=40&width=40",
   name = "John Doe",
   message = "Hello, how are you today?",
   timestamp = "10:45 AM",
@@ -30,16 +33,19 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const messageBubbleStyle = {
     borderRadius: "1rem",
-    border: "1px solid rgba(255, 255, 255, 0.15)",
+    border: "1px solid",
+    borderColor: isSentByUser
+      ? "rgba(124, 58, 237, 0.3)"
+      : "rgba(51, 65, 85, 0.5)",
     background: isSentByUser
-      ? "rgba(100, 65, 236, 0.12)"
-      : "rgba(255, 255, 255, 0.05)",
+      ? "rgba(124, 58, 237, 0.12)"
+      : "rgba(30, 41, 59, 0.5)",
     boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
     maxWidth: maxWidth,
     wordBreak: "break-word" as const,
   };
 
-  const messageTextColor = isSentByUser ? "text-indigo-200" : "text-gray-200";
+  const messageTextColor = isSentByUser ? "text-purple-200" : "text-slate-200";
 
   useEffect(() => {
     if (messageRef.current && message) {
@@ -68,9 +74,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       {/* Avatar */}
       {!isSentByUser && (
         <img
-          src={avatarUrl}
+          src={avatarUrl || "/placeholder.svg"}
           alt={`${name}'s avatar`}
-          className="w-10 h-10 rounded-full object-cover shadow-md flex-shrink-0"
+          className="w-10 h-10 rounded-full object-cover shadow-md flex-shrink-0 border border-slate-700"
         />
       )}
 
@@ -83,7 +89,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         }`}
       >
         {!isSentByUser && (
-          <p className="text-sm font-semibold text-white">{name}</p>
+          <p className="text-sm font-semibold text-slate-200">{name}</p>
         )}
 
         {isEditing ? (
@@ -100,12 +106,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               autoFocus
             />
             <div className="flex items-center justify-between mt-2">
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-slate-400">
                 {editedMessage.length}/500
               </span>
               <button
                 onClick={handleSaveEdit}
-                className="px-2 py-1 text-xs bg-blue-500 rounded hover:bg-blue-600"
+                className="px-2 py-1 text-xs bg-purple-600 rounded hover:bg-purple-700 text-white"
               >
                 Save
               </button>
@@ -119,14 +125,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               {message}
             </p>
             <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-400 mt-2">{timestamp}</p>
+              <p className="text-xs text-slate-400 mt-2">{timestamp}</p>
               {editable && isSentByUser && (
                 <button
                   onClick={() => {
                     setEditedMessage(message);
                     setIsEditing(true);
                   }}
-                  className="opacity-0 group-hover:opacity-100 text-xs text-gray-400 hover:text-white transition-opacity"
+                  className="opacity-0 group-hover:opacity-100 text-xs text-slate-400 hover:text-purple-300 transition-opacity"
                 >
                   Edit
                 </button>
@@ -139,9 +145,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       {/* Avatar for sent messages */}
       {isSentByUser && (
         <img
-          src={avatarUrl}
+          src={avatarUrl || "/placeholder.svg"}
           alt={`${name}'s avatar`}
-          className="w-10 h-10 rounded-full object-cover shadow-md flex-shrink-0"
+          className="w-10 h-10 rounded-full object-cover shadow-md flex-shrink-0 border border-slate-700"
         />
       )}
     </div>

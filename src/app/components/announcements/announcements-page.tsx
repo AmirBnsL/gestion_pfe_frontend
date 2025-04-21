@@ -1,35 +1,37 @@
-"use client"
+"use client";
 
-import React, { Suspense, useState, useMemo, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Plus } from "lucide-react"
-import { Button } from "@/app/components/ui/button"
-import { AnnouncementsList } from "./announcements-list"
-import ParticleBackground from "@/app/components/ui/particle-background"
-import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
-import { announcements } from "./announcementsData"
+import React, { Suspense, useState, useMemo, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
+import { AnnouncementsList } from "./announcements-list";
+import ParticleBackground from "@/app/components/ui/particle-background";
+import PendingApprovalsSearch from "../pending-approval/pending-approvals-search";
+import { announcements } from "./announcementsData";
 
 // Lazy load the CreateAnnouncementDialog
-const CreateAnnouncementDialog = React.lazy(() => import("./create-announcement-dialog"));
+const CreateAnnouncementDialog = React.lazy(
+  () => import("./create-announcement-dialog")
+);
 
 export default function AnnouncementsPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [filterType, setFilterType] = useState("all")
-  const [sortOrder, setSortOrder] = useState("newest")
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [filterType, setFilterType] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+    setIsLoaded(true);
+  }, []);
 
   const filteredAnnouncements = useMemo(() => {
     return announcements.filter(
       (announcement) =>
         announcement.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         announcement.audience.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [announcements, searchQuery])
+    );
+  }, [announcements, searchQuery]);
 
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
@@ -94,5 +96,5 @@ export default function AnnouncementsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

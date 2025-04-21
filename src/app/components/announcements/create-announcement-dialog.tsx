@@ -1,37 +1,58 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useCallback } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/components/ui/dialog"
-import { Button } from "@/app/components/ui/button"
-import { Input } from "@/app/components/ui/input"
-import { Textarea } from "@/app/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select"
-import { Label } from "@/app/components/ui/label"
+import type React from "react";
+import { useState, useCallback } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/app/components/ui/dialog";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
+import { Label } from "@/app/components/ui/label";
 
 interface CreateAnnouncementDialogProps {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
 }
 
-export default function CreateAnnouncementDialog({ open, onClose }: CreateAnnouncementDialogProps) {
-  const [title, setTitle] = useState("")
-  const [message, setMessage] = useState("")
-  const [audience, setAudience] = useState("all")
-  const [priority, setPriority] = useState("medium")
+export default function CreateAnnouncementDialog({
+  open,
+  onClose,
+}: CreateAnnouncementDialogProps) {
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+  const [audience, setAudience] = useState("all");
+  const [priority, setPriority] = useState("medium");
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault()
-    console.log({ title, message, audience, priority })
-    onClose()
-  }, [title, message, audience, priority, onClose])
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log({ title, message, audience, priority });
+      onClose();
+    },
+    [title, message, audience, priority, onClose]
+  );
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="bg-[#1E2142] border-[#2A2F52] text-white max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Create New Announcement</DialogTitle>
-          <p className="text-sm text-slate-400 mt-1">Share a new announcement with your audience</p>
+          <DialogTitle className="text-xl font-bold">
+            Create New Announcement
+          </DialogTitle>
+          <p className="text-sm text-slate-400 mt-1">
+            Share a new announcement with your audience
+          </p>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -109,5 +130,5 @@ export default function CreateAnnouncementDialog({ open, onClose }: CreateAnnoun
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

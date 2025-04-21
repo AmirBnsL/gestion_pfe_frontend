@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatMessage from "./chat-message";
-import ChatInputBox from "./chat-input-box"; // Import the new component
+import ChatInputBox from "./chat-input-box";
+import { Card, CardContent } from "@/app/components/ui/card";
 
 interface Message {
   sender: string;
@@ -24,9 +25,26 @@ const ChatBox = () => {
       if (saved) {
         setMessages(JSON.parse(saved));
       } else {
-        const res = await fetch("/mock-discussion.json");
-        const data = await res.json();
-        setMessages(data);
+        try {
+          const res = await fetch("/mock-discussion.json");
+          const data = await res.json();
+          setMessages(data);
+        } catch (error) {
+          console.error("Failed to load mock data:", error);
+          // Set some default messages if fetch fails
+          setMessages([
+            {
+              sender: "System",
+              text: "Welcome to the chat! Start a conversation.",
+              timestamp: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              avatar: "/placeholder.svg?height=40&width=40",
+              isSentByUser: false,
+            },
+          ]);
+        }
       }
     };
     loadData();
@@ -53,7 +71,7 @@ const ChatBox = () => {
         sender: "You",
         text: message,
         timestamp: getCurrentTime(),
-        avatar: "/api/placeholder/40/40",
+        avatar: "/placeholder.svg?height=40&width=40",
         isSentByUser: true,
       };
 
@@ -67,7 +85,7 @@ const ChatBox = () => {
             sender: "Assistant",
             text: "Thanks for your message! This is a simulated response.",
             timestamp: getCurrentTime(),
-            avatar: "/api/placeholder/40/40",
+            avatar: "/placeholder.svg?height=40&width=40",
             isSentByUser: false,
           },
         ]);
@@ -82,7 +100,7 @@ const ChatBox = () => {
       sender: "You",
       text: `[Attachment: ${file.name}]`,
       timestamp: getCurrentTime(),
-      avatar: "/api/placeholder/40/40",
+      avatar: "/placeholder.svg?height=40&width=40",
       isSentByUser: true,
     };
     setMessages((prev) => [...prev, newMessage]);
@@ -94,56 +112,62 @@ const ChatBox = () => {
   };
 
   return (
-    <div className="mx-auto mt-10 flex flex-col h-[600px] w-full max-w-4xl rounded-2xl border border-white/20 bg-white/5 p-4 shadow-lg backdrop-blur-lg ">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message, index) => (
-          <ChatMessage
-            key={`${id}-${index}`}
-            avatarUrl={message.avatar}
-            name={message.sender}
-            message={message.text}
-            timestamp={message.timestamp}
-            isSentByUser={message.isSentByUser}
-          />
-        ))}
-        {isResponding && (
-          <div className="flex items-start space-x-3 p-2">
-            <div className="flex-shrink-0">
-              <img
-                src="/api/placeholder/40/40"
-                alt="Assistant avatar"
-                className="w-10 h-10 rounded-full object-cover"
-              />
-            </div>
-            <div className="p-3 rounded-lg bg-gray-100">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
-                <div
-                  className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                  style={{ animationDelay: "0.4s" }}
-                ></div>
+    <Card className="h-[600px] bg-slate-900/50 border border-slate-800 backdrop-blur-sm shadow-lg">
+      <CardContent className="p-6 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-slate-200">Chat</h3>
+          <div className="text-xs text-slate-400">Topic: General</div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+          {messages.map((message, index) => (
+            <ChatMessage
+              key={`${id}-${index}`}
+              avatarUrl={message.avatar}
+              name={message.sender}
+              message={message.text}
+              timestamp={message.timestamp}
+              isSentByUser={message.isSentByUser}
+            />
+          ))}
+          {isResponding && (
+            <div className="flex items-start space-x-3 p-2">
+              <div className="flex-shrink-0">
+                <img
+                  src="/placeholder.svg?height=40&width=40"
+                  alt="Assistant avatar"
+                  className="w-10 h-10 rounded-full object-cover border border-slate-700"
+                />
+              </div>
+              <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"></div>
+                  <div
+                    className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"
+                    style={{ animationDelay: "0.4s" }}
+                  ></div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-      {/* 🧃 Replaced with the new ChatInputBox component */}
-      <div className="mt-4 px-4 pt-4 border-t border-gray-200">
-        <ChatInputBox
-          onSend={handleSend}
-          onAttachment={handleAttachment}
-          onVoiceMessage={handleVoiceMessage}
-          disabled={isResponding}
-          placeholder="Type your message..."
-        />
-      </div>
-    </div>
+        <div className="mt-4 pt-4 border-t border-slate-800">
+          <ChatInputBox
+            onSend={handleSend}
+            onAttachment={handleAttachment}
+            onVoiceMessage={handleVoiceMessage}
+            disabled={isResponding}
+            placeholder="Type your message..."
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

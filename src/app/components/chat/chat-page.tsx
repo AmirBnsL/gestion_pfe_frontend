@@ -1,8 +1,43 @@
 "use client";
-import React from "react";
+import type React from "react";
 import ChatBox from "./chat-box";
 import dynamic from "next/dynamic";
 import ChatTopicAnchor from "./chat-topic-anchor";
+import TeamMembersChart from "./team-members-chart";
+
+const projectData = {
+  supervisor: {
+    id: "sup1",
+    name: "Dr. Sarah Johnson",
+    avatar: "/placeholder.svg?height=48&width=48",
+  },
+  teamMembers: [
+    {
+      id: "tm1",
+      name: "Alex Chen",
+      role: "Frontend Developer",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "tm2",
+      name: "Maria Garcia",
+      role: "Backend Developer",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "tm3",
+      name: "James Wilson",
+      role: "UI/UX Designer",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "tm4",
+      name: "Aisha Patel",
+      role: "Project Manager",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+  ],
+};
 
 const topics = [
   { id: "1", name: "General" },
@@ -15,6 +50,7 @@ const topics = [
   { id: "8", name: "Community" },
   { id: "9", name: "Collaboration" },
 ];
+
 // Particle background (optional for visual consistency with dashboard)
 const ParticleBackground = dynamic(
   () => import("@/app/components/ui/particle-background"),
@@ -42,9 +78,24 @@ const CommunicationPage: React.FC = () => {
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
-        <div className="w-full max-w-4xl">
-          <ChatTopicAnchor topics={topics} />
-          <ChatBox />
+        <div className="w-full max-w-7xl">
+          {/* Topics anchor - full width */}
+          <div className="mb-6">
+            <ChatTopicAnchor topics={topics} />
+          </div>
+
+          {/* Horizontal layout for ChatBox and TeamMembersChart */}
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* ChatBox - takes more space */}
+            <div className="lg:w-2/3">
+              <ChatBox />
+            </div>
+
+            {/* TeamMembersChart - takes less space */}
+            <div className="lg:w-1/3">
+              <TeamMembersChart projectData={projectData} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
