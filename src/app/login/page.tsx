@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
 import { Mail, Lock, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
@@ -33,7 +32,7 @@ export default function AnimatedLoginPage() {
   }, [isAuthenticated, router])
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     // Form validation
@@ -49,8 +48,11 @@ export default function AnimatedLoginPage() {
 
     setFormError("")
 
-    // Attempt login using React Query mutation
-    login( email, password )
+    // Attempt login using our new auth hook
+    const success = await login(email, password)
+
+    // The redirect will be handled by the login function in useAuth
+    // based on the user's role
   }
 
   // Animation for the background
@@ -204,7 +206,7 @@ export default function AnimatedLoginPage() {
                 className="absolute w-[95%] h-[95%] rounded-full border-2 border-[#6C63FF]/10"
               />
               <Image
-                src="/images/loginill.png"
+                src="/placeholder.svg?height=520&width=520"
                 alt="Login Illustration"
                 width={520}
                 height={520}
@@ -391,4 +393,3 @@ export default function AnimatedLoginPage() {
     </div>
   )
 }
-

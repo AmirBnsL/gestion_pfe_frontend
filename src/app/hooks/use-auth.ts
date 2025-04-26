@@ -55,7 +55,7 @@ export function useAuth() {
         } else if (authService.isTeacher(result.user)) {
           router.push("/teacher/dashboard")
         } else if (authService.isStudent(result.user)) {
-          router.push("/student/dashboard")
+          router.push("/student/project-overview")
         }
         return true
       } else {
