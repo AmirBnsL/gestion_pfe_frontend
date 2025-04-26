@@ -6,7 +6,7 @@ import { Plus } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { AnnouncementsList } from "./announcements-list"
 import ParticleBackground from "@/app/components/ui/particle-background"
-import { PendingApprovalsSearch } from "../pending-approval/pending-approvals-search"
+import  PendingApprovalsSearch  from "../pending-approval/pending-approvals-search"
 import { announcements } from "./announcementsData"
 
 // Lazy load the CreateAnnouncementDialog

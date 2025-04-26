@@ -11,7 +11,7 @@ export function StudentSidebar() {
 
   // Navigation items with their paths and icons - specific to student section
   const navItems = [
-    { icon: Home, path: "/student", label: "Project Overview" },
+    { icon: Home, path: "/student/project-overview", label: "Project Overview" },
     { icon: Users, path: "/student/teams-list", label: "Teams List" },
     { icon: BookOpen, path: "/student/my-project", label: "My Project" },
     { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" },

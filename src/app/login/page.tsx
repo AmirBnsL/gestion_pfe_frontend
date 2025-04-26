@@ -50,7 +50,7 @@ export default function AnimatedLoginPage() {
     setFormError("")
 
     // Attempt login using React Query mutation
-    login({ email, password })
+    login( email, password )
   }
 
   // Animation for the background
