@@ -1,84 +1,118 @@
-// Authentication service to handle API calls to your external auth provider
+import { apiClient, type LoginCredentials, type User } from "./api-client"
 
-interface LoginCredentials {
-    email: string
-    password: string
+// Event for auth state changes
+const AUTH_CHANGE_EVENT = "auth-change"
+
+// Function to emit auth change event
+function emitAuthChange(isAuthenticated: boolean, user: User | null) {
+  if (typeof window !== "undefined") {
+    const event = new CustomEvent(AUTH_CHANGE_EVENT, {
+      detail: { isAuthenticated, user },
+    })
+    window.dispatchEvent(event)
   }
-  
-  interface AuthResponse {
-    success: boolean
-    token?: string
-    user?: {
-      id: string
-      email: string
-      firstname: string
-      lastname: string
-      role :string
-    }
-    error?: string
-  }
-  
-  // Replace this URL with your actual external API endpoint
-  const API_URL = "http://localhost:8080/api"
-  
-  export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
-  console.log({credentials})
+}
+
+// Auth service with cookie-based authentication
+export const authService = {
+  // Login user
+  async login(credentials: LoginCredentials) {
     try {
-      // Replace with your actual API endpoint
-      const response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      })
-  
-      const data = await response.json()
-  
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.message || "Login failed",
-        }
-      }
-  
-      // Store the token in localStorage
-      if (data.token) {
-        localStorage.setItem("auth_token", data.token)
-      }
-  
+      const response = await apiClient.auth.login(credentials)
+
+      // The API should set the HTTP-only cookie automatically
+      // We just need to update the UI state
+      emitAuthChange(true, response.user)
+
       return {
         success: true,
-        token: data.token,
-        user: data.user,
+        user: response.user,
       }
     } catch (error) {
       console.error("Login error:", error)
       return {
         success: false,
-        error: "An unexpected error occurred",
+        error: error instanceof Error ? error.message : "An unexpected error occurred",
       }
     }
-  }
-  
-  export function logout(): void {
-    localStorage.removeItem("auth_token")
-    // Redirect to login page
-    window.location.href = "/login"
-  }
-  
-  export function getToken(): string | null {
-    return typeof window !== "undefined" ? localStorage.getItem("auth_token") : null
-  }
-  
-  export function isAuthenticated(): boolean {
-    return !!getToken()
-  }
-  
-  // Function to get the auth header for authenticated requests
-  export function getAuthHeader(): Record<string, string> {
-    const token = getToken()
-    return token ? { Authorization: `Bearer ${token}` } : {}
-  }
-  
-  
+  },
+
+  // Logout user
+  async logout() {
+    try {
+      // Call a logout endpoint if your API has one
+      // This should clear the HTTP-only cookie on the server
+
+      // For now, we'll just update the UI state
+      emitAuthChange(false, null)
+
+      return { success: true }
+    } catch (error) {
+      console.error("Logout error:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "An unexpected error occurred",
+      }
+    }
+  },
+
+  // Get current user profile
+  async getCurrentUser() {
+    try {
+      const user = await apiClient.auth.getProfile()
+      return user
+    } catch (error) {
+      console.error("Error getting current user:", error)
+      return null
+    }
+  },
+
+  // Check if user is authenticated
+  async isAuthenticated() {
+    try {
+      const user = await this.getCurrentUser()
+      return !!user
+    } catch (error) {
+      return false
+    }
+  },
+
+  // Subscribe to auth changes
+  onAuthChange(callback: (isAuthenticated: boolean, user: User | null) => void) {
+    if (typeof window !== "undefined") {
+      const handler = (event: Event) => {
+        const customEvent = event as CustomEvent
+        callback(customEvent.detail.isAuthenticated, customEvent.detail.user)
+      }
+
+      window.addEventListener(AUTH_CHANGE_EVENT, handler)
+
+      // Return unsubscribe function
+      return () => {
+        window.removeEventListener(AUTH_CHANGE_EVENT, handler)
+      }
+    }
+
+    return () => {} // Empty unsubscribe for SSR
+  },
+
+  // Check if user has a specific role
+  hasRole(user: User | null, role: "Admin" | "Teacher" | "Student") {
+    return user?.role === role
+  },
+
+  // Check if user is admin
+  isAdmin(user: User | null) {
+    return this.hasRole(user, "Admin")
+  },
+
+  // Check if user is teacher
+  isTeacher(user: User | null) {
+    return this.hasRole(user, "Teacher")
+  },
+
+  // Check if user is student
+  isStudent(user: User | null) {
+    return this.hasRole(user, "Student")
+  },
+}

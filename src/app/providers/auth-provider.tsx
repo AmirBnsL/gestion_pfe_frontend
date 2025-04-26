@@ -1,12 +1,24 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { authService } from "@/app/lib/auth-service"
 import type { User } from "@/app/lib/api-client"
 
-export function useAuth() {
-  const router = useRouter()
+interface AuthContextType {
+  user: User | null
+  isLoading: boolean
+  isAuthenticated: boolean
+  error: string | null
+  login: (email: string, password: string) => Promise<boolean>
+  logout: () => Promise<boolean>
+  isAdmin: () => boolean
+  isTeacher: () => boolean
+  isStudent: () => boolean
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
+
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -49,14 +61,6 @@ export function useAuth() {
       const result = await authService.login({ email, password })
 
       if (result.success) {
-        // Redirect based on user role
-        if (authService.isAdmin(result.user)) {
-          router.push("/admin/dashboard")
-        } else if (authService.isTeacher(result.user)) {
-          router.push("/teacher/dashboard")
-        } else if (authService.isStudent(result.user)) {
-          router.push("/student/dashboard")
-        }
         return true
       } else {
         setError(result.error || "Login failed")
@@ -76,7 +80,6 @@ export function useAuth() {
 
     try {
       await authService.logout()
-      router.push("/landing")
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : "Logout error")
@@ -86,7 +89,7 @@ export function useAuth() {
     }
   }
 
-  return {
+  const value = {
     user,
     isLoading,
     isAuthenticated,
@@ -97,4 +100,14 @@ export function useAuth() {
     isTeacher: () => authService.isTeacher(user),
     isStudent: () => authService.isStudent(user),
   }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider")
+  }
+  return context
 }
