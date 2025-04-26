@@ -2,10 +2,10 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 // Define the paths that should be protected
-const ADMIN_PATHS = ["/admin"]
+const ADMIN_PATHS = ["/admin/dashboard"]
 const TEACHER_PATHS = ["/teacher"]
-const STUDENT_PATHS = ["/student"]
-const AUTH_PATHS = ["/login", "/register"]
+const STUDENT_PATHS = ["/student/project-overview"]
+const AUTH_PATHS = ["/login"]
 const PUBLIC_PATHS = ["/", "/landing", "/about", "/contact"]
 
 // Function to check if a path starts with any of the given prefixes
@@ -70,9 +70,9 @@ export async function middleware(request: NextRequest) {
       if (userRole === "Admin") {
         return NextResponse.redirect(new URL("/admin/dashboard", request.url))
       } else if (userRole === "Teacher") {
-        return NextResponse.redirect(new URL("/teacher/dashboard", request.url))
+        return NextResponse.redirect(new URL("/teacher", request.url))
       } else if (userRole === "Student") {
-        return NextResponse.redirect(new URL("/student/dashboard", request.url))
+        return NextResponse.redirect(new URL("/student/project-overview", request.url))
       }
     }
 
