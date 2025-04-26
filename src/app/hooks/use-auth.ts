@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { authService } from "@/app/lib/auth-service"
+
 import type { User } from "@/app/lib/api-client"
+import { getCurrentUser, isAdmin, isStudent, isTeacher, loogin, loogout, onAuthChange } from "../lib/auth-service"
 
 export function useAuth() {
   const router = useRouter()
@@ -14,10 +15,12 @@ export function useAuth() {
 
   // Check authentication status on mount
   useEffect(() => {
+    setIsLoading(true)
+  
+    // 1) Kick off auth check
     const checkAuth = async () => {
-      setIsLoading(true)
       try {
-        const currentUser = await authService.getCurrentUser()
+        const currentUser = await getCurrentUser()
         setUser(currentUser)
         setIsAuthenticated(!!currentUser)
       } catch (err) {
@@ -26,15 +29,18 @@ export function useAuth() {
         setIsLoading(false)
       }
     }
-
     checkAuth()
-
-    // Subscribe to auth changes
-    const unsubscribe = authService.onAuthChange((isAuth, updatedUser) => {
-      setIsAuthenticated(isAuth)
-      setUser(updatedUser)
-    })
-
+  
+    // 2) Subscribe to auth changes, capture the cleanup
+    let unsubscribe: () => void = () => {}
+    ;(async () => {
+      unsubscribe = await onAuthChange((isAuth, updatedUser) => {
+        setIsAuthenticated(isAuth)
+        setUser(updatedUser)
+      })
+    })()
+  
+    // 3) Return a synchronous cleanup
     return () => {
       unsubscribe()
     }
@@ -46,15 +52,15 @@ export function useAuth() {
     setError(null)
 
     try {
-      const result = await authService.login({ email, password })
+      const result = await loogin({ email, password })
 
       if (result.success) {
         // Redirect based on user role
-        if (authService.isAdmin(result.user)) {
+        if (await isAdmin(result.user)) {
           router.push("/admin/dashboard")
-        } else if (authService.isTeacher(result.user)) {
+        } else if (await isTeacher(result.user)) {
           router.push("/teacher/dashboard")
-        } else if (authService.isStudent(result.user)) {
+        } else if (await isStudent(result.user)) {
           router.push("/student/project-overview")
         }
         return true
@@ -75,7 +81,7 @@ export function useAuth() {
     setIsLoading(true)
 
     try {
-      await authService.logout()
+      await loogout()
       router.push("/landing")
       return true
     } catch (err) {
@@ -93,8 +99,8 @@ export function useAuth() {
     error,
     login,
     logout,
-    isAdmin: () => authService.isAdmin(user),
-    isTeacher: () => authService.isTeacher(user),
-    isStudent: () => authService.isStudent(user),
+    isAdmin: () => isAdmin(user),
+    isTeacher: () => isTeacher(user),
+    isStudent: () => isStudent(user),
   }
 }

@@ -1,4 +1,7 @@
-// Base API URL - should be set in your environment variables
+
+
+
+
 const API_URL = "http://localhost:8080/api"
 
 // Types for API responses
@@ -46,6 +49,7 @@ export interface LoginCredentials {
 }
 
 export interface LoginResponse {
+  data: any
   token: string
   user: User
 }
@@ -118,18 +122,36 @@ export const apiClient = {
       fetchApi<LoginResponse>("/login", {
         method: "POST",
         body: JSON.stringify(credentials),
+      })
+      .then(res => {
+        // store the raw JWT into a cookie called "jwt"
+        //  - max-age=7200 makes it live for 2 hours
+        //  - secure + samesite=lax are recommended defaults
+        document.cookie = `jwt=${res.data}; path=/; max-age=${2 * 60 * 60}; secure; samesite=lax`;
+        
+        return res;
       }),
-
+  
     // Test authorization (admin only)
-    testAuthorization: () => fetchApi<{ message: string }>("/test-authorization"),
-
+    testAuthorization: () =>
+      fetchApi<{ message: string }>("/test-authorization"),
+  
     // Get current user profile
-    getProfile: () => fetchApi<User>("/profile"),
-
+    // getProfile: async () => {
+    //   const cookieStore = await cookies()
+    //   const token = cookieStore.get('jwt')
+    //   console.log(token)
+    //   return fetchApi<User>("/profile", {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    // },
     // Logout (client-side only, no API call needed)
     logout: () => {
-      // We'll handle this in the auth service
-      return Promise.resolve()
+      // just clear the cookie
+      document.cookie = "jwt=; path=/; max-age=0";
+      return Promise.resolve();
     },
   },
 

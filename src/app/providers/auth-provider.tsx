@@ -1,8 +1,9 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { authService } from "@/app/lib/auth-service"
+
 import type { User } from "@/app/lib/api-client"
+import { getCurrentUser, isAdmin, isStudent, isTeacher, loogin, loogout, onAuthChange } from "../lib/auth-service"
 
 interface AuthContextType {
   user: User | null
@@ -26,10 +27,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check authentication status on mount
   useEffect(() => {
-    const checkAuth = async () => {
+    // 1) placeholder for the unsubscribe fn
+    let unsubscribe: () => void = () => {}
+  
+    // 2) IIFE so we can await inside
+    ;(async () => {
       setIsLoading(true)
       try {
-        const currentUser = await authService.getCurrentUser()
+        const currentUser = await getCurrentUser()
         setUser(currentUser)
         setIsAuthenticated(!!currentUser)
       } catch (err) {
@@ -37,30 +42,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } finally {
         setIsLoading(false)
       }
-    }
-
-    checkAuth()
-
-    // Subscribe to auth changes
-    const unsubscribe = authService.onAuthChange((isAuth, updatedUser) => {
-      setIsAuthenticated(isAuth)
-      setUser(updatedUser)
-    })
-
+  
+      // 3) subscribe and capture the sync unsubscribe
+      unsubscribe = await onAuthChange((isAuth, updatedUser) => {
+        setIsAuthenticated(isAuth)
+        setUser(updatedUser)
+      })
+    })()
+  
+    // 4) return a *synchronous* cleanup
     return () => {
       unsubscribe()
     }
-  }, [])
-
+  }, [])  // <-- still only run on mount/unmount
+  
   // Login function
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const result = await authService.login({ email, password })
+      const result = await loogin({ email, password })
 
       if (result.success) {
+        
         return true
       } else {
         setError(result.error || "Login failed")
@@ -79,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true)
 
     try {
-      await authService.logout()
+      await loogout()
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : "Logout error")
@@ -96,9 +101,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     error,
     login,
     logout,
-    isAdmin: () => authService.isAdmin(user),
-    isTeacher: () => authService.isTeacher(user),
-    isStudent: () => authService.isStudent(user),
+    isAdmin: () => isAdmin(user),
+    isTeacher: () => isTeacher(user),
+    isStudent: () => isStudent(user),
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
