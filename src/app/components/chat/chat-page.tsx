@@ -1,9 +1,13 @@
 "use client";
 import type React from "react";
+import { useState, useEffect } from "react";
 import ChatBox from "./chat-box";
 import dynamic from "next/dynamic";
 import ChatTopicAnchor from "./chat-topic-anchor";
 import TeamMembersChart from "./team-members-chart";
+import { useSocket } from "@/app/hooks/use-socket";
+import { Badge } from "@/app/components/ui/badge";
+import { Bell } from "lucide-react";
 
 const projectData = {
   supervisor: {
@@ -58,6 +62,28 @@ const ParticleBackground = dynamic(
 );
 
 const CommunicationPage: React.FC = () => {
+  // Mock user data - in a real app, this would come from authentication
+  const userId = "user123";
+  const userName = "Current User";
+  const roomId = "general";
+  const [showAnnouncements, setShowAnnouncements] = useState(false);
+  const { announcements, isConnected } = useSocket();
+  const [hasNewAnnouncement, setHasNewAnnouncement] = useState(false);
+
+  // Check for new announcements
+  useEffect(() => {
+    if (announcements.length > 0) {
+      setHasNewAnnouncement(true);
+    }
+  }, [announcements]);
+
+  // Reset new announcement indicator when announcements are viewed
+  useEffect(() => {
+    if (showAnnouncements) {
+      setHasNewAnnouncement(false);
+    }
+  }, [showAnnouncements]);
+
   return (
     <div className="min-h-screen bg-[#0F1022] text-white relative overflow-hidden">
       {/* Ambient background effects */}
@@ -79,6 +105,62 @@ const CommunicationPage: React.FC = () => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
         <div className="w-full max-w-7xl">
+          {/* Header with announcements button */}
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-white">
+              Project Communication
+            </h1>
+            <button
+              onClick={() => setShowAnnouncements(!showAnnouncements)}
+              className="relative p-2 rounded-full hover:bg-slate-800/50 transition-colors"
+            >
+              <Bell className="h-6 w-6 text-slate-300" />
+              {hasNewAnnouncement && (
+                <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"></span>
+              )}
+            </button>
+          </div>
+
+          {/* Announcements panel */}
+          {showAnnouncements && (
+            <div className="mb-6 p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-medium text-slate-200">
+                  Announcements
+                </h3>
+                <Badge
+                  variant="outline"
+                  className={
+                    isConnected
+                      ? "bg-green-500/20 text-green-300"
+                      : "bg-red-500/20 text-red-300"
+                  }
+                >
+                  {isConnected ? "Connected" : "Disconnected"}
+                </Badge>
+              </div>
+              <div className="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                {announcements.length === 0 ? (
+                  <p className="text-slate-400 text-sm">
+                    No announcements yet.
+                  </p>
+                ) : (
+                  announcements.map((announcement, index) => (
+                    <div
+                      key={index}
+                      className="p-3 bg-slate-700/30 border border-slate-600/50 rounded-md"
+                    >
+                      <p className="text-slate-200">{announcement.message}</p>
+                      <p className="text-xs text-slate-400 mt-1">
+                        {new Date(announcement.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Topics anchor - full width */}
           <div className="mb-6">
             <ChatTopicAnchor topics={topics} />
@@ -88,7 +170,12 @@ const CommunicationPage: React.FC = () => {
           <div className="flex flex-col lg:flex-row gap-6">
             {/* ChatBox - takes more space */}
             <div className="lg:w-2/3">
-              <ChatBox />
+              <ChatBox
+                userId={userId}
+                userName={userName}
+                roomId={roomId}
+                avatarUrl="/placeholder.svg?height=40&width=40"
+              />
             </div>
 
             {/* TeamMembersChart - takes less space */}

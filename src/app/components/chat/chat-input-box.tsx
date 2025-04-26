@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type React from "react";
 
 import { Send, Paperclip, Mic } from "lucide-react";
@@ -8,6 +8,7 @@ interface ChatInputBoxProps {
   onSend?: (msg: string) => void;
   onAttachment?: (file: File) => void;
   onVoiceMessage?: () => void;
+  onTyping?: () => void;
   placeholder?: string;
   disabled?: boolean;
 }
@@ -16,17 +17,20 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({
   onSend,
   onAttachment,
   onVoiceMessage,
+  onTyping,
   placeholder = "Type your message...",
   disabled = false,
 }) => {
   const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
-    if (message.trim() !== "") {
-      onSend?.(message);
+    if (message.trim() !== "" && onSend) {
+      onSend(message);
       setMessage("");
     }
   };
@@ -51,8 +55,18 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({
     if (e.target) e.target.value = "";
   };
 
-  // Auto-resize input based on content (for multi-line if needed)
-  const inputRef = useRef<HTMLInputElement>(null);
+  // Handle typing notification
+  useEffect(() => {
+    if (message.trim() && onTyping) {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      onTyping();
+      typingTimeoutRef.current = setTimeout(() => {
+        typingTimeoutRef.current = null;
+      }, 1000);
+    }
+  }, [message, onTyping]);
 
   return (
     <div className="relative w-full">
@@ -94,6 +108,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({
           placeholder={placeholder}
           disabled={disabled}
           className="flex-1 text-slate-200 px-3 py-2 text-sm placeholder:text-slate-500 focus:outline-none bg-transparent"
+          maxLength={500}
         />
 
         {/* Voice message or send button */}
@@ -118,7 +133,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({
         )}
       </div>
 
-      {/* Character counter (optional) */}
+      {/* Character counter */}
       {isFocused && (
         <div className="absolute bottom-full right-0 mb-1 text-xs text-slate-400">
           {message.length}/500
