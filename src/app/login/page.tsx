@@ -28,7 +28,7 @@ export default function AnimatedLoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/dashboard")
+      router.push("/admin/dashboard")
     }
   }, [isAuthenticated, router])
 
