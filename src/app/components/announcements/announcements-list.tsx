@@ -6,9 +6,10 @@ import { MoreHorizontal, Trash } from "lucide-react"
 import { Badge } from "@/app/components/ui/badge"
 import { Button } from "@/app/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/app/components/ui/dropdown-menu"
+import {Announcement} from "@/app/components/announcements/announcementActions";
 
 interface AnnouncementsListProps {
-  announcements: any[]
+  announcements: Announcement[]
 }
 
 export function AnnouncementsList({ announcements }: AnnouncementsListProps) {
@@ -31,19 +32,19 @@ export function AnnouncementsList({ announcements }: AnnouncementsListProps) {
         transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
         className="border-b border-slate-800 hover:bg-slate-800/50"
       >
-        <td className="p-4 font-medium">{announcement.name}</td>
-        <td className="p-4 text-sm">{announcement.datePosted}</td>
+        <td className="p-4 font-medium">{announcement.title}</td>
+        <td className="p-4 text-sm">{}</td>
         <td className="p-4 text-sm">{announcement.audience}</td>
         <td className="p-4">
           <Badge
             className={`
-              ${announcement.priorityLevel === "low" ? "bg-green-500/20 text-green-300" : ""}
-              ${announcement.priorityLevel === "medium" ? "bg-amber-500/20 text-amber-300" : ""}
-              ${announcement.priorityLevel === "high" ? "bg-orange-500/20 text-orange-300" : ""}
-              ${announcement.priorityLevel === "urgent" ? "bg-red-500/20 text-red-300" : ""}
+              ${announcement.priority === "Low" ? "bg-green-500/20 text-green-300" : ""}
+              ${announcement.priority === "Medium" ? "bg-amber-500/20 text-amber-300" : ""}
+              ${announcement.priority === "High" ? "bg-orange-500/20 text-orange-300" : ""}
+              ${announcement.priority === "Critical" ? "bg-red-500/20 text-red-300" : ""}
             `}
           >
-            {announcement.priorityLevel.charAt(0).toUpperCase() + announcement.priorityLevel.slice(1)}
+            {announcement.priority.charAt(0).toUpperCase() + announcement.priority.slice(1)}
           </Badge>
         </td>
         <td className="p-4">

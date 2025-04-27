@@ -1,5 +1,6 @@
 
 import dynamic from "next/dynamic"
+import {getProjects} from "@/app/components/project-management/projectActions";
 
 const ProjectManagementPage = dynamic(
   () =>
@@ -13,5 +14,6 @@ const ProjectManagementPage = dynamic(
 )
 
 export default function ProjectManagement() {
-  return <ProjectManagementPage  />
+    const projects = getProjects()
+  return <ProjectManagementPage projects={projects} />
 }

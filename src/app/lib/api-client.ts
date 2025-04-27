@@ -55,14 +55,14 @@ export interface LoginCredentials {
   password: string
 }
 
-export interface LoginResponse {
-  data: string // Changed from any to string, assuming it holds the token
-  token: string // Keeping this for potential future use if API changes
-  user: User
+
+
+export interface BackendSuccessResponse<T> {
+  data: T
 }
 
 // --- Generic Fetch Function ---
-async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T > {
+export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<BackendSuccessResponse<T> > {
   const url = `${API_URL}${endpoint}`
   const cookieStore = await cookies() // No await needed
   const token = cookieStore.get('jwt')?.value
@@ -88,8 +88,8 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
     const isJson = contentType && contentType.includes("application/json")
     const data = isJson ? await response.json() : await response.text()
 
-
-    return data as T
+    console.log("Response Data:", data, "URL:", url, "Options:", options);
+    return data as BackendSuccessResponse<T>
   } catch (error) {
     console.error("Fetch Error:", error, "URL:", url, "Options:", options);
     if (error instanceof Error) {
@@ -103,20 +103,20 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
 
 // User Endpoints
 export async function getAllUsers(): Promise<User[]> {
-  return fetchApi<User[]>("/user");
+  return (await fetchApi<User[]>("/user")).data;
 }
 
 export async function createUser(userData: Partial<User>): Promise<User> {
-  return fetchApi<User>("/user", {
+  return (await fetchApi<User>("/user", {
     method: "POST",
     body: JSON.stringify(userData),
-  });
+  })).data;
 }
 
 export async function deleteUser(userId: string): Promise<void> {
-  return fetchApi<void>(`/user/${userId}`, {
+  return (await fetchApi<void>(`/user/${userId}`, {
     method: "DELETE",
-  });
+  })).data;
 }
 
 // Authentication Endpoints
@@ -127,7 +127,7 @@ export async function login(credentials: FormData){
     password: credentials.get('password'),
 
   }
-  const res = await fetchApi<LoginResponse>("/login", {
+  const res = await fetchApi<string>("/login", {
     method: "POST",
     body: JSON.stringify(rawFormData),
   });
@@ -157,11 +157,11 @@ export async function login(credentials: FormData){
 }
 
 export async function testAuthorization(): Promise<{ message: string }> {
-  return fetchApi<{ message: string }>("/test-authorization");
+  return (await fetchApi<{ message: string }>("/test-authorization")).data;
 }
 
 export async function getProfile(): Promise<User> {
-  return fetchApi<User>("/profile");
+  return (await fetchApi<User>("/profile")).data;
 }
 
 export async function logout(): Promise<void> {
@@ -173,29 +173,29 @@ export async function logout(): Promise<void> {
 
 // Project Endpoints
 export async function getAllProjects(): Promise<Project[]> {
-  return fetchApi<Project[]>("/projects");
+  return (await fetchApi<Project[]>("/projects")).data;
 }
 
 export async function getProjectById(projectId: string): Promise<Project> {
-  return fetchApi<Project>(`/projects/${projectId}`);
+  return (await fetchApi<Project>(`/projects/${projectId}`)).data;
 }
 
 export async function createProject(projectData: Partial<Project>): Promise<Project> {
-  return fetchApi<Project>("/projects", {
+  return (await fetchApi<Project>("/projects", {
     method: "POST",
     body: JSON.stringify(projectData),
-  });
+  })).data;
 }
 
 export async function updateProject(projectId: string, projectData: Partial<Project>): Promise<Project> {
-  return fetchApi<Project>(`/projects/${projectId}`, {
+  return (await fetchApi<Project>(`/projects/${projectId}`, {
     method: "PUT",
     body: JSON.stringify(projectData),
-  });
+  })).data;
 }
 
 export async function deleteProject(projectId: string): Promise<void> {
-  return fetchApi<void>(`/projects/${projectId}`, {
+  return (await fetchApi<void>(`/projects/${projectId}`, {
     method: "DELETE",
-  });
+  })).data;
 }

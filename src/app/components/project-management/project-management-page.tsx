@@ -27,18 +27,20 @@ const ProjectDetailsModal = dynamic(
 
 // ProjectCard remains in the main bundle.
 import { ProjectCard } from "./project-card"
+import {Project} from "@/app/components/student/my-project/my-project-data";
+
 
 // Sample project data
 
 
-export function ProjectManagementPage({projects}:{projects:Promise<any>}) {
+export function ProjectManagementPage({projects}:{projects:Promise<Project[]>}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [sortOrder, setSortOrder] = useState("newest")
   const [isLoaded, setIsLoaded] = useState(false)
   const [selectedProject, setSelectedProject] = useState<any>(null)
   const allProjects = use(projects);
-    console.log(allProjects)
+    console.log({allProjects})
 
   useEffect(() => {
     setIsLoaded(true)
@@ -50,12 +52,12 @@ export function ProjectManagementPage({projects}:{projects:Promise<any>}) {
 
     return allProjects.filter(
       (project) =>
-        project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.leader.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.teamMembers.toLowerCase().includes(searchQuery.toLowerCase()) ||
         project.supervisor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.category.toLowerCase().includes(searchQuery.toLowerCase())
+        project.specialty.toLowerCase().includes(searchQuery.toLowerCase())
     )
-  }, [searchQuery])
+  }, [searchQuery,allProjects])
 
   const handleViewProject = (project: any) => {
     setSelectedProject(project)
