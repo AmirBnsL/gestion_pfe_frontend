@@ -1,106 +1,48 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import {ExtendedJwtPayload} from "@/app/lib/api-client";
-import {jwtDecode} from "jwt-decode"
+import { NextResponse , NextRequest } from "next/server"
+
 import { cookies } from "next/headers"
+import { ExtendedJwtPayload } from "./lib/api-client"
+import { jwtDecode } from "jwt-decode"
 const ADMIN_PATHS = ["/admin/dashboard"]
 const TEACHER_PATHS = ["/teacher"]
 const STUDENT_PATHS = ["/student/project-overview"]
-const AUTH_PATHS = ["/login"]
-const PUBLIC_PATHS = ["/", "/landing", "/about", "/contact", "/login"]
+const publicRoutes = ["/landing", "/login"]
+const protectedRoutes = [ADMIN_PATHS, TEACHER_PATHS, STUDENT_PATHS , ADMIN_PATHS].flat()
 
 
-function pathStartsWith(path: string, prefixes: string[]): boolean {
-  return prefixes.some((prefix) => path.startsWith(prefix))
-}
+ 
+export default async function middleware(req: NextRequest) {
+ 
+  const path = req.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
+ 
 
-
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Skip for static assets, api routes, etc.
-  if (
-    pathname.startsWith("/_next") || 
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/static") ||
-    pathname.includes(".")
-  ) {
-    return NextResponse.next()
-  }
-
-  // Check if the user is authenticated by looking for the auth cookie
   const cookiestore = await cookies()
   const authCookie = cookiestore.get("jwt")
-  const isAuthenticated = !!authCookie?.value
+  // const isAuthenticated = !!authCookie?.value
+  const tokenData = authCookie ? jwtDecode<ExtendedJwtPayload>(authCookie.value) : null;
+  const userRole = tokenData?.role
 
-  // If not authenticated and trying to access protected routes, redirect to landing page
-  if (!isAuthenticated) {
-    if (
-      pathStartsWith(pathname, ADMIN_PATHS) ||
-      pathStartsWith(pathname, TEACHER_PATHS) ||
-      pathStartsWith(pathname, STUDENT_PATHS)
-    ) {
-      return NextResponse.redirect(new URL("/landing", request.url))
-    }
-
-    // Allow access to public paths and auth paths
-    return NextResponse.next()
+  if (isProtectedRoute && !userRole) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
-
-  // If authenticated, check role-based access
-  // We need to decode the JWT token to get the user's role
-  try {
-    
-    const tokenData = jwtDecode<ExtendedJwtPayload>(authCookie.value)
-    const userRole = tokenData.role
-
-    // Check role-based access
-    if (pathStartsWith(pathname, ADMIN_PATHS) && userRole !== "admin") {
-      return NextResponse.redirect(new URL("/landing", request.url))
+ 
+ 
+  if (isProtectedRoute && userRole) {
+    if (userRole === "admin" && !ADMIN_PATHS.includes(path)) {
+      return NextResponse.redirect(new URL('/admin/dashboard', req.nextUrl))
+    } else if (userRole === "teacher" && !TEACHER_PATHS.includes(path)) {
+      return NextResponse.redirect(new URL('/teacher', req.nextUrl))
+    } else if (userRole === "student" && !STUDENT_PATHS.includes(path)) {
+      return NextResponse.redirect(new URL('/student/project-overview', req.nextUrl))
     }
-
-    if (pathStartsWith(pathname, TEACHER_PATHS) && userRole !== "teacher") {
-      return NextResponse.redirect(new URL("/landing", request.url))
-    }
-
-    if (pathStartsWith(pathname, STUDENT_PATHS) && userRole !== "student") {
-      return NextResponse.redirect(new URL("/landing", request.url))
-    }
-
-    // If authenticated and trying to access auth pages, redirect to appropriate dashboard
-    if (pathStartsWith(pathname, AUTH_PATHS)) {
-      if (userRole === "admin") {
-        return NextResponse.redirect(new URL("/admin/dashboard", request.url))
-      } else if (userRole === "teacher") {
-        return NextResponse.redirect(new URL("/teacher", request.url))
-      } else if (userRole === "student") {
-        return NextResponse.redirect(new URL("/student/project-overview", request.url))
-      }
-    }
-
-    // Allow access for authenticated users with correct role
-    return NextResponse.next()
-  } catch (error) {
-    // If token parsing fails, treat as unauthenticated
-    console.error("Error parsing auth token:", error)
-
-    // Clear the invalid cookie
-    const response = NextResponse.redirect(new URL("/landing", request.url))
-    response.cookies.delete("auth-token")
-
-    return response
   }
+ 
+  return NextResponse.next()
 }
 
-// Configure which paths the middleware should run on
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 }
+
