@@ -1,21 +1,35 @@
-import type React from "react"
-import type { Metadata } from "next"
-import AdminLayoutClient from "./AdminLayoutClient"
-import { Inter } from "next/font/google"
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { AppSidebar } from "../components/app-sidebar/app-sidebar";
+import { AppNavbar } from "../components/app-navbar/page";
+import "../../app/globals.css";
 
-// Metadata needs to be in a separate file for server components
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
   title: "Admin Dashboard",
   description: "Admin dashboard for educational institution",
-}
-const inter = Inter({ subsets: ["latin"] })
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
-
-  return <AdminLayoutClient>{children}</AdminLayoutClient>
-
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <div className="flex min-h-screen">
+          <AppSidebar />
+          <main className="flex-1 ml-20">
+            <div className="p-6">
+              <AppNavbar />
+              {children}
+            </div>
+          </main>
+        </div>
+      </body>
+    </html>
+  );
 }

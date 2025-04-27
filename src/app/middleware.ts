@@ -2,26 +2,25 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import {ExtendedJwtPayload} from "@/app/lib/api-client";
 import {jwtDecode} from "jwt-decode"
-
-// Define the paths that should be protected
+import { cookies } from "next/headers"
 const ADMIN_PATHS = ["/admin/dashboard"]
 const TEACHER_PATHS = ["/teacher"]
 const STUDENT_PATHS = ["/student/project-overview"]
 const AUTH_PATHS = ["/login"]
-const PUBLIC_PATHS = ["/", "/landing", "/about", "/contact"]
+const PUBLIC_PATHS = ["/", "/landing", "/about", "/contact", "/login"]
 
-// Function to check if a path starts with any of the given prefixes
+
 function pathStartsWith(path: string, prefixes: string[]): boolean {
   return prefixes.some((prefix) => path.startsWith(prefix))
 }
 
-// Middleware function
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip for static assets, api routes, etc.
   if (
-    pathname.startsWith("/_next") ||
+    pathname.startsWith("/_next") || 
     pathname.startsWith("/api") ||
     pathname.startsWith("/static") ||
     pathname.includes(".")
@@ -30,7 +29,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check if the user is authenticated by looking for the auth cookie
-  const authCookie = request.cookies.get("jwt")
+  const cookiestore = await cookies()
+  const authCookie = cookiestore.get("jwt")
   const isAuthenticated = !!authCookie?.value
 
   // If not authenticated and trying to access protected routes, redirect to landing page
@@ -50,8 +50,8 @@ export async function middleware(request: NextRequest) {
   // If authenticated, check role-based access
   // We need to decode the JWT token to get the user's role
   try {
-    // This is a simplified example - in a real app, you'd verify the JWT
-    const tokenData = jwtDecode<ExtendedJwtPayload>(authCookie.value) // Assuming jwtDecode is a function that decodes the JWT
+    
+    const tokenData = jwtDecode<ExtendedJwtPayload>(authCookie.value)
     const userRole = tokenData.role
 
     // Check role-based access
