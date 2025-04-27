@@ -3,7 +3,7 @@
 import { NextResponse , NextRequest } from "next/server"
 
 import { cookies } from "next/headers"
-import { ExtendedJwtPayload } from "./lib/api-client"
+import { ExtendedJwtPayload } from "./app/lib/api-client"
 import { jwtDecode } from "jwt-decode"
 const ADMIN_PATHS = ["/admin/dashboard"]
 const TEACHER_PATHS = ["/teacher"]
@@ -14,7 +14,7 @@ const protectedRoutes = [ADMIN_PATHS, TEACHER_PATHS, STUDENT_PATHS , ADMIN_PATHS
 
  
 export default async function middleware(req: NextRequest) {
-  console.log("Middleware is running for:", req.nextUrl.pathname);
+  console.log("Middleware is running fo");
  
   const path = req.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.includes(path)
