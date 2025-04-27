@@ -1,3 +1,5 @@
+'use server'
+
 import { NextResponse , NextRequest } from "next/server"
 
 import { cookies } from "next/headers"
@@ -12,6 +14,7 @@ const protectedRoutes = [ADMIN_PATHS, TEACHER_PATHS, STUDENT_PATHS , ADMIN_PATHS
 
  
 export default async function middleware(req: NextRequest) {
+  console.log("Middleware is running for:", req.nextUrl.pathname);
  
   const path = req.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.includes(path)
