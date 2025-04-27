@@ -2,12 +2,15 @@
 
 import type React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { BookOpen, Home, MessageSquare, Users } from "lucide-react"
+import { BookOpen, Home, MessageSquare, Users, LogOut } from "lucide-react"
+import { handleLogout } from "@/app/lib/api-client"
+
 
 export function StudentSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
 
   // Navigation items with their paths and icons - specific to student section
   const navItems = [
@@ -16,6 +19,7 @@ export function StudentSidebar() {
     { icon: BookOpen, path: "/student/my-project", label: "My Project" },
     { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" },
   ]
+
 
   return (
     <motion.div
@@ -47,6 +51,24 @@ export function StudentSidebar() {
           href="/student/profile"
           tooltip="My Profile"
         />
+        <button
+          onClick={handleLogout}
+          className="relative group"
+        >
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#161A35] text-slate-400 hover:bg-[#1F2347] hover:text-white transition-all duration-300"
+          >
+            <LogOut className="h-6 w-6" />
+            {/* Glow effect on hover */}
+            <div className="absolute inset-0 rounded-lg bg-purple-500/0 group-hover:bg-purple-500/20 transition-all duration-300"></div>
+          </motion.div>
+          {/* Tooltip */}
+          <div className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Logout
+          </div>
+        </button>
       </div>
     </motion.div>
   )

@@ -4,20 +4,24 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { BarChart, CheckSquare, FileText, HelpCircle, MessageSquare, Settings, Users } from "lucide-react"
+import { BarChart, CheckSquare, FileText, HelpCircle, LogOut, Settings, Users } from "lucide-react"
+
+import { handleLogout } from "@/app/lib/api-client"
+
 
 export function AppSidebar() {
   const pathname = usePathname()
-
+  
   // Navigation items with their paths and icons
   const navItems = [
     { icon: BarChart, path: "/admin/dashboard", label: "Dashboard" },
     { icon: CheckSquare, path: "/admin/pending-approvals", label: "Approvals" },
     { icon: FileText, path: "/admin/announcements", label: "Announcements" },
     { icon: Users, path: "/admin/project-management", label: "Projects" },
-    
     { icon: HelpCircle, path: "/help", label: "Help" },
   ]
+
+
 
   return (
     <motion.div
@@ -49,6 +53,24 @@ export function AppSidebar() {
           href="/settings"
           tooltip="Settings"
         />
+        <button
+          onClick={handleLogout}
+          className="relative group"
+        >
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#161A35] text-slate-400 hover:bg-[#1F2347] hover:text-white transition-all duration-300"
+          >
+            <LogOut className="h-6 w-6" />
+            {/* Glow effect on hover */}
+            <div className="absolute inset-0 rounded-lg bg-purple-500/0 group-hover:bg-purple-500/20 transition-all duration-300"></div>
+          </motion.div>
+          {/* Tooltip */}
+          <div className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Logout
+          </div>
+        </button>
       </div>
     </motion.div>
   )
@@ -111,3 +133,6 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
   )
 }
 
+function deletecookies(arg0: string) {
+  throw new Error("Function not implemented.")
+}

@@ -61,6 +61,13 @@ export interface BackendSuccessResponse<T> {
   data: T
 }
 
+
+export async function handleLogout() {
+  (await cookies()).delete('jwt')
+  redirect("/login");
+}
+
+
 // --- Generic Fetch Function ---
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<BackendSuccessResponse<T> > {
   const url = `${API_URL}${endpoint}`
