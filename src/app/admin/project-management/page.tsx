@@ -1,4 +1,3 @@
-"use client"
 
 import dynamic from "next/dynamic"
 
@@ -14,5 +13,5 @@ const ProjectManagementPage = dynamic(
 )
 
 export default function ProjectManagement() {
-  return <ProjectManagementPage />
+  return <ProjectManagementPage  />
 }

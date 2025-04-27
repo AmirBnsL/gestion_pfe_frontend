@@ -26,15 +26,15 @@ export function ProjectCard({ project, onView, onApprove, onDelete, delay = 0 }:
 
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-lg font-semibold text-white group-hover:text-purple-300 transition-colors pr-16">
-          {project.name}
+          {project.title}
         </h3>
         <Badge className="bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 capitalize">{project.status}</Badge>
       </div>
 
       <div className="space-y-2 mb-6">
         <div className="flex justify-between text-sm">
-          <span className="text-slate-400">Leader:</span>
-          <span className="text-slate-300">{project.leader}</span>
+          <span className="text-slate-400">Proposer:</span>
+          <span className="text-slate-300">{project.proposer}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-slate-400">Supervisor:</span>
@@ -42,11 +42,11 @@ export function ProjectCard({ project, onView, onApprove, onDelete, delay = 0 }:
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-slate-400">Category:</span>
-          <span className="text-slate-300">{project.category}</span>
+          <span className="text-slate-300">{project.specialty}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-slate-400">Submitted:</span>
-          <span className="text-slate-300">{project.submittedDate}</span>
+          <span className="text-slate-300">{project.startDate}</span>
         </div>
       </div>
 

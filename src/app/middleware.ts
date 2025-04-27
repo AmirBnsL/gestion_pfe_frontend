@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import {ExtendedJwtPayload} from "@/app/lib/api-client";
+import {jwtDecode} from "jwt-decode"
 
 // Define the paths that should be protected
 const ADMIN_PATHS = ["/admin/dashboard"]
@@ -28,7 +30,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check if the user is authenticated by looking for the auth cookie
-  const authCookie = request.cookies.get("auth-token")
+  const authCookie = request.cookies.get("jwt")
   const isAuthenticated = !!authCookie?.value
 
   // If not authenticated and trying to access protected routes, redirect to landing page
@@ -49,29 +51,29 @@ export async function middleware(request: NextRequest) {
   // We need to decode the JWT token to get the user's role
   try {
     // This is a simplified example - in a real app, you'd verify the JWT
-    const tokenData = JSON.parse(atob(authCookie.value.split(".")[1]))
+    const tokenData = jwtDecode<ExtendedJwtPayload>(authCookie.value) // Assuming jwtDecode is a function that decodes the JWT
     const userRole = tokenData.role
 
     // Check role-based access
-    if (pathStartsWith(pathname, ADMIN_PATHS) && userRole !== "Admin") {
+    if (pathStartsWith(pathname, ADMIN_PATHS) && userRole !== "admin") {
       return NextResponse.redirect(new URL("/landing", request.url))
     }
 
-    if (pathStartsWith(pathname, TEACHER_PATHS) && userRole !== "Teacher") {
+    if (pathStartsWith(pathname, TEACHER_PATHS) && userRole !== "teacher") {
       return NextResponse.redirect(new URL("/landing", request.url))
     }
 
-    if (pathStartsWith(pathname, STUDENT_PATHS) && userRole !== "Student") {
+    if (pathStartsWith(pathname, STUDENT_PATHS) && userRole !== "student") {
       return NextResponse.redirect(new URL("/landing", request.url))
     }
 
     // If authenticated and trying to access auth pages, redirect to appropriate dashboard
     if (pathStartsWith(pathname, AUTH_PATHS)) {
-      if (userRole === "Admin") {
+      if (userRole === "admin") {
         return NextResponse.redirect(new URL("/admin/dashboard", request.url))
-      } else if (userRole === "Teacher") {
+      } else if (userRole === "teacher") {
         return NextResponse.redirect(new URL("/teacher", request.url))
-      } else if (userRole === "Student") {
+      } else if (userRole === "student") {
         return NextResponse.redirect(new URL("/student/project-overview", request.url))
       }
     }

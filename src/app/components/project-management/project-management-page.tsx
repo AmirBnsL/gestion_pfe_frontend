@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import dynamic from "next/dynamic"
+import { use } from 'react'
 
 // Lazy load components according to preferences:
 
@@ -28,14 +29,16 @@ const ProjectDetailsModal = dynamic(
 import { ProjectCard } from "./project-card"
 
 // Sample project data
-import { projects } from "../project-management/projectData"
 
-export function ProjectManagementPage() {
+
+export function ProjectManagementPage({projects}:{projects:Promise<any>}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [sortOrder, setSortOrder] = useState("newest")
   const [isLoaded, setIsLoaded] = useState(false)
   const [selectedProject, setSelectedProject] = useState<any>(null)
+  const allProjects = use(projects);
+    console.log(allProjects)
 
   useEffect(() => {
     setIsLoaded(true)
@@ -43,7 +46,9 @@ export function ProjectManagementPage() {
 
   // Memoize filtered projects so filtering recalculates only when searchQuery changes.
   const filteredProjects = useMemo(() => {
-    return projects.filter(
+
+
+    return allProjects.filter(
       (project) =>
         project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         project.leader.toLowerCase().includes(searchQuery.toLowerCase()) ||
