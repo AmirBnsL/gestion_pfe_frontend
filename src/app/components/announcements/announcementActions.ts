@@ -28,6 +28,6 @@ export interface Announcement {
 }
 
 
-export async function getAnnocements(): Promise<Announcement[]> {
-    return (await fetchApi<Announcement[]>(`/announcements?size=100&page=1`)).data;
+export async function getAnnouncements(): Promise<Announcement[]> {
+    return (await fetchApi<Announcement[]>(`/announcements?size=100&page=1`)).data
 }

@@ -68,6 +68,12 @@ export async function handleLogout() {
 }
 
 
+/**
+ *
+ * @param endpoint
+ * @param options
+ * @returns BackendSuccessResponse
+ */
 // --- Generic Fetch Function ---
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<BackendSuccessResponse<T> > {
   const url = `${API_URL}${endpoint}`

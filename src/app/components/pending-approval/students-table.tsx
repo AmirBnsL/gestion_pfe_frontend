@@ -10,16 +10,17 @@ import { Checkbox } from "@/app/components/ui/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/app/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
+import {Student} from "@/app/components/pending-approval/pending-approval-types";
 
 interface StudentsTableProps {
-  students: any[]
+  students: Student[]
   selectedStudents: string[]
   handleSelectAll: (checked: boolean) => void
   handleSelect: (id: string, checked: boolean) => void
 }
 
 export function StudentsTable({ students, selectedStudents, handleSelectAll, handleSelect }: StudentsTableProps) {
-  const [selectedStudent, setSelectedStudent] = useState<any>(null)
+  const [selectedStudent, setSelectedStudent] = useState<string>(null)
 
   return (
     <>
@@ -71,20 +72,20 @@ export function StudentsTable({ students, selectedStudents, handleSelectAll, han
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8 border border-slate-700 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
-                          <AvatarImage src={student.avatar} alt={student.name} />
+                          <AvatarImage src={""} alt={student.user.email} />
                           <AvatarFallback className="bg-slate-700 text-slate-300">
-                            {student.name.charAt(0)}
+                            {student.user.email.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="font-medium group-hover/row:text-purple-300 transition-colors">
-                          {student.name}
+                          {student.firstname + student.lastname}
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 text-sm">{student.email}</td>
+                    <td className="p-4 text-sm">{student.user.email}</td>
                     <td className="p-4 text-sm">Student</td>
-                    <td className="p-4 text-sm">{student.registrationDate}</td>
-                    <td className="p-4 text-sm">{student.department}</td>
+                    <td className="p-4 text-sm">{student.birthdate}</td>
+                    <td className="p-4 text-sm">{student.academicYear}</td>
                     <td className="p-4">
                       <Badge className="bg-amber-500/20 text-amber-300 hover:bg-amber-500/30">Pending</Badge>
                     </td>
@@ -138,9 +139,8 @@ export function StudentsTable({ students, selectedStudents, handleSelectAll, han
 
             <div className="mt-4 flex items-center gap-4">
               <Avatar className="h-16 w-16 border-2 border-slate-700 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
-                <AvatarImage src={selectedStudent.avatar} alt={selectedStudent.name} />
                 <AvatarFallback className="bg-slate-700 text-slate-300 text-xl">
-                  {selectedStudent.name.charAt(0)}
+                  {selectedStudent.user.email.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
@@ -219,7 +219,7 @@ export function StudentsTable({ students, selectedStudents, handleSelectAll, han
                       <div className="w-1 h-full bg-purple-500 rounded-full"></div>
                       <div>
                         <div className="font-medium">Account Created</div>
-                        <div className="text-xs text-slate-400">{selectedStudent.registrationDate}</div>
+                        <div className="text-xs text-slate-400">{ }</div>
                       </div>
                     </div>
                   </div>

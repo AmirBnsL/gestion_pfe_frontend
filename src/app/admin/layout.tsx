@@ -18,8 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+
         <div className="flex min-h-screen">
           <AppSidebar />
           <main className="flex-1 ml-20">
@@ -29,7 +28,6 @@ export default function RootLayout({
             </div>
           </main>
         </div>
-      </body>
-    </html>
+
   );
 }

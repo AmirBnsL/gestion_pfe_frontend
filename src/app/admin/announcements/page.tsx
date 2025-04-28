@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { getAnnocements } from "@/app/components/announcements/announcementActions";
+import { getAnnouncements } from "@/app/components/announcements/announcementActions";
 
 // Dynamically import the AnnouncementsPage component
 const AnnouncementsPageClient = dynamic(() => import("../../components/announcements/announcements-page"), {
@@ -10,7 +10,7 @@ const AnnouncementsPageClient = dynamic(() => import("../../components/announcem
 
 export default function AnnouncementsPageServer() {
 
-  const announcementsPromise = getAnnocements();
+  const announcementsPromise = getAnnouncements();
 
 
   return <AnnouncementsPageClient announcements={announcementsPromise} />;

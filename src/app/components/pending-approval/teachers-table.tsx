@@ -10,9 +10,11 @@ import { Checkbox } from "@/app/components/ui/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/app/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
+import {Teacher} from "@/app/components/pending-approval/pending-approval-types";
+
 
 interface TeachersTableProps {
-  teachers: any[]
+  teachers: Teacher[]
   selectedTeachers: string[]
   handleSelectAll: (checked: boolean) => void
   handleSelect: (id: string, checked: boolean) => void
@@ -63,7 +65,7 @@ export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, han
                   >
                     <td className="p-4" onClick={(e) => e.stopPropagation()}>
                       <Checkbox
-                        checked={selectedTeachers.includes(teacher.id)}
+                        checked={selectedTeachers.includes(teacher.firstname)}
                         onCheckedChange={(checked) => handleSelect(teacher.id, checked as boolean)}
                         className="border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
@@ -71,20 +73,20 @@ export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, han
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8 border border-slate-700 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
-                          <AvatarImage src={teacher.avatar} alt={teacher.name} />
+                          <AvatarImage src={""} alt={"yes"} />
                           <AvatarFallback className="bg-slate-700 text-slate-300">
-                            {teacher.name.charAt(0)}
+                            {teacher.user.email.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="font-medium group-hover/row:text-purple-300 transition-colors">
-                          {teacher.name}
+                          {teacher.user.email}
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 text-sm">{teacher.email}</td>
+                    <td className="p-4 text-sm">{teacher.user.email}</td>
                     <td className="p-4 text-sm">Teacher</td>
-                    <td className="p-4 text-sm">{teacher.registrationDate}</td>
-                    <td className="p-4 text-sm">{teacher.department}</td>
+                    <td className="p-4 text-sm">{teacher.birthdate}</td>
+                    <td className="p-4 text-sm">{teacher.rank}</td>
                     <td className="p-4">
                       <Badge className="bg-amber-500/20 text-amber-300 hover:bg-amber-500/30">Pending</Badge>
                     </td>

@@ -1,8 +1,9 @@
   "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo,use } from "react"
 import dynamic from "next/dynamic"
-
+  import {Student,Teacher} from "@/app/components/pending-approval/pending-approval-types";
+import {approvalHistory} from "./pending-approvals-data"
 // Dynamically import sub-components:
 const PendingApprovalsSearch = dynamic(
   () => import("./pending-approvals-search"), 
@@ -12,9 +13,9 @@ const PendingApprovalsTabs = dynamic(
   () => import("./pending-approvals-tabs"),
   { ssr: true, }
 )
-const ApprovalHistory = dynamic(
+const ApprovalHistoryComponent = dynamic(
   () => import("./approval-history"),
-  { ssr: false,  }
+  { ssr: true,  }
 )
 const ParticleBackground = dynamic(
   () => import("@/app/components/ui/particle-background"),
@@ -22,9 +23,8 @@ const ParticleBackground = dynamic(
 )
 
 // Sample data:
-import { pendingStudents, pendingTeachers, approvalHistory } from "./pending-approvals-data"
 
-export function PendingApprovalsPage() {
+export function PendingApprovalsPage({students,teachers}:{students:Promise<Student[]>,teachers:Promise<Teacher[]>}) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState("students")
   const [selectedStudents, setSelectedStudents] = useState<string[]>([])
@@ -32,23 +32,26 @@ export function PendingApprovalsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [sortOrder, setSortOrder] = useState("newest")
+  const allStudents = use(students);
+  const allTeachers = use(teachers);
 
   // Memoize filtered results to avoid recomputation on each render:
   const filteredStudents = useMemo(() => {
-    return pendingStudents.filter(
+    console.log(allStudents)
+    return allStudents.filter(
       (student) =>
-        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.email.toLowerCase().includes(searchQuery.toLowerCase())
+        student.user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.lastname.toLowerCase().includes(searchQuery.toLowerCase())
     )
-  }, [searchQuery])
+  }, [allStudents, searchQuery])
 
   const filteredTeachers = useMemo(() => {
-    return pendingTeachers.filter(
+    return allTeachers.filter(
       (teacher) =>
-        teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        teacher.email.toLowerCase().includes(searchQuery.toLowerCase())
+        teacher.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        teacher.user.email.toLowerCase().includes(searchQuery.toLowerCase())
     )
-  }, [searchQuery])
+  }, [allTeachers, searchQuery])
 
   useEffect(() => {
     setIsLoaded(true)
@@ -57,7 +60,7 @@ export function PendingApprovalsPage() {
   // Handle bulk selection:
   const handleSelectAllStudents = (checked: boolean) => {
     if (checked) {
-      setSelectedStudents(filteredStudents.map((student) => student.id))
+      setSelectedStudents(filteredStudents.map((student) => student.user.email.toLowerCase()))
     } else {
       setSelectedStudents([])
     }
@@ -65,7 +68,7 @@ export function PendingApprovalsPage() {
 
   const handleSelectAllTeachers = (checked: boolean) => {
     if (checked) {
-      setSelectedTeachers(filteredTeachers.map((teacher) => teacher.id))
+      setSelectedTeachers(filteredTeachers.map((teacher) => teacher.user.email.toLowerCase()))
     } else {
       setSelectedTeachers([])
     }
@@ -147,7 +150,7 @@ export function PendingApprovalsPage() {
         />
 
         {/* Approval History (lazy load, SSR disabled) */}
-        <ApprovalHistory approvalHistory={approvalHistory} />
+        <ApprovalHistoryComponent approvalHistory={approvalHistory} />
       </div>
     </div>
   )
