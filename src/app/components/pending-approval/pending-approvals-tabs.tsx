@@ -4,9 +4,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Check, Users, X } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
 import { Badge } from "@/app/components/ui/badge"
-import { StudentsTable } from "./students-table"
-import { TeachersTable } from "./teachers-table"
 import { Button } from "@/app/components/ui/button"
+import type { ReactNode } from "react"
 
 interface PendingApprovalTabsProps {
   activeTab: string
@@ -27,9 +26,10 @@ interface PendingApprovalTabsProps {
   setSelectedStudents: (students: string[]) => void
   setSelectedTeachers: (teachers: string[]) => void
   setSelectedProjects: (projects: string[]) => void
+  children?: ReactNode
 }
 
-export default  function PendingApprovalsTabs({
+export default function PendingApprovalsTabs({
   activeTab,
   setActiveTab,
   filteredStudents,
@@ -48,6 +48,7 @@ export default  function PendingApprovalsTabs({
   setSelectedStudents,
   setSelectedTeachers,
   setSelectedProjects,
+  children,
 }: PendingApprovalTabsProps) {
   return (
     <motion.div
@@ -91,15 +92,15 @@ export default  function PendingApprovalsTabs({
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
-              className="bg-slate-800/80 backdrop-blur-md rounded-lg border border-slate-700 p-3 mb-4 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
+              className="z-99 bg-slate-800/80 backdrop-blur-md rounded-lg border border-slate-700 p-3 mb-4 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
             >
-              <div className="flex items-center gap-2">
+              <div className="z-99 flex items-center gap-2">
                 <span className="text-sm text-slate-300">
                   {activeTab === "students" && `${selectedStudents.length} students selected`}
                   {activeTab === "teachers" && `${selectedTeachers.length} teachers selected`}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="z-99 flex items-center gap-2">
                 <Button
                   size="sm"
                   variant="outline"
@@ -128,27 +129,15 @@ export default  function PendingApprovalsTabs({
           )}
         </AnimatePresence>
 
-        {/* Students Tab */}
+        {/* Content for each tab */}
         <TabsContent value="students" className="space-y-4">
-          <StudentsTable
-            students={filteredStudents}
-            selectedStudents={selectedStudents}
-            handleSelectAll={handleSelectAllStudents}
-            handleSelect={handleStudentSelect}
-          />
+          {children}
         </TabsContent>
 
-        {/* Teachers Tab */}
         <TabsContent value="teachers" className="space-y-4">
-          <TeachersTable
-            teachers={filteredTeachers}
-            selectedTeachers={selectedTeachers}
-            handleSelectAll={handleSelectAllTeachers}
-            handleSelect={handleTeacherSelect}
-          />
+          {children}
         </TabsContent>
       </Tabs>
     </motion.div>
   )
 }
-

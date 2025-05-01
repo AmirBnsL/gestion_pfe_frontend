@@ -3,15 +3,19 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Check, MoreHorizontal, Trash, User } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/app/components/ui/avatar"
 import { Badge } from "@/app/components/ui/badge"
 import { Button } from "@/app/components/ui/button"
 import { Checkbox } from "@/app/components/ui/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/app/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/app/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
-import {Teacher} from "@/app/components/pending-approval/pending-approval-types";
-
+import type { Teacher } from "@/app/components/pending-approval/pending-approval-types"
 
 interface TeachersTableProps {
   teachers: Teacher[]
@@ -21,7 +25,7 @@ interface TeachersTableProps {
 }
 
 export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, handleSelect }: TeachersTableProps) {
-  const [selectedTeacher, setSelectedTeacher] = useState<any>(null)
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null)
 
   return (
     <>
@@ -40,11 +44,11 @@ export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, han
                     className="border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                   />
                 </th>
-                <th className="p-4 text-left text-sm font-medium text-slate-300">Name</th>
+                <th className="p-4 text-left text-sm font-medium text-slate-300">First Name</th>
+                <th className="p-4 text-left text-sm font-medium text-slate-300">Last Name</th>
                 <th className="p-4 text-left text-sm font-medium text-slate-300">Email</th>
                 <th className="p-4 text-left text-sm font-medium text-slate-300">Role</th>
-                <th className="p-4 text-left text-sm font-medium text-slate-300">Date Joined</th>
-                <th className="p-4 text-left text-sm font-medium text-slate-300">Department</th>
+                <th className="p-4 text-left text-sm font-medium text-slate-300">Rank</th>
                 <th className="p-4 text-left text-sm font-medium text-slate-300">Status</th>
                 <th className="p-4 text-left text-sm font-medium text-slate-300">Action</th>
               </tr>
@@ -65,27 +69,19 @@ export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, han
                   >
                     <td className="p-4" onClick={(e) => e.stopPropagation()}>
                       <Checkbox
-                        checked={selectedTeachers.includes(teacher.firstname)}
-                        onCheckedChange={(checked) => handleSelect(teacher.id, checked as boolean)}
+                        checked={selectedTeachers.includes(teacher.id.toString())}
+                        onCheckedChange={(checked) => handleSelect(teacher.id.toString(), checked as boolean)}
                         className="border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
                     </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8 border border-slate-700 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
-                          <AvatarImage src={""} alt={"yes"} />
-                          <AvatarFallback className="bg-slate-700 text-slate-300">
-                            {teacher.user.email.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="font-medium group-hover/row:text-purple-300 transition-colors">
-                          {teacher.user.email}
-                        </div>
-                      </div>
+                    <td className="p-4 font-medium group-hover/row:text-purple-300 transition-colors">
+                      {teacher.firstname}
+                    </td>
+                    <td className="p-4 font-medium group-hover/row:text-purple-300 transition-colors">
+                      {teacher.lastname}
                     </td>
                     <td className="p-4 text-sm">{teacher.user.email}</td>
-                    <td className="p-4 text-sm">Teacher</td>
-                    <td className="p-4 text-sm">{teacher.birthdate}</td>
+                    <td className="p-4 text-sm">{teacher.role}</td>
                     <td className="p-4 text-sm">{teacher.rank}</td>
                     <td className="p-4">
                       <Badge className="bg-amber-500/20 text-amber-300 hover:bg-amber-500/30">Pending</Badge>
@@ -134,34 +130,69 @@ export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, han
         <Dialog open={!!selectedTeacher} onOpenChange={(open) => !open && setSelectedTeacher(null)}>
           <DialogContent className="bg-[#1E2142] border-[#2A2F52] text-white max-w-3xl">
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold">User Details</DialogTitle>
-              <p className="text-sm text-slate-400 mt-1">View detailed information about this user</p>
+              <DialogTitle className="text-xl font-bold">Teacher Details</DialogTitle>
+              <p className="text-sm text-slate-400 mt-1">View detailed information about this teacher</p>
             </DialogHeader>
 
             <div className="mt-4 flex items-center gap-4">
               <Avatar className="h-16 w-16 border-2 border-slate-700 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
-                <AvatarImage src={selectedTeacher.avatar} alt={selectedTeacher.name} />
                 <AvatarFallback className="bg-slate-700 text-slate-300 text-xl">
-                  {selectedTeacher.name.charAt(0)}
+                  {selectedTeacher.firstname.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <h3 className="text-xl font-medium">{selectedTeacher.name}</h3>
+                <h3 className="text-xl font-medium">
+                  {selectedTeacher.firstname} {selectedTeacher.lastname}
+                </h3>
+                <p className="text-sm text-slate-400">{selectedTeacher.user.email}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge className="bg-purple-500/20 text-purple-300">Teacher</Badge>
-                  <Badge className="bg-green-500/20 text-green-300">Active</Badge>
+                  <Badge className="bg-purple-500/20 text-purple-300">{selectedTeacher.role}</Badge>
+                  <Badge className="bg-green-500/20 text-green-300">{selectedTeacher.rank}</Badge>
                 </div>
               </div>
               <Button
                 className="bg-indigo-600 hover:bg-indigo-700"
                 onClick={(e) => {
                   e.stopPropagation()
-                  console.log("Edit button clicked for", selectedTeacher.name)
-                  // Add your edit functionality here
+                  console.log("Edit button clicked for", selectedTeacher.firstname)
                 }}
               >
                 Edit
               </Button>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              <div className="bg-[#161A35]/60 p-4 rounded-lg border border-[#2A2F52]">
+                <h3 className="font-medium mb-3">Professional Information</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Subject:</span>
+                    <span>{selectedTeacher.subject}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Rank:</span>
+                    <span>{selectedTeacher.rank}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Role:</span>
+                    <span>{selectedTeacher.role}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#161A35]/60 p-4 rounded-lg border border-[#2A2F52]">
+                <h3 className="font-medium mb-3">Personal Information</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Birthdate:</span>
+                    <span>{new Date(selectedTeacher.birthdate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Email:</span>
+                    <span>{selectedTeacher.user.email}</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <Tabs defaultValue="projects" className="mt-6">
@@ -221,7 +252,9 @@ export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, han
                       <div className="w-1 h-full bg-purple-500 rounded-full"></div>
                       <div>
                         <div className="font-medium">Account Created</div>
-                        <div className="text-xs text-slate-400">{selectedTeacher.registrationDate}</div>
+                        <div className="text-xs text-slate-400">
+                          {new Date(selectedTeacher.birthdate).toLocaleDateString()}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -241,4 +274,3 @@ export function TeachersTable({ teachers, selectedTeachers, handleSelectAll, han
     </>
   )
 }
-

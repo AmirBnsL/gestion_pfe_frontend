@@ -14,7 +14,7 @@ export function AppNavbar() {
       case "/admin/dashboard":
         return "Dashboard"
       case "/admin/pending-approvals":
-        return "Pending Approvals"
+        return "Users List"
       case "/admin/announcements":
         return "Announcements"
       case "/admin/project-management":

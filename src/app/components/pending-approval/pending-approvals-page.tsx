@@ -1,30 +1,34 @@
 "use client"
 
-import { useState, useEffect, useMemo,use } from "react"
+import { useState, useEffect, useMemo } from "react"
 import dynamic from "next/dynamic"
-  import {Student,Teacher} from "@/app/components/pending-approval/pending-approval-types";
-import {approvalHistory} from "./pending-approvals-data"
+import type { Student, Teacher, AcademicYear } from "@/app/components/pending-approval/pending-approval-types"
+import {
+  approvalHistory,
+  sampleStudents,
+  sampleTeachers,
+  getAcademicYears,
+  getGroupsByAcademicYear,
+  getStudentsByYearAndGroup,
+} from "./pending-approvals-data"
+
 // Dynamically import sub-components:
-const PendingApprovalsSearch = dynamic(
-  () => import("./pending-approvals-search"), 
-  { ssr: true, }
-)
-const PendingApprovalsTabs = dynamic(
-  () => import("./pending-approvals-tabs"),
-  { ssr: true, }
-)
-const ApprovalHistoryComponent = dynamic(
-  () => import("./approval-history"),
-  { ssr: true,  }
-)
-const ParticleBackground = dynamic(
-  () => import("@/app/components/ui/particle-background"),
-  { ssr: false, loading: () => null }
-)
+const PendingApprovalsSearch = dynamic(() => import("./pending-approvals-search"), { ssr: true })
+const PendingApprovalsTabs = dynamic(() => import("./pending-approvals-tabs"), { ssr: true })
 
-// Sample data:
+const AcademicYearCards = dynamic(() => import("./academic-year-cards"), { ssr: true })
+const GroupCards = dynamic(() => import("./group-cards"), { ssr: true })
+const StudentsTable = dynamic(() => import("./students-table").then((mod) => mod.StudentsTable), { ssr: true })
+const TeachersTable = dynamic(() => import("./teachers-table").then((mod) => mod.TeachersTable), { ssr: true })
+const ParticleBackground = dynamic(() => import("@/app/components/ui/particle-background"), {
+  ssr: false,
+  loading: () => null,
+})
 
-export function PendingApprovalsPage({students,teachers}:{students:Promise<Student[]>,teachers:Promise<Teacher[]>}) {
+export function PendingApprovalsPage({
+  students: studentsPromise,
+  teachers: teachersPromise,
+}: { students: Promise<Student[]>; teachers: Promise<Teacher[]> }) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState("students")
   const [selectedStudents, setSelectedStudents] = useState<string[]>([])
@@ -32,26 +36,49 @@ export function PendingApprovalsPage({students,teachers}:{students:Promise<Stude
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [sortOrder, setSortOrder] = useState("newest")
-  const allStudents = use(students);
-  const allTeachers = use(teachers);
+
+  // Navigation state for students
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState<AcademicYear | null>(null)
+  const [selectedGroup, setSelectedGroup] = useState<number | null>(null)
+
+  // Using sample data for now
+  const allStudents = sampleStudents
+  const allTeachers = sampleTeachers
 
   // Memoize filtered results to avoid recomputation on each render:
   const filteredStudents = useMemo(() => {
-    console.log(allStudents)
     return allStudents.filter(
       (student) =>
-        student.user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.lastname.toLowerCase().includes(searchQuery.toLowerCase())
+        student.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.user.email.toLowerCase().includes(searchQuery.toLowerCase()),
     )
   }, [allStudents, searchQuery])
 
   const filteredTeachers = useMemo(() => {
     return allTeachers.filter(
       (teacher) =>
+        teacher.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||
         teacher.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        teacher.user.email.toLowerCase().includes(searchQuery.toLowerCase())
+        teacher.user.email.toLowerCase().includes(searchQuery.toLowerCase()),
     )
   }, [allTeachers, searchQuery])
+
+  // Get academic years and groups
+  const academicYears = useMemo(() => getAcademicYears(filteredStudents), [filteredStudents])
+
+  const groupsByYear = useMemo(
+    () => (selectedAcademicYear ? getGroupsByAcademicYear(filteredStudents, selectedAcademicYear) : []),
+    [filteredStudents, selectedAcademicYear],
+  )
+
+  const studentsInGroup = useMemo(
+    () =>
+      selectedAcademicYear && selectedGroup !== null
+        ? getStudentsByYearAndGroup(filteredStudents, selectedAcademicYear, selectedGroup)
+        : [],
+    [filteredStudents, selectedAcademicYear, selectedGroup],
+  )
 
   useEffect(() => {
     setIsLoaded(true)
@@ -60,7 +87,7 @@ export function PendingApprovalsPage({students,teachers}:{students:Promise<Stude
   // Handle bulk selection:
   const handleSelectAllStudents = (checked: boolean) => {
     if (checked) {
-      setSelectedStudents(filteredStudents.map((student) => student.user.email.toLowerCase()))
+      setSelectedStudents(studentsInGroup.map((student) => student.id.toString()))
     } else {
       setSelectedStudents([])
     }
@@ -68,7 +95,7 @@ export function PendingApprovalsPage({students,teachers}:{students:Promise<Stude
 
   const handleSelectAllTeachers = (checked: boolean) => {
     if (checked) {
-      setSelectedTeachers(filteredTeachers.map((teacher) => teacher.user.email.toLowerCase()))
+      setSelectedTeachers(filteredTeachers.map((teacher) => teacher.id.toString()))
     } else {
       setSelectedTeachers([])
     }
@@ -89,6 +116,25 @@ export function PendingApprovalsPage({students,teachers}:{students:Promise<Stude
     } else {
       setSelectedTeachers(selectedTeachers.filter((teacherId) => teacherId !== id))
     }
+  }
+
+  // Navigation handlers
+  const handleSelectAcademicYear = (year: AcademicYear) => {
+    setSelectedAcademicYear(year)
+    setSelectedGroup(null)
+  }
+
+  const handleSelectGroup = (group: number) => {
+    setSelectedGroup(group)
+  }
+
+  const handleBackToYears = () => {
+    setSelectedAcademicYear(null)
+    setSelectedGroup(null)
+  }
+
+  const handleBackToGroups = () => {
+    setSelectedGroup(null)
   }
 
   return (
@@ -136,22 +182,65 @@ export function PendingApprovalsPage({students,teachers}:{students:Promise<Stude
           setSelectedStudents={setSelectedStudents}
           setSelectedTeachers={setSelectedTeachers}
           // The project-related props below are optional:
-          filteredProjects={[]} 
-          selectedProjects={[]} 
-          handleSelectAllProjects={function (checked: boolean): void {
+          filteredProjects={[]}
+          selectedProjects={[]}
+          handleSelectAllProjects={(checked: boolean): void => {
             throw new Error("Function not implemented.")
           }}
-          handleProjectSelect={function (id: string, checked: boolean): void {
+          handleProjectSelect={(id: string, checked: boolean): void => {
             throw new Error("Function not implemented.")
           }}
-          setSelectedProjects={function (projects: string[]): void {
+          setSelectedProjects={(projects: string[]): void => {
             throw new Error("Function not implemented.")
           }}
-        />
+        >
+          {/* Student View - Conditional rendering based on navigation state */}
+          {activeTab === "students" && (
+            <>
+              {!selectedAcademicYear && (
+                <AcademicYearCards academicYears={academicYears} onSelectYear={handleSelectAcademicYear} />
+              )}
 
-        {/* Approval History (lazy load, SSR disabled) */}
-        <ApprovalHistoryComponent approvalHistory={approvalHistory} />
+              {selectedAcademicYear && !selectedGroup && (
+                <GroupCards
+                  academicYear={selectedAcademicYear}
+                  groups={groupsByYear}
+                  onSelectGroup={handleSelectGroup}
+                  onBack={handleBackToYears}
+                />
+              )}
+
+              {selectedAcademicYear && selectedGroup !== null && (
+                <StudentsTable
+                  students={studentsInGroup}
+                  selectedStudents={selectedStudents}
+                  handleSelectAll={handleSelectAllStudents}
+                  handleSelect={handleStudentSelect}
+                  academicYear={selectedAcademicYear}
+                  group={selectedGroup}
+                  onBack={handleBackToGroups}
+                />
+              )}
+            </>
+          )}
+
+          {/* Teacher View */}
+          {activeTab === "teachers" && (
+            <TeachersTable
+              teachers={filteredTeachers}
+              selectedTeachers={selectedTeachers}
+              handleSelectAll={handleSelectAllTeachers}
+              handleSelect={handleTeacherSelect}
+               
+            />
+          )}
+        </PendingApprovalsTabs>
+
+
+    
       </div>
     </div>
   )
 }
+
+export default PendingApprovalsPage
