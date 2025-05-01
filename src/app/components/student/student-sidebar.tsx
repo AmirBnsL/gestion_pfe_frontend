@@ -4,7 +4,7 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { BookOpen, Home, MessageSquare, Users, LogOut } from "lucide-react"
+import { BookOpen, Home, MessageSquare, Users, LogOut,Settings2 } from "lucide-react"
 import { handleLogout } from "@/app/lib/api-client"
 
 
@@ -17,7 +17,7 @@ export function StudentSidebar() {
     { icon: Home, path: "/student/project-overview", label: "Project Overview" },
     { icon: Users, path: "/student/teams-list", label: "Teams List" },
     { icon: BookOpen, path: "/student/my-project", label: "My Project" },
-    { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" },
+    { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" }
   ]
 
 

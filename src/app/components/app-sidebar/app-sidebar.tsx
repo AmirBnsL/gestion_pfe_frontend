@@ -4,7 +4,7 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { BarChart, CheckSquare, FileText, HelpCircle, LogOut, Settings, Users } from "lucide-react"
+import { BarChart, CheckSquare, FileText, HelpCircle, LogOut, Settings, Users,Settings2 } from "lucide-react"
 
 import { handleLogout } from "@/app/lib/api-client"
 
@@ -19,6 +19,7 @@ export function AppSidebar() {
     { icon: FileText, path: "/admin/announcements", label: "Announcements" },
     { icon: Users, path: "/admin/project-management", label: "Projects" },
     { icon: HelpCircle, path: "/help", label: "Help" },
+    { icon : Settings2 , path :"/admin/parameters", label: "Parameters" }
   ]
 
 

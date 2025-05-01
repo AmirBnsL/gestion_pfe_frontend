@@ -1,11 +1,11 @@
 "use client"
 
 import { Card, CardContent, CardFooter } from "../../../components/ui/card"
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
+import { Badge } from "@/app/components/ui/badge"
+import { Button } from "@/app/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar"
 import { Lock, Unlock, Info, Users } from "lucide-react"
-import type { Team } from "./teams-list-data"
+import {Team} from "@/app/components/student/teams-list/teamTypes";
 
 interface TeamCardProps {
   team: Team
@@ -14,8 +14,8 @@ interface TeamCardProps {
 }
 
 export function TeamCard({ team, onViewDetails, onRequestJoin }: TeamCardProps) {
-  const isFull = team.currentMembers >= team.maxMembers
-  const isAvailable = team.isOpen && !isFull
+  const isFull = team.members.length >= 5
+  const isAvailable = !isFull
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md bg-[#161A35]/60 backdrop-blur-md border border-[#2A2F52] shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative group">
@@ -54,7 +54,7 @@ export function TeamCard({ team, onViewDetails, onRequestJoin }: TeamCardProps) 
           <Users className="h-4 w-4 text-slate-400" />
           <div className="text-sm">
             <span className={isFull ? "text-amber-400 font-medium" : "text-slate-300"}>
-              {team.currentMembers}/{team.maxMembers} Members
+              {team.members.length}/{5} Members
             </span>
           </div>
         </div>
@@ -62,11 +62,11 @@ export function TeamCard({ team, onViewDetails, onRequestJoin }: TeamCardProps) 
         {/* Team Leader */}
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-8 w-8 border border-slate-700 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
-            <AvatarImage src={team.leader.avatar || "/placeholder.svg"} alt={team.leader.name} />
-            <AvatarFallback className="bg-slate-700 text-slate-300">{team.leader.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={ "/placeholder.svg"} alt={team.teamLeader.lastname + team.teamLeader.lastname} />
+            <AvatarFallback className="bg-slate-700 text-slate-300">{team.teamLeader.firstname.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-sm font-medium line-clamp-1 text-slate-200">{team.leader.name}</p>
+            <p className="text-sm font-medium line-clamp-1 text-slate-200">{team.teamLeader.firstname +" "+team.teamLeader.lastname}</p>
             <p className="text-xs text-slate-400">Team Leader</p>
           </div>
         </div>

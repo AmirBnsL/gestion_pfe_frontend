@@ -1,22 +1,23 @@
 "use client"
 
-import { useMemo, useState, Suspense } from "react"
+import { useMemo, useState, Suspense,use } from "react"
 import dynamic from "next/dynamic"
-import { Button } from "../../../components/ui/button"
-import { Input } from "../../../components/ui/input"
+import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
 import { Plus, Search } from "lucide-react"
-import { teamsData, type Team } from "./teams-list-data"
+import { type Team } from "./teams-list-data"
+
 
 const TeamCard = dynamic(() => import("./team-card").then(mod => mod.TeamCard), { ssr: false })
 const TeamDetailsModal = dynamic(() => import("./team-details-modal").then(mod => mod.TeamDetailsModal), { ssr: false })
 const CreateTeamModal = dynamic(() => import("./create-team-modal").then(mod => mod.CreateTeamModal), { ssr: false })
 
-export default function TeamsListPage() {
+export default function TeamsListPage({teams}:{teams:Promise<Team[]>}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-
+  const teamsData = use(teams);
   const filteredTeams = useMemo(() => {
     return teamsData.filter(
       (team) =>
