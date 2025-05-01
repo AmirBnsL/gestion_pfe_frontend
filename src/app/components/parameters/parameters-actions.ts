@@ -1,8 +1,8 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
-import type { Parameter } from "./parameters-types"
-import {years} from "@/app/components/dashboard/dashboard-data";
+import {revalidatePath} from "next/cache"
+import type {Parameter} from "./parameters-types"
+
 import {BackendSuccessResponse, fetchApi} from "@/app/lib/api-client";
 
 export async function updateParameter(parameter: FormData): Promise<{ success: boolean; message: string }> {
@@ -44,3 +44,12 @@ export async function updateParameter(parameter: FormData): Promise<{ success: b
         }
     }
 }
+
+
+export async function getAllParameters(): Promise<Parameter[]> {
+        return (await fetchApi<Parameter[]>("/parameters", {
+            method: "GET",
+        })).data
+
+}
+

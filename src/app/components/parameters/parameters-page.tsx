@@ -1,13 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
 
-import { AcademicYear, type Parameter, academicYearLabels } from "./parameters-types"
+import { AcademicYear, academicYearLabels } from "./parameters-types"
 import ParameterForm from "@/app/components/parameters/parameters-form";
+import {getAllParameters} from "@/app/components/parameters/parameters-actions";
 
-interface ParametersPageProps {
-    initialParameters: Parameter[]
-}
 
-export default function ParametersPage({ initialParameters }: ParametersPageProps) {
+
+export default async function ParametersPage() {
+    const initialParameters = await getAllParameters()
     return (
         <div className="space-y-6">
             <div>
