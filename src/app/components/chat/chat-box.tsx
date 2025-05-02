@@ -6,7 +6,7 @@ import ChatInputBox from "./chat-input-box";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { useSocket } from "@/app/hooks/use-socket";
 import { Badge } from "@/app/components/ui/badge";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Users } from "lucide-react";
 
 interface ChatBoxProps {
   userId: string;
@@ -17,10 +17,17 @@ interface ChatBoxProps {
 
 interface Message {
   sender: string;
+  senderId?: string;
   text: string;
   timestamp: string;
   avatar: string;
   isSentByUser: boolean;
+  attachments?: Array<{
+    url: string;
+    fileName: string;
+    fileType: string;
+    fileSize: number;
+  }>;
 }
 
 const ChatBox = ({
@@ -31,7 +38,6 @@ const ChatBox = ({
 }: ChatBoxProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
@@ -41,6 +47,11 @@ const ChatBox = ({
     joinRoom,
     leaveRoom,
     sendMessage,
+    sendTypingIndicator,
+    uploadFile,
+    markMessagesAsRead,
+    typingUsers,
+    roomUsers,
     currentRoom,
   } = useSocket();
 
@@ -62,13 +73,15 @@ const ChatBox = ({
     if (messages.length > 0) {
       const formattedMessages = messages.map((msg) => ({
         sender: msg.sender === "System" ? "System" : msg.sender,
+        senderId: msg.senderId,
         text: msg.message,
         timestamp: msg.timestamp,
         avatar:
           msg.sender === "System"
             ? "/placeholder.svg?height=40&width=40"
             : avatarUrl,
-        isSentByUser: msg.sender === userId || msg.sender === userName,
+        isSentByUser: msg.senderId === userId || msg.sender === userName,
+        attachments: msg.attachments,
       }));
 
       setLocalMessages(formattedMessages);
@@ -79,6 +92,19 @@ const ChatBox = ({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [localMessages]);
+
+  // Mark messages as read when they appear
+  useEffect(() => {
+    if (messages.length > 0 && currentRoom) {
+      const unreadMessageIds = messages
+        .filter((msg) => !(msg.readBy || []).includes(userId))
+        .map((msg) => msg.id);
+
+      if (unreadMessageIds.length > 0) {
+        markMessagesAsRead(unreadMessageIds, currentRoom);
+      }
+    }
+  }, [messages, currentRoom, userId, markMessagesAsRead]);
 
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString([], {
@@ -95,6 +121,7 @@ const ChatBox = ({
         // Add message to local state immediately for better UX
         const newMessage: Message = {
           sender: userName,
+          senderId: userId,
           text: message,
           timestamp: getCurrentTime(),
           avatar: avatarUrl,
@@ -109,37 +136,38 @@ const ChatBox = ({
         clearTimeout(typingTimeoutRef.current);
         typingTimeoutRef.current = null;
       }
-      setIsTyping(false);
     }
   };
 
   const handleTyping = () => {
-    // Implement typing indicator logic here
-    // This would emit a "typing" event to the server
-    setIsTyping(true);
+    // Send typing indicator to server
+    sendTypingIndicator(roomId);
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
 
     typingTimeoutRef.current = setTimeout(() => {
-      setIsTyping(false);
+      typingTimeoutRef.current = null;
     }, 3000);
   };
 
-  const handleAttachment = (file: File) => {
-    // Handle file attachment
-    // This would typically upload the file to a server and then send a message with the file URL
-    const newMessage: Message = {
-      sender: userName,
-      text: `[Attachment: ${file.name}]`,
-      timestamp: getCurrentTime(),
-      avatar: avatarUrl,
-      isSentByUser: true,
-    };
-
-    setLocalMessages((prev) => [...prev, newMessage]);
+  const handleAttachment = async (file: File) => {
+    try {
+      await uploadFile(file, roomId);
+      // The actual message will come from the server
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
+
+  // Get typing users excluding the current user
+  const activeTypingUsers = Object.entries(typingUsers)
+    .filter(([id]) => id !== userId)
+    .map(([, name]) => name);
+
+  // Get active users count
+  const activeUsersCount = roomUsers.length;
 
   return (
     <Card className="h-[600px] bg-slate-900/50 border border-slate-800 backdrop-blur-sm shadow-lg">
@@ -149,6 +177,10 @@ const ChatBox = ({
             Chat Room: {roomId}
           </h3>
           <div className="flex items-center space-x-2">
+            <div className="flex items-center text-sm text-slate-400 mr-2">
+              <Users className="h-4 w-4 mr-1" />
+              <span>{activeUsersCount}</span>
+            </div>
             {isConnected ? (
               <Badge
                 variant="outline"
@@ -194,7 +226,7 @@ const ChatBox = ({
             />
           ))}
 
-          {isTyping && (
+          {activeTypingUsers.length > 0 && (
             <div className="flex items-start space-x-3 p-2">
               <div className="flex-shrink-0">
                 <img
@@ -204,6 +236,11 @@ const ChatBox = ({
                 />
               </div>
               <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                <p className="text-sm text-slate-400 mb-1">
+                  {activeTypingUsers.length === 1
+                    ? `${activeTypingUsers[0]} is typing...`
+                    : `${activeTypingUsers.join(", ")} are typing...`}
+                </p>
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"></div>
                   <div

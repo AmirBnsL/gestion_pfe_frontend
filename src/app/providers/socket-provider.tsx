@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import io from "socket.io-client"; // ✅ import io properly
+import io from "socket.io-client"; // ✅ import io and Socket properly
 import { socketService } from "@/app/lib/socket-service";
 
 // Define the socket type based on `io`
@@ -31,7 +31,7 @@ export const useSocketContext = () => useContext(SocketContext);
 
 // Provider component
 export function SocketProvider({ children }: { children: React.ReactNode }) {
-  const [socket, setSocket] = useState<SocketType | null>(null); // ✅ use SocketType
+  const [socket, setSocket] = useState<SocketType | null>(null);
   const [announcementsSocket, setAnnouncementsSocket] =
     useState<SocketType | null>(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -57,6 +57,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     };
 
     const onError = (err: Error) => {
+      console.error("Socket connection error:", err);
       setError(err.message);
     };
 
@@ -69,12 +70,17 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       setIsAnnouncementsConnected(false);
     };
 
+    const onAnnouncementsError = (err: Error) => {
+      console.error("Announcements socket error:", err);
+    };
+
     mainSocket.on("connect", onConnect);
     mainSocket.on("disconnect", onDisconnect);
     mainSocket.on("connect_error", onError);
 
     announcementsSocket.on("connect", onAnnouncementsConnect);
     announcementsSocket.on("disconnect", onAnnouncementsDisconnect);
+    announcementsSocket.on("connect_error", onAnnouncementsError);
 
     // Clean up on unmount
     return () => {
@@ -84,6 +90,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 
       announcementsSocket.off("connect", onAnnouncementsConnect);
       announcementsSocket.off("disconnect", onAnnouncementsDisconnect);
+      announcementsSocket.off("connect_error", onAnnouncementsError);
 
       socketService.disconnect();
     };

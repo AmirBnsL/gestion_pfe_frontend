@@ -1,164 +1,167 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect, useRef } from "react"
-import { Mail, Lock, Eye, EyeOff } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/app/hooks/use-auth"
+import { useState, useEffect, useRef } from "react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/use-auth";
 
 export default function AnimatedLoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [agreed, setAgreed] = useState(false)
-  const [loaded, setLoaded] = useState(false)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [showPassword, setShowPassword] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Form state
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [formError, setFormError] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState("");
 
   // Auth hook and router
-  const { login, isLoading, error, isAuthenticated } = useAuth()
-  const router = useRouter()
+  const { login, isLoading, error, isAuthenticated } = useAuth();
+  const router = useRouter();
 
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/dashboard")
+      router.push("/dashboard");
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, router]);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Form validation
     if (!email || !password) {
-      setFormError("Please enter both email and password")
-      return
+      setFormError("Please enter both email and password");
+      return;
     }
 
     if (!agreed) {
-      setFormError("Please agree to the terms and conditions")
-      return
+      setFormError("Please agree to the terms and conditions");
+      return;
     }
 
-    setFormError("")
+    setFormError("");
 
     // Attempt login using React Query mutation
-    login({ email, password })
-  }
+    login({ email, password });
+  };
 
   // Animation for the background
   useEffect(() => {
-    setLoaded(true)
+    setLoaded(true);
 
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    const particles: Particle[] = []
-    const particleCount = 100
+    const particles: Particle[] = [];
+    const particleCount = 100;
 
     class Particle {
-      x: number
-      y: number
-      size: number
-      speedX: number
-      speedY: number
-      color: string
+      x: number;
+      y: number;
+      size: number;
+      speedX: number;
+      speedY: number;
+      color: string;
 
       constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
-        this.size = Math.random() * 3 + 1
-        this.speedX = Math.random() * 1 - 0.5
-        this.speedY = Math.random() * 1 - 0.5
-        this.color = `rgba(108, 99, 255, ${Math.random() * 0.5 + 0.1})`
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+        this.color = `rgba(108, 99, 255, ${Math.random() * 0.5 + 0.1})`;
       }
 
       update() {
-        this.x += this.speedX
-        this.y += this.speedY
+        this.x += this.speedX;
+        this.y += this.speedY;
 
-        if (this.x > canvas.width) this.x = 0
-        if (this.x < 0) this.x = canvas.width
-        if (this.y > canvas.height) this.y = 0
-        if (this.y < 0) this.y = canvas.height
+        if (this.x > canvas.width) this.x = 0;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.y > canvas.height) this.y = 0;
+        if (this.y < 0) this.y = canvas.height;
       }
 
       draw() {
-        if (!ctx) return
-        ctx.fillStyle = this.color
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-        ctx.fill()
+        if (!ctx) return;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
     const init = () => {
       for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle())
+        particles.push(new Particle());
       }
-    }
+    };
 
     const animate = () => {
-      if (!ctx) return
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let i = 0; i < particles.length; i++) {
-        particles[i].update()
-        particles[i].draw()
+        particles[i].update();
+        particles[i].draw();
 
         // Connect particles with lines
         for (let j = i; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const distance = Math.sqrt(dx * dx + dy * dy)
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < 100) {
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(108, 99, 255, ${0.2 - distance / 500})`
-            ctx.lineWidth = 0.5
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(108, 99, 255, ${0.2 - distance / 500})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
           }
         }
       }
 
-      requestAnimationFrame(animate)
-    }
+      requestAnimationFrame(animate);
+    };
 
     const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      init()
-    }
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init();
+    };
 
-    window.addEventListener("resize", handleResize)
+    window.addEventListener("resize", handleResize);
 
-    init()
-    animate()
+    init();
+    animate();
 
     return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0F1022] p-4 relative overflow-hidden">
       {/* Animated background canvas */}
-      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
+      <canvas
+        ref={canvasRef}
+        className="absolute top-0 left-0 w-full h-full z-0"
+      />
 
       {/* Animated gradient overlay */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#0F1022]/80 to-[#1A1B36]/80 z-10"></div>
@@ -219,7 +222,10 @@ export default function AnimatedLoginPage() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="w-full md:w-[300px]"
           >
-            <form onSubmit={handleSubmit} className="flex flex-col gap-10 md:gap-[60px]">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-10 md:gap-[60px]"
+            >
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -228,7 +234,8 @@ export default function AnimatedLoginPage() {
               >
                 <h1 className="text-3xl font-bold text-white">Welcome Back!</h1>
                 <p className="text-gray-300 text-sm">
-                  Access your account and continue managing your projects effortlessly
+                  Access your account and continue managing your projects
+                  effortlessly
                 </p>
               </motion.div>
 
@@ -341,7 +348,11 @@ export default function AnimatedLoginPage() {
                     />
                     <div
                       onClick={() => setAgreed(!agreed)}
-                      className={`h-4 w-4 rounded border ${agreed ? "bg-[#6C63FF] border-[#6C63FF]" : "bg-transparent border-gray-400"} flex items-center justify-center transition-all duration-300 cursor-pointer`}
+                      className={`h-4 w-4 rounded border ${
+                        agreed
+                          ? "bg-[#6C63FF] border-[#6C63FF]"
+                          : "bg-transparent border-gray-400"
+                      } flex items-center justify-center transition-all duration-300 cursor-pointer`}
                     >
                       {agreed && (
                         <motion.svg
@@ -352,14 +363,22 @@ export default function AnimatedLoginPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
                         </motion.svg>
                       )}
                     </div>
                   </div>
                   <label htmlFor="terms" className="text-sm text-gray-300">
                     I agree to the{" "}
-                    <Link href="/terms" className="text-[#6C63FF] hover:underline relative inline-block group">
+                    <Link
+                      href="/terms"
+                      className="text-[#6C63FF] hover:underline relative inline-block group"
+                    >
                       terms & conditions
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6C63FF] group-hover:w-full transition-all duration-300"></span>
                     </Link>
@@ -379,7 +398,9 @@ export default function AnimatedLoginPage() {
                   disabled={isLoading}
                   className="w-full py-3 bg-[#6C63FF] text-white rounded-md hover:bg-[#5b54ff] transition-all duration-300 shadow-[0_4px_6px_rgba(108,99,255,0.2)] relative overflow-hidden group disabled:opacity-70"
                 >
-                  <span className="relative z-10">{isLoading ? "Logging in..." : "Login"}</span>
+                  <span className="relative z-10">
+                    {isLoading ? "Logging in..." : "Login"}
+                  </span>
                   <span className="absolute top-0 left-0 w-0 h-full bg-[#5b54ff] group-hover:w-full transition-all duration-500 ease-in-out z-0"></span>
                   <span className="absolute top-0 right-0 w-0 h-full bg-[#4a43ff] group-hover:w-full transition-all duration-500 ease-in-out delay-100 z-0"></span>
                 </motion.button>
@@ -389,6 +410,5 @@ export default function AnimatedLoginPage() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
-

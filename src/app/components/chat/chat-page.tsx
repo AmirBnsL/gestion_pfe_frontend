@@ -9,6 +9,7 @@ import { useSocket } from "@/app/hooks/use-socket";
 import { Badge } from "@/app/components/ui/badge";
 import { Bell } from "lucide-react";
 
+// This would come from your API in a real application
 const projectData = {
   supervisor: {
     id: "sup1",
@@ -43,16 +44,17 @@ const projectData = {
   ],
 };
 
+// This would come from your API in a real application
 const topics = [
-  { id: "1", name: "General" },
-  { id: "2", name: "Support" },
-  { id: "3", name: "Feedback" },
-  { id: "4", name: "Updates" },
-  { id: "5", name: "Announcements" },
-  { id: "6", name: "Events" },
-  { id: "7", name: "Resources" },
-  { id: "8", name: "Community" },
-  { id: "9", name: "Collaboration" },
+  { id: "general", name: "General" },
+  { id: "support", name: "Support" },
+  { id: "feedback", name: "Feedback" },
+  { id: "updates", name: "Updates" },
+  { id: "announcements", name: "Announcements" },
+  { id: "events", name: "Events" },
+  { id: "resources", name: "Resources" },
+  { id: "community", name: "Community" },
+  { id: "collaboration", name: "Collaboration" },
 ];
 
 // Particle background (optional for visual consistency with dashboard)
@@ -62,9 +64,9 @@ const ParticleBackground = dynamic(
 );
 
 const CommunicationPage: React.FC = () => {
-  // Mock user data - in a real app, this would come from authentication
-  const userId = "user123";
-  const userName = "Current User";
+  // In a real app, this would come from your authentication context
+  const userId = "user-123"; // This should match the ID from your JWT token
+  const userName = "Current User"; // This should be fetched from your user profile
   const roomId = "general";
   const [showAnnouncements, setShowAnnouncements] = useState(false);
   const { announcements, isConnected } = useSocket();
