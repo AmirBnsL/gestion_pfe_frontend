@@ -1,12 +1,10 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo,use } from "react"
 import dynamic from "next/dynamic"
 import type { Student, Teacher, AcademicYear } from "@/app/components/pending-approval/pending-approval-types"
 import {
-  approvalHistory,
-  sampleStudents,
-  sampleTeachers,
+
   getAcademicYears,
   getGroupsByAcademicYear,
   getStudentsByYearAndGroup,
@@ -25,10 +23,7 @@ const ParticleBackground = dynamic(() => import("@/app/components/ui/particle-ba
   loading: () => null,
 })
 
-export function PendingApprovalsPage({
-  students: studentsPromise,
-  teachers: teachersPromise,
-}: { students: Promise<Student[]>; teachers: Promise<Teacher[]> }) {
+export function PendingApprovalsPage({students , teachers}: { students: Promise<Student[]>; teachers: Promise<Teacher[]> }) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState("students")
   const [selectedStudents, setSelectedStudents] = useState<string[]>([])
@@ -41,10 +36,10 @@ export function PendingApprovalsPage({
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<AcademicYear | null>(null)
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null)
 
-  // Using sample data for now
-  const allStudents = sampleStudents
-  const allTeachers = sampleTeachers
 
+  const allStudents = use(students)
+  const allTeachers = use(teachers)
+  console.log('my students',allStudents)
   // Memoize filtered results to avoid recomputation on each render:
   const filteredStudents = useMemo(() => {
     return allStudents.filter(

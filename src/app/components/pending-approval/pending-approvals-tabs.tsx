@@ -6,12 +6,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/ta
 import { Badge } from "@/app/components/ui/badge"
 import { Button } from "@/app/components/ui/button"
 import type { ReactNode } from "react"
+import {Student, Teacher} from "@/app/components/pending-approval/pending-approval-types";
 
 interface PendingApprovalTabsProps {
   activeTab: string
   setActiveTab: (tab: string) => void
-  filteredStudents: any[]
-  filteredTeachers: any[]
+  filteredStudents: Student[]
+  filteredTeachers: Teacher[]
   filteredProjects: any[]
   selectedStudents: string[]
   selectedTeachers: string[]
