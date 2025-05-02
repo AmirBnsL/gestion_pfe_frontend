@@ -6,18 +6,22 @@ import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Plus, Search } from "lucide-react"
 import { type Team } from "./teams-list-data"
+import {Parameter} from "@/app/components/parameters/parameters-types";
+
 
 
 const TeamCard = dynamic(() => import("./team-card").then(mod => mod.TeamCard), { ssr: false })
 const TeamDetailsModal = dynamic(() => import("./team-details-modal").then(mod => mod.TeamDetailsModal), { ssr: false })
 const CreateTeamModal = dynamic(() => import("./create-team-modal").then(mod => mod.CreateTeamModal), { ssr: false })
 
-export default function TeamsListPage({teams}:{teams:Promise<Team[]>}) {
+export default function TeamsListPage({teams,parameters}:{teams:Promise<Team[]>,parameters:Promise<Parameter>}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const teamsData = use(teams);
+  const thisYearsParameters = use(parameters)
+  console.log({thisYearsParameters})
   const filteredTeams = useMemo(() => {
     return teamsData.filter(
       (team) =>
@@ -56,6 +60,7 @@ export default function TeamsListPage({teams}:{teams:Promise<Team[]>}) {
           <Button
             onClick={() => setIsCreateModalOpen(true)}
             className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 flex items-center gap-2"
+            disabled={!thisYearsParameters?.allowTeamCreation}
           >
             <Plus className="h-4 w-4" />
             Create New Team
@@ -82,7 +87,7 @@ export default function TeamsListPage({teams}:{teams:Promise<Team[]>}) {
           </div>
           <h3 className="text-xl font-medium text-slate-200">No teams found</h3>
           <p className="text-slate-400 mt-2 max-w-md mx-auto">
-            We couldn't find any teams matching your search. Try adjusting your search terms or create a new team.
+            We couldn&#39;t find any teams matching your search. Try adjusting your search terms or create a new team.
           </p>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
@@ -106,7 +111,7 @@ export default function TeamsListPage({teams}:{teams:Promise<Team[]>}) {
           }}
         />
 
-        <CreateTeamModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+        <CreateTeamModal parameter={thisYearsParameters} isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
       </Suspense>
     </div>
   )

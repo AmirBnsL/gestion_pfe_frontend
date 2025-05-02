@@ -10,13 +10,28 @@ export const getTeams = async () => {
 
 }
 
-export const createTeam = async (name : string) => {
-    const requestOptions:RequestInit = {
-        method: "POST",
-        body :{
-            name: name,
-        }
-    }
+export const createTeam = async (name: string) => {
+    // This log should now execute
+    console.log("Executing createTeam server action with name:", name);
 
-    return (await fetchApi<Team>(`/team`,requestOptions)).data
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json', // Add Content-Type header
+        },
+        // Stringify the body
+        body: JSON.stringify({
+            name: name,
+        })
+    };
+
+    try {
+        const result = await fetchApi<Team>(`/team`, requestOptions);
+        console.log("Team creation API call successful:", result);
+        return result.data;
+    } catch (error) {
+        console.error("Error calling createTeam API:", error);
+        // Re-throw the error or handle it as needed for the client-side catch block
+        throw error;
+    }
 }

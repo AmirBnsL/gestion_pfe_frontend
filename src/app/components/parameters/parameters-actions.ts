@@ -53,3 +53,12 @@ export async function getAllParameters(): Promise<Parameter[]> {
 
 }
 
+
+
+export async function getMyParameter(): Promise<Parameter> {
+
+    return (await fetchApi<Parameter>("/me/parameter", {
+        method: "GET",
+    })).data
+}
+
