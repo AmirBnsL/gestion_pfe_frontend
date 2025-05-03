@@ -72,6 +72,7 @@ export default function TeamsListPage({teams,parameters}:{teams:Promise<Team[]>,
         {filteredTeams.map((team) => (
           <Suspense fallback={<div className="h-40 bg-muted rounded-lg animate-pulse" />} key={team.id}>
             <TeamCard
+              parameter = {thisYearsParameters}
               team={team}
               onViewDetails={() => handleViewDetails(team)}
               onRequestJoin={() => handleRequestJoin(team)}

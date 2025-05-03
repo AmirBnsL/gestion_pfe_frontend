@@ -1,5 +1,5 @@
 "use client"
-import { useState, useTransition } from "react" // Import useTransition
+import { useState, useTransition } from "react"
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,9 @@ import {
 import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Label } from "@/app/components/ui/label"
-import { Users, GraduationCap, BookOpen, Loader2 } from "lucide-react" // Import Loader2
+import { Users, GraduationCap, BookOpen, Loader2, AlertCircle } from "lucide-react" // Import AlertCircle
 import { type Parameter } from "@/app/components/parameters/parameters-types"
-import { createTeam } from "./teamActions" // Import the server action
+import { createTeam } from "./teamActions"
 
 interface CreateTeamModalProps {
   isOpen: boolean
@@ -23,40 +23,49 @@ interface CreateTeamModalProps {
 
 export function CreateTeamModal({ isOpen, onClose, parameter }: CreateTeamModalProps) {
   const [teamName, setTeamName] = useState("")
-  const [isPending, startTransition] = useTransition() // Initialize useTransition
+  const [error, setError] = useState<string | null>(null) // State for error message
+  const [isPending, startTransition] = useTransition()
 
   const handleCreateTeam = () => {
-    // Validate form
+    setError(null); // Clear previous errors
     if (!teamName.trim()) {
-      alert("Please enter a team name")
+      setError("Please enter a team name"); // Set error state instead of alert
       return
     }
 
     startTransition(async () => {
-
+      try {
         console.log('Attempting to call createTeam with name:', teamName);
         await createTeam(teamName);
-        // Add this log to see if execution reaches here
         console.log('createTeam call finished successfully.');
         resetForm();
-        alert("Team created successfully!"); // Re-enable for confirmation
 
-
+      } catch (err) {
+        // Set error state with message from server action
+        console.log(err)
+        setError(`${err}`);
+      }
     });
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTeamName(e.target.value);
+    if (error) {
+      setError(null); // Clear error when user starts typing
+    }
   }
 
   const resetForm = () => {
     setTeamName("")
+    setError(null) // Clear error on close/reset
     onClose()
   }
 
-  // Determine specialty display (assuming it might come from parameters or elsewhere)
-  // For now, using a placeholder as in the previous version.
-  // You might need to adjust how specialty is determined based on your application logic.
-  const specialtyDisplay = "AI" // Placeholder - adjust as needed
+  const specialtyDisplay = "AI" // Placeholder
 
   return (
-      <Dialog open={isOpen} onOpenChange={resetForm}>
+      // Use onOpenChange to call resetForm when the dialog is closed
+      <Dialog open={isOpen} onOpenChange={(open) => !open && resetForm()}>
         <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto bg-[#161A35]/95 backdrop-blur-xl border border-[#2A2F52] shadow-[0_8px_30px_rgba(0,0,0,0.3)] text-white">
           <DialogHeader>
             <DialogTitle className="text-xl bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.3)]">
@@ -75,13 +84,22 @@ export function CreateTeamModal({ isOpen, onClose, parameter }: CreateTeamModalP
               </Label>
               <Input
                   id="team-name"
-                  name="teamName" // Add name attribute for potential form data usage
+                  name="teamName"
                   placeholder="Enter a name for your team"
                   value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                  className="bg-[#1A1F3D] border-[#2A2F52] text-white focus-visible:ring-purple-500 focus-visible:ring-offset-[#161A35]"
-                  disabled={isPending} // Disable input during transition
+                  onChange={handleInputChange} // Use updated handler
+                  className={`bg-[#1A1F3D] border-[#2A2F52] text-white focus-visible:ring-purple-500 focus-visible:ring-offset-[#161A35] ${error ? 'border-red-500 focus-visible:ring-red-500' : ''}`} // Highlight input on error
+                  disabled={isPending}
+                  aria-invalid={!!error} // Accessibility improvement
+                  aria-describedby={error ? "team-name-error" : undefined}
               />
+              {/* Display Error Message */}
+              {error && (
+                  <p id="team-name-error" className="text-sm text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-4 w-4" />
+                    {error}
+                  </p>
+              )}
             </div>
 
             {/* Team Info Section */}
@@ -93,14 +111,12 @@ export function CreateTeamModal({ isOpen, onClose, parameter }: CreateTeamModalP
               </div>
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-blue-400" />
-                {/* Adjust specialty display as needed */}
                 <span>Specialty: <span className="font-medium text-slate-300">{specialtyDisplay}</span></span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-green-400" />
                 <span>Maximum Team Size: <span className="font-medium text-slate-300">{parameter.maxTeamSize} members</span></span>
               </div>
-              {/* Displaying boolean values might need formatting */}
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-green-400" />
                 <span>Allow team creation: <span className="font-medium text-slate-300">{parameter.allowTeamCreation ? "Yes" : "No"}</span></span>
@@ -117,17 +133,17 @@ export function CreateTeamModal({ isOpen, onClose, parameter }: CreateTeamModalP
                 variant="outline"
                 onClick={resetForm}
                 className="bg-[#161A35] border-[#2A2F52] hover:bg-[#1F2347] text-white"
-                disabled={isPending} // Disable cancel during transition
+                disabled={isPending}
             >
               Cancel
             </Button>
             <Button
                 onClick={handleCreateTeam}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 w-[120px]" // Added fixed width
-                disabled={isPending || !teamName.trim()} // Disable button during transition or if name is empty
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 w-[120px]"
+                disabled={isPending || !teamName.trim()}
             >
               {isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" /> // Show loader when pending
+                  <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                   "Create Team"
               )}

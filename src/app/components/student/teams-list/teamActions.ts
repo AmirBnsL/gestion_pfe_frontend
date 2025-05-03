@@ -24,14 +24,13 @@ export const createTeam = async (name: string) => {
             name: name,
         })
     };
-
-    try {
+        try {
         const result = await fetchApi<Team>(`/team`, requestOptions);
         console.log("Team creation API call successful:", result);
         return result.data;
-    } catch (error) {
-        console.error("Error calling createTeam API:", error);
-        // Re-throw the error or handle it as needed for the client-side catch block
-        throw error;
-    }
+        } catch (e)  {
+            throw e.body// Rethrow the error to be caught in the calling function
+        }
+
+
 }

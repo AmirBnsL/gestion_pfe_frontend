@@ -1,8 +1,8 @@
 'use server'
 
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { jwtDecode,JwtPayload } from "jwt-decode";
+import {cookies} from 'next/headers'
+import {redirect} from 'next/navigation'
+import {jwtDecode, JwtPayload} from "jwt-decode";
 
 const API_URL = "http://localhost:8080/api"
 
@@ -68,6 +68,20 @@ export async function handleLogout() {
 }
 
 
+class HttpError extends Error {
+  type = "http" as const;
+  status: number;
+  statusText: string;
+  body: string;
+
+  constructor(status: number, statusText: string, body: string) {
+    super(`HTTP ${status} - ${statusText}`);
+    this.status = status;
+    this.statusText = statusText;
+    this.body = body;
+  }
+}
+
 /**
  *
  * @param endpoint
@@ -75,42 +89,47 @@ export async function handleLogout() {
  * @returns BackendSuccessResponse
  */
 // --- Generic Fetch Function ---
-export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<BackendSuccessResponse<T> > {
-  const url = `${API_URL}${endpoint}`
-  const cookieStore = await cookies() // No await needed
-  const token = cookieStore.get('jwt')?.value
-  console.log(options.body)
-  // Use Headers object for better type safety
+export async function fetchApi<T>(
+    endpoint: string,
+    options: RequestInit = {}
+): Promise<BackendSuccessResponse<T>> {
+  const url = `${API_URL}${endpoint}`;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("jwt")?.value;
+
   const headers = new Headers(options.headers || {});
-  if (!headers.has("Content-Type")) {
+
+  // Ensure Content-Type is set only if there is a body
+  if (!headers.has("Content-Type") && options.body) {
     headers.set("Content-Type", "application/json");
   }
 
-  // Add Authorization header if token exists
   if (token) {
-    headers.set('Authorization', `Bearer ${token}`)
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
-  try {
     const response = await fetch(url, {
       ...options,
-      headers, // Pass the Headers object
-    })
+      headers,
+    });
 
-    const contentType = response.headers.get("content-type")
-    const isJson = contentType && contentType.includes("application/json")
-    const data = isJson ? await response.json() : await response.text()
+    const contentType = response.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
 
-    console.log("Response Data:", data, "URL:", url, "Options:", options);
-    return data as BackendSuccessResponse<T>
-  } catch (error) {
-    console.error("Fetch Error:", error, "URL:", url, "Options:", options);
-    if (error instanceof Error) {
-      throw error
+    const data = isJson ? await response.json() : await response.text();
+
+    if (!response.ok) {
+      // HTTP error handling
+      throw {
+        type: "http",
+        status: response.status,
+        statusText: response.statusText,
+        body:data.message,
+      }
     }
-    throw new Error("An unexpected network error occurred")
+
+    return data as BackendSuccessResponse<T>;
   }
-}
 
 // --- Exported API Functions ---
 

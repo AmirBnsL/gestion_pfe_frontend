@@ -6,15 +6,17 @@ import { Button } from "@/app/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar"
 import { Lock, Unlock, Info, Users } from "lucide-react"
 import {Team} from "@/app/components/student/teams-list/teamTypes";
+import {Parameter} from "@/app/components/parameters/parameters-types";
 
 interface TeamCardProps {
   team: Team
   onViewDetails: () => void
   onRequestJoin: () => void
+  parameter: Parameter
 }
 
-export function TeamCard({ team, onViewDetails, onRequestJoin }: TeamCardProps) {
-  const isFull = team.members.length >= 5
+export function TeamCard({ team, onViewDetails, onRequestJoin,parameter }: TeamCardProps) {
+  const isFull = team.members.length >= parameter.maxTeamSize
   const isAvailable = !isFull
 
   return (
@@ -26,7 +28,7 @@ export function TeamCard({ team, onViewDetails, onRequestJoin }: TeamCardProps) 
         <div className="flex justify-between items-start mb-4">
           <div>
             <h3 className="font-semibold text-lg line-clamp-1 text-white">{team.name}</h3>
-            <p className="text-slate-400 text-sm line-clamp-1">{team.project}</p>
+            <p className="text-slate-400 text-sm line-clamp-1">{team.specialty}</p>
           </div>
           <Badge
             variant={isAvailable ? "outline" : "secondary"}
@@ -54,7 +56,7 @@ export function TeamCard({ team, onViewDetails, onRequestJoin }: TeamCardProps) 
           <Users className="h-4 w-4 text-slate-400" />
           <div className="text-sm">
             <span className={isFull ? "text-amber-400 font-medium" : "text-slate-300"}>
-              {team.members.length}/{5} Members
+              {team.members.length}/{parameter.maxTeamSize} Members
             </span>
           </div>
         </div>
