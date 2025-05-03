@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "../../../components/ui/button"
-import { Avatar } from "../../../components/ui/avatar"
+import { Button } from "../../ui/button"
+import { Avatar } from "../../ui/avatar"
 import { Edit, MessageSquare, Paperclip, Trash2 } from "lucide-react"
 import type { Task, TeamMember } from "./my-project-data"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 
 interface TaskItemProps {
   task: Task

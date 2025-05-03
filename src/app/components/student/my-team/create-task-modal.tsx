@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "../../../components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog"
-import { Input } from "../../../components/ui/input"
-import { Textarea } from "../../../components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
+import { Button } from "../../ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog"
+import { Input } from "../../ui/input"
+import { Textarea } from "../../ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import type { Task, TeamMember } from "./my-project-data"
 
 interface CreateTaskModalProps {

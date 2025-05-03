@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "../../../components/ui/button"
-import { Card, CardContent } from "../../../components/ui/card"
+import { Button } from "../../ui/button"
+import { Card, CardContent } from "../../ui/card"
 import { ChevronDown, ChevronUp, Clock, Edit, Plus, Trash2 } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import type { Sprint, Task, TeamMember } from "./my-project-data"
 import { TaskItem } from "./task-item"
 

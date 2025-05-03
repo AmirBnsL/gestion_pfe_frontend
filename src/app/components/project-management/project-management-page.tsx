@@ -27,7 +27,7 @@ const ProjectDetailsModal = dynamic(
 
 // ProjectCard remains in the main bundle.
 import { ProjectCard } from "./project-card"
-import {Project} from "@/app/components/student/my-project/my-project-data";
+import {Project} from "@/app/components/student/my-team/my-project-data";
 
 
 // Sample project data
