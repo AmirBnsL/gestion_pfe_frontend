@@ -1,6 +1,7 @@
 
 import dynamic from "next/dynamic"
-import {getMyTeam} from "@/app/components/student/my-project/my-project-actions";
+import {getMyTeam} from "@/app/components/student/my-team/my-project-actions";
+
 
 const MyProjectPage = dynamic(
   () =>

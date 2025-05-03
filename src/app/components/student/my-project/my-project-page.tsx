@@ -7,12 +7,12 @@ import {Team} from "@/app/components/student/teams-list/teamTypes";
 
 // Lazy load with SSR enabled
 const ProjectSettings = dynamic(
-  () => import("./project-settings").then(mod => mod.ProjectSettings),
+  () => import("../my-team/project-settings").then(mod => mod.ProjectSettings),
   { ssr: true, }
 )
 
 const SprintManagement = dynamic(
-  () => import("./sprint-management").then(mod => mod.SprintManagement),
+  () => import("../my-team/sprint-management").then(mod => mod.SprintManagement),
   { ssr: true, }
 )
 

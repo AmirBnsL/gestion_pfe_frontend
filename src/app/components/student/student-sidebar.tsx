@@ -16,7 +16,7 @@ export function StudentSidebar() {
   const navItems = [
     { icon: Home, path: "/student/project-overview", label: "Project Overview" },
     { icon: Users, path: "/student/teams-list", label: "Teams List" },
-    { icon: BookOpen, path: "/student/my-project", label: "My Project" },
+    { icon: BookOpen, path: "/student/my-team", label: "My Team" },
     { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" }
   ]
 

@@ -1,5 +1,5 @@
-import { Avatar } from "../../../components/ui/avatar"
-import { Button } from "../../../components/ui/button"
+import { Avatar } from "@/app/components/ui/avatar"
+import { Button } from "@/app/components/ui/button"
 import { MessageSquare } from "lucide-react"
 
 import {Student} from "@/app/components/pending-approval/pending-approval-types";
