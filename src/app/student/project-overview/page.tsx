@@ -1,4 +1,3 @@
-"use client"
 
 import dynamic from "next/dynamic"
 
@@ -14,5 +13,7 @@ const ProjectOverviewPage = dynamic(
 )
 
 export default function StudentProjectOverviewPage() {
+
+
   return <ProjectOverviewPage />
 }
