@@ -16,7 +16,7 @@ export function StudentNavbar() {
       case "/student/teams-list":
         return "Teams List"
       case "/student/my-project":
-        return "My Project"
+        return "My Team"
       case "/student/chat":
         return "Chat & Communication"
       case "/student/profile":
