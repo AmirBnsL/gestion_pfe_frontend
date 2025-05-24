@@ -1,0 +1,62 @@
+"use client"
+
+import { usePathname } from "next/navigation"
+import { motion } from "framer-motion"
+import { Bell } from "lucide-react"
+import Image from "next/image"
+
+export function TeacherNavbar() {
+  const pathname = usePathname()
+
+  // Get the page title based on the current path
+  const getPageTitle = () => {
+    switch (pathname) {
+      case "/teacher":
+      case "/teacher/dashboard":
+        return "Dashboard"
+      case "/teacher/chat":
+        return "Chat & Communication"
+      case "/teacher/deposit":
+        return "Deposit Page"
+      case "/teacher/profile":
+        return "Edit Profile"
+      default:
+        if (pathname.includes("dashboard")) return "Dashboard"
+        if (pathname.includes("chat")) return "Chat & Communication"
+        if (pathname.includes("deposit")) return "Deposit Page"
+        if (pathname.includes("profile")) return "Edit Profile"
+        return "Teacher Dashboard"
+    }
+  }
+
+  return (
+    <div className="space-y-6 mb-8">
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+      >
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">
+          {getPageTitle()}
+        </h1>
+
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <Bell className="h-5 w-5 text-slate-400 hover:text-white transition-colors cursor-pointer" />
+            <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border border-slate-900"></span>
+          </div>
+          <div className="h-10 w-10 rounded-full bg-slate-800 border-2 border-slate-700 overflow-hidden shadow-[0_0_10px_rgba(0,0,0,0.3)]">
+            <Image
+              src="/placeholder.svg?height=40&width=40"
+              alt="Teacher Profile"
+              width={40}
+              height={40}
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
