@@ -2,7 +2,7 @@
 
 
 
-import { fetchApi} from "@/app/lib/api-client";
+import {fetchApi, Project} from "@/app/lib/api-client";
 import {Specialty} from "@/app/components/teacher/deposit/deposit-data";
 import {AcademicYear} from "@/app/components/parameters/parameters-types";
 
@@ -24,5 +24,14 @@ export const depositProject = async (project: ProjectRequest) => {
     })).data;
 
 }
+
+export const getMyProject = async () => {
+    return (await fetchApi<Project[]>(`/teacher/me/projects`, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'}
+    })).data;
+
+}
+
 
 

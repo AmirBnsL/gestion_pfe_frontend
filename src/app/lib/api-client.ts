@@ -3,6 +3,9 @@
 import {cookies} from 'next/headers'
 import {redirect} from 'next/navigation'
 import {jwtDecode, JwtPayload} from "jwt-decode";
+import {AcademicYear} from "@/app/components/parameters/parameters-types";
+import {Specialty} from "@/app/components/teacher/deposit/deposit-data";
+import {ProjectStatus} from "@/app/components/pending-approval/pending-approval-types";
 
 const API_URL = "http://localhost:8080/api"
 
@@ -40,15 +43,17 @@ export interface Teacher {
 }
 
 export interface Project {
-  supervisor: Teacher;
-  id: string
-  title: string
-  description: string
-  status: "Pending" | "Approved" | "Rejected"
-  createdBy: string // userId
-  supervisorId: string // teacherId
-  teamId?: string
-  deadline: string // datetime
+  id: number;
+  title: string;
+  academicYear: AcademicYear;
+  description: string;
+  startDate: string; // ISO format
+  endDate: string;   // ISO format
+  specialty: Specialty;
+  status: ProjectStatus;
+  createdAt: string; // ISO format
+  updatedAt: string; // ISO format
+  rejectionReason: string | null;
 }
 
 export interface LoginCredentials {

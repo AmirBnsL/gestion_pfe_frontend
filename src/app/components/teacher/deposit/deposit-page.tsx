@@ -1,8 +1,8 @@
 "use client"
-
-import { useState, useEffect, useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { useState, useEffect, useTransition, use } from "react"
 import { motion } from "framer-motion"
-import { Save, Send, Edit, Trash2, AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react"
+import { Send, AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Textarea } from "@/app/components/ui/textarea"
@@ -10,24 +10,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/app/components/ui/badge"
 import { Card } from "@/app/components/ui/card"
 import { Label } from "@/app/components/ui/label"
-import {depositsData, type Deposit, Specialty, AcademicYear} from "./deposit-data"
+import { Specialty, AcademicYear } from "./deposit-data"
 import { depositProject } from "./depositActions"
+import { Project } from "@/app/lib/api-client"
 
 const specialties = Object.values(Specialty)
-
 const years = Object.values(AcademicYear)
 
-export function DepositPage() {
-  const [deposits, setDeposits] = useState<Deposit[]>(depositsData)
-  const [currentDeposit, setCurrentDeposit] = useState<Partial<Deposit>>({
+export function DepositPage({ projects }: { projects: Promise<Project[]> }) {
+  const allMyProjects = use(projects)
+  const router = useRouter()
+  const [currentProject, setCurrentProject] = useState<Partial<Project>>({
     title: "",
     description: "",
-    year: "",
-    specialty: "",
-    status: "draft",
+    academicYear: "" as AcademicYear,
+    specialty: "" as Specialty,
   })
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
   const [titleError, setTitleError] = useState("")
   const [characterCount, setCharacterCount] = useState(0)
   const [isPending, startTransition] = useTransition()
@@ -37,12 +35,11 @@ export function DepositPage() {
   const maxCharacters = 2000
 
   useEffect(() => {
-    setCharacterCount(currentDeposit.description?.length || 0)
-  }, [currentDeposit.description])
+    setCharacterCount(currentProject.description?.length || 0)
+  }, [currentProject.description])
 
   const validateTitle = (title: string) => {
-    const existingTitles = deposits.filter((d) => d.id !== editingId).map((d) => d.title.toLowerCase())
-
+    const existingTitles = allMyProjects.map((d) => d.title.toLowerCase())
     if (existingTitles.includes(title.toLowerCase())) {
       setTitleError("This title already exists. Please choose a unique title.")
       return false
@@ -52,7 +49,7 @@ export function DepositPage() {
   }
 
   const handleTitleChange = (title: string) => {
-    setCurrentDeposit((prev) => ({ ...prev, title }))
+    setCurrentProject((prev) => ({ ...prev, title }))
     if (title) {
       validateTitle(title)
     } else {
@@ -62,108 +59,61 @@ export function DepositPage() {
 
   const handleDescriptionChange = (description: string) => {
     if (description.length <= maxCharacters) {
-      setCurrentDeposit((prev) => ({ ...prev, description }))
+      setCurrentProject((prev) => ({ ...prev, description }))
     }
   }
 
   const resetForm = () => {
-    setCurrentDeposit({
+    setCurrentProject({
       title: "",
       description: "",
-      year: "",
-      specialty: "",
-      status: "draft",
+      academicYear: "" as AcademicYear,
+      specialty: "" as Specialty,
     })
-    setIsEditing(false)
-    setEditingId(null)
     setTitleError("")
-  }
-
-  const saveDraft = () => {
-    if (!currentDeposit.title?.trim()) {
-      setTitleError("Title is required")
-      return
-    }
-
-    if (!validateTitle(currentDeposit.title)) {
-      return
-    }
-
-    const depositData: Deposit = {
-      id: editingId || `deposit-${Date.now()}`,
-      title: currentDeposit.title,
-      description: currentDeposit.description || "",
-      year: currentDeposit.year || "",
-      specialty: currentDeposit.specialty || "",
-      status: "draft",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-
-    if (isEditing && editingId) {
-      setDeposits((prev) => prev.map((d) => (d.id === editingId ? depositData : d)))
-    } else {
-      setDeposits((prev) => [...prev, depositData])
-    }
-
-    resetForm()
   }
 
   const submitForApproval = () => {
     if (
-      !currentDeposit.title?.trim() ||
-      !currentDeposit.description?.trim() ||
-      !currentDeposit.year ||
-      !currentDeposit.specialty
+      !currentProject.title?.trim() ||
+      !currentProject.description?.trim() ||
+      !currentProject.academicYear ||
+      !currentProject.specialty
     ) {
       return
     }
-
-    if (!validateTitle(currentDeposit.title)) {
+    if (!validateTitle(currentProject.title)) {
       return
     }
-
     setSubmitError(null)
     setSubmitSuccess(null)
-
     startTransition(async () => {
       try {
-        // Call the server action
-        await depositProject({
-          title: currentDeposit.title!,
-          description: currentDeposit.description!,
-          specialty: currentDeposit.specialty as Specialty, // adjust type if needed
-        })
+        const newProject = {
+          title: currentProject.title!,
+          description: currentProject.description!,
+          specialty: currentProject.specialty as Specialty,
+          academicYear: currentProject.academicYear as AcademicYear,
+        }
+        await depositProject(newProject)
         setSubmitSuccess("Project submitted successfully!")
-        // Optionally update local state/UI here
         resetForm()
-      } catch (error :any) {
-        setSubmitError( error?.message || "Failed to submit project. Please try again.")
+        router.refresh()
+
+      } catch (error: any) {
+        setSubmitError(error?.message || "Failed to submit project. Please try again.")
       }
     })
   }
 
-  const editDeposit = (deposit: Deposit) => {
-    setCurrentDeposit(deposit)
-    setIsEditing(true)
-    setEditingId(deposit.id)
-  }
-
-  const deleteDeposit = (depositId: string) => {
-    setDeposits((prev) => prev.filter((d) => d.id !== depositId))
-  }
-
   const getStatusBadge = (status: string, feedback?: string) => {
     const statusConfig = {
-      draft: { color: "bg-gray-500", icon: Edit, text: "Draft" },
       pending: { color: "bg-orange-500", icon: Clock, text: "Pending Approval" },
       approved: { color: "bg-green-500", icon: CheckCircle, text: "Approved" },
       rejected: { color: "bg-red-500", icon: XCircle, text: "Rejected" },
     }
-
-    const config = statusConfig[status as keyof typeof statusConfig]
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig["pending"]
     const Icon = config.icon
-
     return (
       <div className="flex flex-col gap-1">
         <Badge className={`${config.color} text-white flex items-center gap-1`}>
@@ -176,10 +126,10 @@ export function DepositPage() {
   }
 
   const isFormValid =
-    currentDeposit.title?.trim() &&
-    currentDeposit.description?.trim() &&
-    currentDeposit.year &&
-    currentDeposit.specialty &&
+    currentProject.title?.trim() &&
+    currentProject.description?.trim() &&
+    currentProject.academicYear &&
+    currentProject.specialty &&
     !titleError
 
   return (
@@ -210,7 +160,7 @@ export function DepositPage() {
                   </Label>
                   <Input
                     id="title"
-                    value={currentDeposit.title || ""}
+                    value={currentProject.title || ""}
                     onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder="Enter a unique project title"
                     className={`bg-gray-800 border-gray-700 text-white ${titleError ? "border-red-500" : ""}`}
@@ -233,7 +183,7 @@ export function DepositPage() {
                   </Label>
                   <Textarea
                     id="description"
-                    value={currentDeposit.description || ""}
+                    value={currentProject.description || ""}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     placeholder="Describe your project in detail. You can include links and file references."
                     className="bg-gray-800 border-gray-700 text-white min-h-[200px] resize-none"
@@ -254,8 +204,8 @@ export function DepositPage() {
                 <div>
                   <Label className="text-sm font-medium text-gray-300 mb-2 block">Academic Year *</Label>
                   <Select
-                    value={currentDeposit.year || ""}
-                    onValueChange={(value) => setCurrentDeposit((prev) => ({ ...prev, year: value }))}
+                    value={currentProject.academicYear || ""}
+                    onValueChange={(value) => setCurrentProject((prev) => ({ ...prev, academicYear: value as AcademicYear }))}
                   >
                     <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                       <SelectValue placeholder="Select academic year" />
@@ -273,8 +223,8 @@ export function DepositPage() {
                 <div>
                   <Label className="text-sm font-medium text-gray-300 mb-2 block">Specialty *</Label>
                   <Select
-                    value={currentDeposit.specialty || ""}
-                    onValueChange={(value) => setCurrentDeposit((prev) => ({ ...prev, specialty: value }))}
+                    value={currentProject.specialty || ""}
+                    onValueChange={(value) => setCurrentProject((prev) => ({ ...prev, specialty: value as Specialty }))}
                   >
                     <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                       <SelectValue placeholder="Select specialty" />
@@ -288,25 +238,11 @@ export function DepositPage() {
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-300 mb-2 block">Status</Label>
-                  {getStatusBadge(currentDeposit.status || "draft")}
-                </div>
               </div>
             </div>
 
             {/* Action Buttons */}
             <div className="flex gap-4 mt-8 pt-6 border-t border-gray-800">
-              <Button
-                onClick={saveDraft}
-                variant="outline"
-                className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                disabled={!currentDeposit.title?.trim() || !!titleError}
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Draft
-              </Button>
               <Button
                 onClick={submitForApproval}
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
@@ -315,11 +251,9 @@ export function DepositPage() {
                 <Send className="w-4 h-4 mr-2" />
                 {isPending ? "Submitting..." : "Submit for Approval"}
               </Button>
-              {isEditing && (
-                <Button onClick={resetForm} variant="ghost" className="text-gray-400 hover:text-white">
-                  Cancel
-                </Button>
-              )}
+              <Button onClick={resetForm} variant="ghost" className="text-gray-400 hover:text-white">
+                Cancel
+              </Button>
             </div>
             {/* Error/Success messages */}
             {submitError && (
@@ -337,15 +271,14 @@ export function DepositPage() {
           </Card>
         </motion.div>
 
-        {/* Past Deposits Table */}
+        {/* All My Projects Table */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <Card className="bg-gray-900/50 border-gray-800 backdrop-blur-sm">
             <div className="p-6">
               <h2 className="text-2xl font-bold text-white mb-6">Past Deposits</h2>
-
-              {deposits.length === 0 ? (
+              {allMyProjects.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-400">No deposits yet. Create your first project proposal above.</p>
+                  <p className="text-gray-400">No projects yet. Create your first project proposal above.</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -356,49 +289,24 @@ export function DepositPage() {
                         <th className="text-left py-3 px-4 text-gray-300 font-medium">Year</th>
                         <th className="text-left py-3 px-4 text-gray-300 font-medium">Specialty</th>
                         <th className="text-left py-3 px-4 text-gray-300 font-medium">Status</th>
-                        <th className="text-left py-3 px-4 text-gray-300 font-medium">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {deposits.map((deposit, index) => (
+                      {allMyProjects.map((project, index) => (
                         <motion.tr
-                          key={deposit.id}
+                          key={project.id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.1 }}
                           className="border-b border-gray-800 hover:bg-gray-800/30"
                         >
                           <td className="py-4 px-4">
-                            <p className="text-white font-medium">{deposit.title}</p>
-                            <p className="text-gray-400 text-sm truncate max-w-xs">{deposit.description}</p>
+                            <p className="text-white font-medium">{project.title}</p>
+                            <p className="text-gray-400 text-sm truncate max-w-xs">{project.description}</p>
                           </td>
-                          <td className="py-4 px-4 text-gray-300">{deposit.year}</td>
-                          <td className="py-4 px-4 text-gray-300">{deposit.specialty}</td>
-                          <td className="py-4 px-4">{getStatusBadge(deposit.status, deposit.feedback)}</td>
-                          <td className="py-4 px-4">
-                            <div className="flex gap-2">
-                              {(deposit.status === "draft" || deposit.status === "rejected") && (
-                                <Button
-                                  onClick={() => editDeposit(deposit)}
-                                  size="sm"
-                                  variant="ghost"
-                                  className="text-blue-400 hover:text-blue-300 hover:bg-blue-400/10"
-                                >
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                              )}
-                              {deposit.status === "draft" && (
-                                <Button
-                                  onClick={() => deleteDeposit(deposit.id)}
-                                  size="sm"
-                                  variant="ghost"
-                                  className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              )}
-                            </div>
-                          </td>
+                          <td className="py-4 px-4 text-gray-300">{project.academicYear}</td>
+                          <td className="py-4 px-4 text-gray-300">{project.specialty}</td>
+                          <td className="py-4 px-4">{getStatusBadge(project.status)}</td>
                         </motion.tr>
                       ))}
                     </tbody>
