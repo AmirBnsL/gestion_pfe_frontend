@@ -5,11 +5,16 @@ import { Avatar } from "../../ui/avatar"
 import { Button } from "../../ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
 import { MessageSquare, UserPlus, Bell, Check, X } from "lucide-react"
-import type { TeamMember } from "./my-project-data"
+
 import { AddMemberModal } from "./add-member-modal"
+import {Student} from "@/app/components/pending-approval/pending-approval-types";
 
 interface TeamMembersListProps {
-  members: TeamMember[]
+  members: {
+    id: string,
+    joinedAt: string,
+    student: Student
+  }[]
 }
 
 // Mock data for pending requests
@@ -96,11 +101,12 @@ export function TeamMembersList({ members }: TeamMembersListProps) {
               <div key={member.id} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10 border border-slate-700">
-                    <img src={member.avatar || "/placeholder.svg"} alt={member.name} />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={"/placeholder.svg"} alt={member.student.firstname +" " + member.student.lastname} />
                   </Avatar>
                   <div>
-                    <p className="font-medium text-slate-200 text-sm">{member.name}</p>
-                    <p className="text-xs text-slate-400">{member.role}</p>
+                    <p className="font-medium text-slate-200 text-sm">{member.student.firstname + " " + member.student.lastname}</p>
+                    <p className="text-xs text-slate-400">{member.student.job}</p>
                   </div>
                 </div>
                 <Button
@@ -126,6 +132,7 @@ export function TeamMembersList({ members }: TeamMembersListProps) {
                 >
                   <div className="flex items-center space-x-3">
                     <Avatar className="h-10 w-10 border border-slate-700">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={request.avatar || "/placeholder.svg"} alt={request.name} />
                     </Avatar>
                     <div>
@@ -163,7 +170,7 @@ export function TeamMembersList({ members }: TeamMembersListProps) {
                 <Bell className="h-8 w-8 text-slate-500 mx-auto mb-2" />
                 <p className="text-slate-400">No pending requests</p>
                 <p className="text-xs text-slate-500 mt-1">
-                  When students request to join your team, they'll appear here
+                  When students request to join your team, they&#39;ll appear here
                 </p>
               </div>
             )}

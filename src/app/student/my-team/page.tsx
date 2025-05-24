@@ -1,6 +1,7 @@
-"use client"
 
 import dynamic from "next/dynamic"
+import {getMyTeam} from "@/app/components/student/my-team/my-project-actions";
+
 
 const MyProjectPage = dynamic(
   () =>
@@ -14,5 +15,6 @@ const MyProjectPage = dynamic(
 )
 
 export default function MyProject() {
-  return <MyProjectPage />
+    const myTeam = getMyTeam()
+  return <MyProjectPage team={myTeam} />
 }

@@ -40,6 +40,7 @@ export interface Teacher {
 }
 
 export interface Project {
+  supervisor: Teacher;
   id: string
   title: string
   description: string

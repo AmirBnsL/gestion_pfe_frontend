@@ -1,16 +1,16 @@
 "use client"
 
 import { useMemo } from "react"
-import { motion } from "framer-motion"
+
 import dynamic from "next/dynamic"
 
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
-import { Progress } from "../../../components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { CalendarIcon, Clock, Mail, MessageSquare, Upload } from "lucide-react"
+import { Badge } from "@/app/components/ui/badge"
+import { Button } from "@/app/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card"
+import { Progress } from "@/app/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
+import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar"
+import { Clock, Mail, MessageSquare } from "lucide-react"
 
 // Dynamic imports for lazy components:
 const TeamMembers = dynamic(() => import("./team-members"), { 
@@ -173,8 +173,8 @@ export function ProjectOverviewPage() {
               <h4 className="font-medium mb-2">Recent Feedback</h4>
               <div className="bg-[#1A1F3D] p-3 rounded-md text-sm border border-[#2A2F52]">
                 <p>
-                  "Good progress on the data collection module. Please focus on improving the algorithm efficiency for
-                  the next milestone."
+                  &#34;Good progress on the data collection module. Please focus on improving the algorithm efficiency for
+                  the next milestone.&#34;
                 </p>
                 <p className="text-xs text-slate-400 mt-2">Received: 3 days ago</p>
               </div>
