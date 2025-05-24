@@ -2,23 +2,35 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Eye, Edit3, Users } from "lucide-react"
+import { Eye, Users, UserPlus } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { ViewTeamsModal } from "./view-teams-modal"
+import { RequestsModal } from "./requests-modal"
 import { proposalsData } from "./proposals-data"
 
 export function MyProposalsView() {
   const [selectedProposal, setSelectedProposal] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isViewTeamsModalOpen, setIsViewTeamsModalOpen] = useState(false)
+  const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false)
+  const [proposals, setProposals] = useState(proposalsData)
 
   const handleViewTeams = (proposal) => {
     setSelectedProposal(proposal)
-    setIsModalOpen(true)
+    setIsViewTeamsModalOpen(true)
+  }
+
+  const handleViewRequests = (proposal) => {
+    setSelectedProposal(proposal)
+    setIsRequestsModalOpen(true)
+  }
+
+  const handleUpdateProposal = (updatedProposal) => {
+    setProposals(proposals.map((p) => (p.id === updatedProposal.id ? updatedProposal : p)))
   }
 
   return (
     <div className="space-y-4">
-      {proposalsData.map((proposal, index) => (
+      {proposals.map((proposal, index) => (
         <motion.div
           key={proposal.id}
           initial={{ opacity: 0, y: 20 }}
@@ -26,6 +38,7 @@ export function MyProposalsView() {
           transition={{ duration: 0.4, delay: index * 0.1 }}
           className="bg-slate-800/50 rounded-lg p-6 border border-slate-700/50 group/card relative overflow-hidden"
         >
+          {/* FIX: pointer-events-none added here */}
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
           <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
 
@@ -48,6 +61,15 @@ export function MyProposalsView() {
                 >
                   Status: {proposal.status}
                 </span>
+                {(proposal.supervisorRequests?.length > 0 || proposal.studentRequests?.length > 0) && (
+                  <>
+                    <span>•</span>
+                    <span className="px-2 py-1 rounded-full bg-orange-500/20 text-orange-300">
+                      {(proposal.supervisorRequests?.length || 0) + (proposal.studentRequests?.length || 0)} pending
+                      requests
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -61,15 +83,36 @@ export function MyProposalsView() {
                 <Eye className="h-4 w-4 mr-2" />
                 View Teams
               </Button>
-              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-purple-300 hover:bg-purple-600/20">
-                <Edit3 className="h-4 w-4" />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleViewRequests(proposal)}
+                className="bg-slate-700/50 border-slate-600 hover:bg-blue-600/20 hover:border-blue-500/50 text-slate-300 hover:text-blue-300"
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                Requests
+                {(proposal.supervisorRequests?.length || 0) + (proposal.studentRequests?.length || 0) > 0 && (
+                  <span className="ml-1 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {(proposal.supervisorRequests?.length || 0) + (proposal.studentRequests?.length || 0)}
+                  </span>
+                )}
               </Button>
             </div>
           </div>
         </motion.div>
       ))}
 
-      <ViewTeamsModal proposal={selectedProposal} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ViewTeamsModal
+        proposal={selectedProposal}
+        isOpen={isViewTeamsModalOpen}
+        onClose={() => setIsViewTeamsModalOpen(false)}
+      />
+
+      <RequestsModal
+        proposal={selectedProposal}
+        isOpen={isRequestsModalOpen}
+        onClose={() => setIsRequestsModalOpen(false)}
+      />
     </div>
   )
 }

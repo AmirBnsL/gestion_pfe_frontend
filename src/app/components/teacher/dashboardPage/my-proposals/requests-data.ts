@@ -1,0 +1,198 @@
+export const requestsData = {
+  1: {
+    // AI-Powered Student Feedback System
+    supervisorRequests: [
+      {
+        id: 1,
+        name: "Dr. Michael Rodriguez",
+        department: "Computer Science",
+        position: "Associate Professor",
+        experience: 8,
+        specialization: "Machine Learning",
+        message:
+          "I'm very interested in supervising this AI project. I have extensive experience in ML algorithms and educational applications. I've published 15 papers on AI in education and would love to contribute my expertise to guide students in this innovative project.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        researchAreas: ["Machine Learning", "Educational Technology", "Data Mining"],
+      },
+      {
+        id: 2,
+        name: "Dr. Lisa Wang",
+        department: "Data Science",
+        position: "Assistant Professor",
+        experience: 5,
+        specialization: "Educational Data Mining",
+        message:
+          "This project aligns perfectly with my research interests in educational data mining. I'd love to contribute as a co-supervisor and help students understand the complexities of analyzing student performance data.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        researchAreas: ["Data Mining", "Learning Analytics", "Statistical Analysis"],
+      },
+      {
+        id: 3,
+        name: "Prof. Sarah Chen",
+        department: "Computer Science",
+        position: "Professor",
+        experience: 12,
+        specialization: "Artificial Intelligence",
+        message:
+          "I have been working on AI applications in education for over a decade. This project presents an excellent opportunity for students to work on real-world AI problems. I would be honored to supervise this initiative.",
+        status: "accepted",
+        avatar: "/placeholder.svg?height=48&width=48",
+        researchAreas: ["Artificial Intelligence", "Natural Language Processing", "Computer Vision"],
+      },
+    ],
+    studentRequests: [
+      {
+        id: 1,
+        name: "Alex Thompson",
+        studentId: "CS2021001",
+        program: "Computer Science",
+        year: "Final Year",
+        gpa: "3.8",
+        teamName: "AI Innovators",
+        teamSize: 4,
+        message:
+          "Our team is passionate about AI and education. We have strong programming skills in Python and have completed several ML projects. We're eager to work on this project and believe our diverse skill set would be valuable.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        skills: ["Python", "TensorFlow", "React", "Node.js"],
+        previousProjects: ["Student Grade Predictor", "Chatbot for Course Q&A"],
+      },
+      {
+        id: 2,
+        name: "Emma Davis",
+        studentId: "CS2021045",
+        program: "Computer Science",
+        year: "Final Year",
+        gpa: "3.9",
+        teamName: "Smart Learning",
+        teamSize: 5,
+        message:
+          "We've been working on ML projects throughout our studies and believe this would be a perfect capstone project. Our team has experience with educational technology and we're committed to creating impactful solutions.",
+        status: "accepted",
+        avatar: "/placeholder.svg?height=48&width=48",
+        skills: ["Machine Learning", "Data Analysis", "Vue.js", "PostgreSQL"],
+        previousProjects: ["Learning Management System", "Student Performance Analytics"],
+      },
+      {
+        id: 3,
+        name: "James Wilson",
+        studentId: "CS2021078",
+        program: "Computer Science",
+        year: "Final Year",
+        gpa: "3.7",
+        teamName: "EduTech Solutions",
+        teamSize: 3,
+        message:
+          "Our small but dedicated team specializes in educational technology. We have experience building web applications and working with APIs. We're excited about the potential impact this project could have on student learning.",
+        status: "rejected",
+        avatar: "/placeholder.svg?height=48&width=48",
+        skills: ["JavaScript", "React", "Python", "MongoDB"],
+        previousProjects: ["Online Quiz Platform", "Study Group Finder"],
+        rejectionReason: "Team size too small for project scope",
+      },
+    ],
+  },
+  2: {
+    // Sustainable Urban Planning Model
+    supervisorRequests: [
+      {
+        id: 4,
+        name: "Dr. James Wilson",
+        department: "Environmental Science",
+        position: "Professor",
+        experience: 12,
+        specialization: "Sustainable Development",
+        message:
+          "I have extensive experience in sustainable development and environmental impact assessment. This project combines my passion for sustainability with innovative technology. I would be delighted to guide students in this important work.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        researchAreas: ["Sustainable Development", "Environmental Impact", "Climate Change"],
+      },
+      {
+        id: 5,
+        name: "Dr. Maria Santos",
+        department: "Geography",
+        position: "Associate Professor",
+        experience: 9,
+        specialization: "GIS and Remote Sensing",
+        message:
+          "My expertise in GIS systems and spatial analysis would be valuable for this urban planning project. I've worked on several smart city initiatives and understand the technical challenges involved.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        researchAreas: ["GIS", "Remote Sensing", "Spatial Analysis"],
+      },
+    ],
+    studentRequests: [
+      {
+        id: 4,
+        name: "Sarah Kim",
+        studentId: "UP2021012",
+        program: "Urban Planning",
+        year: "Final Year",
+        gpa: "3.7",
+        teamName: "Future Cities",
+        teamSize: 4,
+        message:
+          "Our team is committed to creating sustainable solutions for urban challenges. We have experience with GIS software and environmental analysis. This project aligns perfectly with our career goals in sustainable urban development.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        skills: ["GIS", "AutoCAD", "Environmental Analysis", "Python"],
+        previousProjects: ["Campus Sustainability Assessment", "Traffic Flow Optimization"],
+      },
+      {
+        id: 5,
+        name: "David Chen",
+        studentId: "UP2021034",
+        program: "Urban Planning",
+        year: "Final Year",
+        gpa: "3.6",
+        teamName: "Green Planners",
+        teamSize: 5,
+        message:
+          "We're passionate about environmental sustainability and urban development. Our team has diverse backgrounds including environmental science and computer science, giving us a unique perspective on this interdisciplinary project.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        skills: ["Environmental Science", "Data Visualization", "R", "QGIS"],
+        previousProjects: ["Urban Heat Island Study", "Green Space Mapping"],
+      },
+    ],
+  },
+  3: {
+    // Blockchain-Based Voting System
+    supervisorRequests: [
+      {
+        id: 6,
+        name: "Dr. Robert Kim",
+        department: "Cybersecurity",
+        position: "Assistant Professor",
+        experience: 6,
+        specialization: "Blockchain Security",
+        message:
+          "Blockchain voting systems are at the forefront of secure digital democracy. I have extensive research experience in blockchain security and cryptographic protocols. I would love to mentor students in this cutting-edge field.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        researchAreas: ["Blockchain", "Cryptography", "Digital Security"],
+      },
+    ],
+    studentRequests: [
+      {
+        id: 6,
+        name: "Michael Brown",
+        studentId: "CS2021089",
+        program: "Computer Science",
+        year: "Final Year",
+        gpa: "3.9",
+        teamName: "CryptoVote",
+        teamSize: 4,
+        message:
+          "Our team has been studying blockchain technology and cryptography extensively. We've built several DApps and understand the security implications of voting systems. We're excited to work on this project that could impact democratic processes.",
+        status: "pending",
+        avatar: "/placeholder.svg?height=48&width=48",
+        skills: ["Solidity", "Web3.js", "Cryptography", "React"],
+        previousProjects: ["Decentralized Marketplace", "Smart Contract Audit Tool"],
+      },
+    ],
+  },
+}
