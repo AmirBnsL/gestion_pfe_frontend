@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Save, Send, Edit, Trash2, X, AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react"
+import { useState, useEffect, useTransition } from "react"
+import { motion } from "framer-motion"
+import { Save, Send, Edit, Trash2, AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Textarea } from "@/app/components/ui/textarea"
@@ -10,20 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/app/components/ui/badge"
 import { Card } from "@/app/components/ui/card"
 import { Label } from "@/app/components/ui/label"
-import { depositsData, supervisorsData, type Deposit, type Supervisor } from "./deposit-data"
+import {depositsData, type Deposit, Specialty, AcademicYear} from "./deposit-data"
+import { depositProject } from "./depositActions"
 
-const specialties = [
-  "Computer Science",
-  "Software Engineering",
-  "Information Systems",
-  "Cybersecurity",
-  "Data Science",
-  "Artificial Intelligence",
-  "Network Engineering",
-  "Mobile Development",
-]
+const specialties = Object.values(Specialty)
 
-const years = ["2nd Year", "3rd Year", "4th Year", "5th Year"]
+const years = Object.values(AcademicYear)
 
 export function DepositPage() {
   const [deposits, setDeposits] = useState<Deposit[]>(depositsData)
@@ -32,15 +24,15 @@ export function DepositPage() {
     description: "",
     year: "",
     specialty: "",
-    invitedSupervisors: [],
     status: "draft",
   })
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [titleError, setTitleError] = useState("")
-  const [supervisorSearch, setSupervisorSearch] = useState("")
-  const [showSupervisorDropdown, setShowSupervisorDropdown] = useState(false)
   const [characterCount, setCharacterCount] = useState(0)
+  const [isPending, startTransition] = useTransition()
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null)
 
   const maxCharacters = 2000
 
@@ -74,38 +66,17 @@ export function DepositPage() {
     }
   }
 
-  const addSupervisor = (supervisor: Supervisor) => {
-    const isAlreadyInvited = currentDeposit.invitedSupervisors?.some((s) => s.id === supervisor.id)
-    if (!isAlreadyInvited) {
-      setCurrentDeposit((prev) => ({
-        ...prev,
-        invitedSupervisors: [...(prev.invitedSupervisors || []), supervisor],
-      }))
-    }
-    setSupervisorSearch("")
-    setShowSupervisorDropdown(false)
-  }
-
-  const removeSupervisor = (supervisorId: string) => {
-    setCurrentDeposit((prev) => ({
-      ...prev,
-      invitedSupervisors: prev.invitedSupervisors?.filter((s) => s.id !== supervisorId) || [],
-    }))
-  }
-
   const resetForm = () => {
     setCurrentDeposit({
       title: "",
       description: "",
       year: "",
       specialty: "",
-      invitedSupervisors: [],
       status: "draft",
     })
     setIsEditing(false)
     setEditingId(null)
     setTitleError("")
-    setSupervisorSearch("")
   }
 
   const saveDraft = () => {
@@ -124,7 +95,6 @@ export function DepositPage() {
       description: currentDeposit.description || "",
       year: currentDeposit.year || "",
       specialty: currentDeposit.specialty || "",
-      invitedSupervisors: currentDeposit.invitedSupervisors || [],
       status: "draft",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -153,25 +123,24 @@ export function DepositPage() {
       return
     }
 
-    const depositData: Deposit = {
-      id: editingId || `deposit-${Date.now()}`,
-      title: currentDeposit.title,
-      description: currentDeposit.description,
-      year: currentDeposit.year,
-      specialty: currentDeposit.specialty,
-      invitedSupervisors: currentDeposit.invitedSupervisors || [],
-      status: "pending",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
+    setSubmitError(null)
+    setSubmitSuccess(null)
 
-    if (isEditing && editingId) {
-      setDeposits((prev) => prev.map((d) => (d.id === editingId ? depositData : d)))
-    } else {
-      setDeposits((prev) => [...prev, depositData])
-    }
-
-    resetForm()
+    startTransition(async () => {
+      try {
+        // Call the server action
+        await depositProject({
+          title: currentDeposit.title!,
+          description: currentDeposit.description!,
+          specialty: currentDeposit.specialty as Specialty, // adjust type if needed
+        })
+        setSubmitSuccess("Project submitted successfully!")
+        // Optionally update local state/UI here
+        resetForm()
+      } catch (error :any) {
+        setSubmitError( error?.message || "Failed to submit project. Please try again.")
+      }
+    })
   }
 
   const editDeposit = (deposit: Deposit) => {
@@ -205,12 +174,6 @@ export function DepositPage() {
       </div>
     )
   }
-
-  const filteredSupervisors = supervisorsData.filter(
-    (supervisor) =>
-      supervisor.name.toLowerCase().includes(supervisorSearch.toLowerCase()) ||
-      supervisor.department.toLowerCase().includes(supervisorSearch.toLowerCase()),
-  )
 
   const isFormValid =
     currentDeposit.title?.trim() &&
@@ -327,70 +290,6 @@ export function DepositPage() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-gray-300 mb-2 block">Invite Supervisors</Label>
-                  <div className="relative">
-                    <div className="flex items-center gap-2 bg-gray-800 border border-gray-700 rounded-md p-2 min-h-[40px] flex-wrap">
-                      {currentDeposit.invitedSupervisors?.map((supervisor) => (
-                        <motion.div
-                          key={supervisor.id}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          className="flex items-center gap-1 bg-purple-600 text-white px-2 py-1 rounded-full text-xs"
-                        >
-                          <span>{supervisor.name}</span>
-                          <button
-                            onClick={() => removeSupervisor(supervisor.id)}
-                            className="hover:bg-purple-700 rounded-full p-0.5"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </motion.div>
-                      ))}
-                      <div className="flex-1 min-w-[200px]">
-                        <Input
-                          value={supervisorSearch}
-                          onChange={(e) => setSupervisorSearch(e.target.value)}
-                          onFocus={() => setShowSupervisorDropdown(true)}
-                          placeholder="Search supervisors..."
-                          className="border-0 bg-transparent text-white placeholder-gray-400 focus:ring-0 p-0"
-                        />
-                      </div>
-                    </div>
-
-                    <AnimatePresence>
-                      {showSupervisorDropdown && supervisorSearch && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-full left-0 right-0 bg-gray-800 border border-gray-700 rounded-md mt-1 max-h-48 overflow-y-auto z-50"
-                        >
-                          {filteredSupervisors.map((supervisor) => (
-                            <button
-                              key={supervisor.id}
-                              onClick={() => addSupervisor(supervisor)}
-                              className="w-full text-left p-3 hover:bg-gray-700 flex items-center gap-3 border-b border-gray-700 last:border-0"
-                            >
-                              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                                {supervisor.name.charAt(0)}
-                              </div>
-                              <div>
-                                <p className="text-white font-medium">{supervisor.name}</p>
-                                <p className="text-gray-400 text-xs">{supervisor.department}</p>
-                              </div>
-                            </button>
-                          ))}
-                          {filteredSupervisors.length === 0 && (
-                            <p className="p-3 text-gray-400 text-center">No supervisors found</p>
-                          )}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                <div>
                   <Label className="text-sm font-medium text-gray-300 mb-2 block">Status</Label>
                   {getStatusBadge(currentDeposit.status || "draft")}
                 </div>
@@ -411,10 +310,10 @@ export function DepositPage() {
               <Button
                 onClick={submitForApproval}
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                disabled={!isFormValid}
+                disabled={!isFormValid || isPending}
               >
                 <Send className="w-4 h-4 mr-2" />
-                Submit for Approval
+                {isPending ? "Submitting..." : "Submit for Approval"}
               </Button>
               {isEditing && (
                 <Button onClick={resetForm} variant="ghost" className="text-gray-400 hover:text-white">
@@ -422,6 +321,19 @@ export function DepositPage() {
                 </Button>
               )}
             </div>
+            {/* Error/Success messages */}
+            {submitError && (
+              <div className="mt-4 text-red-400 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                {submitError}
+              </div>
+            )}
+            {submitSuccess && (
+              <div className="mt-4 text-green-400 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                {submitSuccess}
+              </div>
+            )}
           </Card>
         </motion.div>
 
@@ -497,11 +409,6 @@ export function DepositPage() {
           </Card>
         </motion.div>
       </div>
-
-      {/* Click outside to close supervisor dropdown */}
-      {showSupervisorDropdown && (
-        <div className="fixed inset-0 z-40" onClick={() => setShowSupervisorDropdown(false)} />
-      )}
     </div>
   )
 }

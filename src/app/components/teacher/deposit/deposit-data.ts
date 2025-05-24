@@ -12,12 +12,27 @@ export interface Deposit {
   description: string
   year: string
   specialty: string
-  invitedSupervisors: Supervisor[]
   status: "draft" | "pending" | "approved" | "rejected"
   feedback?: string
   createdAt: string
   updatedAt: string
 }
+
+
+export enum Specialty {
+  ISI = 'Informations Systems and Internet',
+  SIW = 'Information Systems and Web',
+  AIDS = 'Artificial intelligence and Data Sciences',
+}
+
+export enum AcademicYear {
+  FIRST = '1st preparatory class',
+  SECOND = '2nd preparatory class',
+  THIRD = '1st superior class',
+  FOURTH = '2nd superior class',
+  FIFTH = '3rd superior class',
+}
+
 
 export const supervisorsData: Supervisor[] = [
   {
@@ -72,7 +87,6 @@ export const depositsData: Deposit[] = [
       "Develop an intelligent system for managing student records, grades, and academic progress using machine learning algorithms to predict student performance and provide personalized recommendations.",
     year: "4th Year",
     specialty: "Artificial Intelligence",
-    invitedSupervisors: [supervisorsData[0], supervisorsData[4]],
     status: "approved",
     createdAt: "2024-01-15T10:00:00Z",
     updatedAt: "2024-01-20T14:30:00Z",
@@ -84,7 +98,7 @@ export const depositsData: Deposit[] = [
       "Create a secure and transparent voting system using blockchain technology to ensure vote integrity and prevent fraud in student elections.",
     year: "5th Year",
     specialty: "Cybersecurity",
-    invitedSupervisors: [supervisorsData[2]],
+
     status: "pending",
     createdAt: "2024-02-01T09:15:00Z",
     updatedAt: "2024-02-01T09:15:00Z",
@@ -95,8 +109,8 @@ export const depositsData: Deposit[] = [
     description:
       "Design and develop a comprehensive mobile application for online learning with features like video streaming, interactive quizzes, and progress tracking.",
     year: "3rd Year",
-    specialty: "Mobile Development",
-    invitedSupervisors: [supervisorsData[5], supervisorsData[1]],
+    specialty: "Mobile Development"
+  ,
     status: "rejected",
     feedback:
       "The scope is too broad for a 3rd year project. Please narrow down the features and focus on core functionality.",
@@ -110,7 +124,6 @@ export const depositsData: Deposit[] = [
       "Implement an Internet of Things network across campus to monitor environmental conditions, energy usage, and security systems.",
     year: "4th Year",
     specialty: "Network Engineering",
-    invitedSupervisors: [supervisorsData[3]],
     status: "draft",
     createdAt: "2024-02-10T13:30:00Z",
     updatedAt: "2024-02-12T08:45:00Z",

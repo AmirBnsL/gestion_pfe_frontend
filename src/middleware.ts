@@ -3,7 +3,7 @@
 import { NextResponse , NextRequest } from "next/server"
 
 import { cookies } from "next/headers"
-import { ExtendedJwtPayload } from "./lib/api-client"
+import { ExtendedJwtPayload } from "./app/lib/api-client"
 import { jwtDecode } from "jwt-decode"
 const ADMIN_PATHS = ["/admin"]
 const TEACHER_PATHS = ["/teacher"]
