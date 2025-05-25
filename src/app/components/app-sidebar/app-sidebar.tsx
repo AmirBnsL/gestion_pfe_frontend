@@ -4,25 +4,34 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { BarChart, CheckSquare, FileText, HelpCircle, LogOut, Settings, Users,Settings2 } from "lucide-react"
+import {
+  BarChart,
+  CheckSquare,
+  FileText,
+  Users,
+  HelpCircle,
+  LogOut,
+  Settings,
+  CalendarDays,
+  SlidersHorizontal,
+} from "lucide-react"
 
 import { handleLogout } from "@/app/lib/api-client"
 
+// Match navItems to the getPageTitle switch
+const navItems = [
+  { icon: BarChart, path: "/admin/dashboard", label: "Dashboard" },
+  { icon: Users, path: "/admin/pending-approvals", label: "Users List" },
+  { icon: FileText, path: "/admin/announcements", label: "Announcements" },
+  { icon: CheckSquare, path: "/admin/project-management", label: "Project Management" },
+  { icon: CalendarDays, path: "/admin/presentation", label: "Presentation Management" },
+  { icon: SlidersHorizontal, path: "/admin/parameters", label: "Parameters" },
+  { icon: HelpCircle, path: "/admin/help", label: "Help" },
+  { icon: Settings, path: "/admin/settings", label: "Settings" },
+]
 
 export function AppSidebar() {
   const pathname = usePathname()
-  
-  // Navigation items with their paths and icons
-  const navItems = [
-    { icon: BarChart, path: "/admin/dashboard", label: "Dashboard" },
-    { icon: CheckSquare, path: "/admin/pending-approvals", label: "Approvals" },
-    { icon: FileText, path: "/admin/announcements", label: "Announcements" },
-    { icon: Users, path: "/admin/project-management", label: "Projects" },
-    { icon: HelpCircle, path: "/help", label: "Help" },
-    { icon : Settings2 , path :"/admin/parameters", label: "Parameters" }
-  ]
-
-
 
   return (
     <motion.div
@@ -36,7 +45,7 @@ export function AppSidebar() {
       </div>
 
       <div className="z-10 flex flex-col gap-6">
-        {navItems.map((item, index) => (
+        {navItems.map((item) => (
           <SidebarIcon
             key={item.path}
             icon={<item.icon className="h-6 w-6" />}
@@ -48,12 +57,6 @@ export function AppSidebar() {
       </div>
 
       <div className="z-10 mt-auto flex flex-col gap-6">
-        <SidebarIcon
-          icon={<Settings className="h-6 w-6" />}
-          active={pathname === "/settings"}
-          href="/settings"
-          tooltip="Settings"
-        />
         <button
           onClick={handleLogout}
           className="relative group"
@@ -64,10 +67,8 @@ export function AppSidebar() {
             className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#161A35] text-slate-400 hover:bg-[#1F2347] hover:text-white transition-all duration-300"
           >
             <LogOut className="h-6 w-6" />
-            {/* Glow effect on hover */}
             <div className="absolute inset-0 rounded-lg bg-purple-500/0 group-hover:bg-purple-500/20 transition-all duration-300"></div>
           </motion.div>
-          {/* Tooltip */}
           <div className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             Logout
           </div>
@@ -98,14 +99,10 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
           }`}
       >
         {icon}
-
-        {/* Glow effect on hover */}
         <div
           className={`absolute inset-0 rounded-lg bg-purple-500/0 group-hover:bg-purple-500/20 transition-all duration-300 
           ${active ? "bg-purple-500/20" : ""}`}
         ></div>
-
-        {/* Pulse effect for active icon */}
         {active && (
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
@@ -114,8 +111,6 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
           />
         )}
       </motion.div>
-
-      {/* Active indicator */}
       {active && (
         <motion.div
           initial={{ opacity: 0, x: -5 }}
@@ -123,8 +118,6 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
           className="absolute -right-3 top-1/2 transform -translate-y-1/2 h-5 w-1 bg-purple-500 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.7)]"
         />
       )}
-
-      {/* Tooltip */}
       {tooltip && (
         <div className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
           {tooltip}
@@ -132,8 +125,4 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
       )}
     </Link>
   )
-}
-
-function deletecookies(arg0: string) {
-  throw new Error("Function not implemented.")
 }

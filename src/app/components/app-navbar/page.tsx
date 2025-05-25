@@ -19,12 +19,15 @@ export function AppNavbar() {
         return "Announcements"
       case "/admin/project-management":
         return "Project Management"
-      case "/admin/messages":
-        return "Messages"
+
       case "/admin/help":
         return "Help"
       case "/admin/settings":
         return "Settings"
+      case "/admin/presentation":
+        return "Presentation Management"
+      case "/admin/parameters":
+        return "Parameters"
 
     }
   }
