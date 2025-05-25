@@ -24,9 +24,6 @@ export function MyProposalsView() {
     setIsRequestsModalOpen(true)
   }
 
-  const handleUpdateProposal = (updatedProposal) => {
-    setProposals(proposals.map((p) => (p.id === updatedProposal.id ? updatedProposal : p)))
-  }
 
   return (
     <div className="space-y-4">
