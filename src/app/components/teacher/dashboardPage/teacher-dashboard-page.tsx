@@ -3,8 +3,9 @@ import { motion } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
 import { MyProposalsView } from "./my-proposals/my-proposals-view"
 import { MySupervisionsView } from "./my-supervisions/my-supervisions-view"
+import {Project} from "@/app/components/teacher/dashboardPage/my-proposals/requestsData";
 
-export function TeacherDashboardPage() {
+export function TeacherDashboardPage({proposals,supervisions}: { proposals: Promise<Project[]>,supervisions: Promise<Project[]> }) {
   return (
     <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
       {/* Enhanced ambient light effects */}
@@ -58,11 +59,11 @@ export function TeacherDashboardPage() {
             </TabsList>
 
             <TabsContent value="proposals" className="mt-6">
-              <MyProposalsView />
+              <MyProposalsView proposedProjects={proposals} />
             </TabsContent>
 
             <TabsContent value="supervisions" className="mt-6">
-              <MySupervisionsView />
+              <MySupervisionsView supervisions={supervisions}/>
             </TabsContent>
           </Tabs>
         </motion.div>

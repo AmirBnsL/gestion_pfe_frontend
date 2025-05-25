@@ -1,4 +1,44 @@
 import { requestsData } from "./requests-data"
+import {Teacher} from "@/app/lib/api-client";
+import {Team} from "@/app/components/student/teams-list/teamTypes";
+
+
+
+export interface SupervisorInvite {
+  id: number;
+  initiator: string;
+  createdAt: string;
+  status: string;
+}
+
+export interface TeamJoinProjectRequest {
+  id: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  initiator: string;
+  approved: boolean;
+}
+
+export interface Project {
+  supervisedBy: Teacher[];
+  id: number;
+  title: string;
+  academicYear: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  specialty: string;
+  status: string;
+  proposedBy: Teacher;
+  supervisorInvites: SupervisorInvite[];
+  createdAt: string;
+  updatedAt: string;
+  rejectionReason: string | null;
+  teamJoinProjectRequests: TeamJoinProjectRequest[];
+  team: Team[]
+}
+
 
 export const proposalsData = [
   {

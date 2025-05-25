@@ -39,7 +39,9 @@ export interface Student {
 export interface Teacher {
   id: string
   userId: string
-  specialization: string
+  role: string
+  user : User
+  rank: string
 }
 
 export interface Project {

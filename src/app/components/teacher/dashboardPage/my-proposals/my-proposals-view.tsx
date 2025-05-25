@@ -1,18 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState,use } from "react"
 import { motion } from "framer-motion"
 import { Eye, Users, UserPlus } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { ViewTeamsModal } from "./view-teams-modal"
 import { RequestsModal } from "./requests-modal"
-import { proposalsData } from "./proposals-data"
+import {ProjectStatus} from "@/app/components/pending-approval/pending-approval-types";
+import {Project} from "@/app/components/teacher/dashboardPage/my-proposals/requestsData";
 
-export function MyProposalsView() {
+export function MyProposalsView({proposedProjects}: {proposedProjects: Promise<Project[]> }) {
   const [selectedProposal, setSelectedProposal] = useState(null)
   const [isViewTeamsModalOpen, setIsViewTeamsModalOpen] = useState(false)
   const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false)
-  const [proposals, setProposals] = useState(proposalsData)
+  const proposals = use(proposedProjects)
 
   const handleViewTeams = (proposal) => {
     setSelectedProposal(proposal)
@@ -23,6 +24,7 @@ export function MyProposalsView() {
     setSelectedProposal(proposal)
     setIsRequestsModalOpen(true)
   }
+
 
 
   return (
@@ -48,21 +50,21 @@ export function MyProposalsView() {
               <div className="flex items-center gap-4 text-xs text-slate-400">
                 <span className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  {proposal.teamsCount} teams working
+                  {proposal.team.length} teams working
                 </span>
                 <span>•</span>
                 <span
                   className={`px-2 py-1 rounded-full ${
-                    proposal.status === "Open" ? "bg-green-500/20 text-green-300" : "bg-yellow-500/20 text-yellow-300"
+                    proposal.status === ProjectStatus.PROPOSED ? "bg-green-500/20 text-green-300" : "bg-yellow-500/20 text-yellow-300"
                   }`}
                 >
                   Status: {proposal.status}
                 </span>
-                {(proposal.supervisorRequests?.length > 0 || proposal.studentRequests?.length > 0) && (
+                {(proposal.supervisorInvites?.length > 0 || proposal.teamJoinProjectRequests?.length > 0) && (
                   <>
                     <span>•</span>
                     <span className="px-2 py-1 rounded-full bg-orange-500/20 text-orange-300">
-                      {(proposal.supervisorRequests?.length || 0) + (proposal.studentRequests?.length || 0)} pending
+                      {(proposal.supervisorInvites?.length || 0) + (proposal.teamJoinProjectRequests?.length || 0)} pending
                       requests
                     </span>
                   </>
@@ -88,9 +90,9 @@ export function MyProposalsView() {
               >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Requests
-                {(proposal.supervisorRequests?.length || 0) + (proposal.studentRequests?.length || 0) > 0 && (
+                {(proposal.supervisorInvites?.length || 0) + (proposal.teamJoinProjectRequests?.length || 0) > 0 && (
                   <span className="ml-1 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {(proposal.supervisorRequests?.length || 0) + (proposal.studentRequests?.length || 0)}
+                    {(proposal.supervisorInvites?.length || 0) + (proposal.teamJoinProjectRequests?.length || 0)}
                   </span>
                 )}
               </Button>
@@ -105,11 +107,13 @@ export function MyProposalsView() {
         onClose={() => setIsViewTeamsModalOpen(false)}
       />
 
-      <RequestsModal
-        proposal={selectedProposal}
-        isOpen={isRequestsModalOpen}
-        onClose={() => setIsRequestsModalOpen(false)}
-      />
+      {selectedProposal && (
+        <RequestsModal
+          proposal={selectedProposal}
+          isOpen={isRequestsModalOpen}
+          onClose={() => setIsRequestsModalOpen(false)}
+        />
+      )}
     </div>
   )
 }

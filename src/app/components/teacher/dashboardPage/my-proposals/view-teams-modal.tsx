@@ -5,9 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/componen
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
 import { Button } from "@/app/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar"
-import { Progress } from "@/app/components/ui/progress"
+import {Project} from "@/app/components/teacher/dashboardPage/my-proposals/requestsData";
 
-export function ViewTeamsModal({ proposal, isOpen, onClose }) {
+export function ViewTeamsModal({ proposal, isOpen, onClose }:{proposal: Project | null, isOpen: boolean, onClose: () => void}) {
   if (!proposal) return null
 
   return (
@@ -42,12 +42,11 @@ export function ViewTeamsModal({ proposal, isOpen, onClose }) {
                   <tr className="text-left text-xs text-slate-400 border-b border-slate-700">
                     <th className="pb-3 font-medium">Team Name</th>
                     <th className="pb-3 font-medium">Team Leader</th>
-                    <th className="pb-3 font-medium">Progress</th>
                     <th className="pb-3 font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {proposal.teams?.map((team, index) => (
+                  {proposal?.team?.map((team, index) => (
                     <motion.tr
                       key={team.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -63,21 +62,16 @@ export function ViewTeamsModal({ proposal, isOpen, onClose }) {
                           <Avatar className="h-8 w-8">
                             <AvatarImage src="/placeholder.svg?height=32&width=32" />
                             <AvatarFallback className="bg-slate-700 text-slate-300">
-                              {team.leader
+                              {team.teamLeader.firstname
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-sm">{team.leader}</span>
+                          <span className="text-sm">{team.teamLeader.firstname + ' ' + team.teamLeader.lastname}</span>
                         </div>
                       </td>
-                      <td className="py-4">
-                        <div className="flex items-center gap-2">
-                          <Progress value={team.progress} className="w-20 h-2" />
-                          <span className="text-sm text-slate-400">{team.progress}%</span>
-                        </div>
-                      </td>
+
                       <td className="py-4">
                         <Button
                           variant="ghost"
@@ -101,12 +95,12 @@ export function ViewTeamsModal({ proposal, isOpen, onClose }) {
                   <tr className="text-left text-xs text-slate-400 border-b border-slate-700">
                     <th className="pb-3 font-medium">Supervisor</th>
                     <th className="pb-3 font-medium">Role</th>
-                    <th className="pb-3 font-medium">Department</th>
+                    <th className="pb-3 font-medium">Rank</th>
                     <th className="pb-3 font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {proposal.supervisors?.map((supervisor, index) => (
+                  {proposal.supervisedBy?.map((supervisor, index) => (
                     <motion.tr
                       key={supervisor.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -119,19 +113,19 @@ export function ViewTeamsModal({ proposal, isOpen, onClose }) {
                           <Avatar className="h-8 w-8">
                             <AvatarImage src="/placeholder.svg?height=32&width=32" />
                             <AvatarFallback className="bg-slate-700 text-slate-300">
-                              {supervisor.name
+                              {supervisor.user.email
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
                           <span className="font-medium group-hover/row:text-purple-300 transition-colors">
-                            {supervisor.name}
+                            {supervisor.user.email}
                           </span>
                         </div>
                       </td>
                       <td className="py-4 text-sm">{supervisor.role}</td>
-                      <td className="py-4 text-sm text-slate-400">{supervisor.department}</td>
+                      <td className="py-4 text-sm text-slate-400">{supervisor.rank}</td>
                       <td className="py-4">
                         <Button
                           variant="outline"

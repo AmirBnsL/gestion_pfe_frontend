@@ -1,19 +1,34 @@
 "use client"
 
-import { useState } from "react"
+import { useState, use } from "react"
 import { motion } from "framer-motion"
 import { ChevronRight } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { TeamCard } from "./team-card"
 import { TeamDetailsPanel } from "./team-details-panel"
-import { supervisionsData } from "./supervisions-data"
+import { Project } from "@/app/components/teacher/dashboardPage/my-proposals/requestsData"
 
-export function MySupervisionsView() {
-  const [expandedYears, setExpandedYears] = useState(new Set(["2024"]))
+// Group projects by academicYear
+function groupByAcademicYear(projects: Project[]) {
+  const map = new Map<string, Project[]>()
+  for (const project of projects) {
+    const year = project.academicYear || "Unknown"
+    if (!map.has(year)) map.set(year, [])
+    map.get(year)!.push(project)
+  }
+  return Array.from(map.entries()).map(([year, projects]) => ({ year, projects }))
+}
+
+export function MySupervisionsView({ supervisions }: { supervisions: Promise<Project[]> }) {
+  const projects = use(supervisions)
+  console.log(projects);
+  const [expandedYears, setExpandedYears] = useState(new Set<string>())
   const [selectedTeam, setSelectedTeam] = useState(null)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
 
-  const toggleYear = (year) => {
+  const yearGroups = groupByAcademicYear(projects)
+
+  const toggleYear = (year: string) => {
     const newExpanded = new Set(expandedYears)
     if (newExpanded.has(year)) {
       newExpanded.delete(year)
@@ -30,7 +45,7 @@ export function MySupervisionsView() {
 
   return (
     <div className="space-y-6">
-      {supervisionsData.map((yearData, yearIndex) => (
+      {yearGroups.map((yearData, yearIndex) => (
         <motion.div
           key={yearData.year}
           initial={{ opacity: 0, y: 20 }}
@@ -64,7 +79,7 @@ export function MySupervisionsView() {
                   <h3 className="text-md font-medium text-purple-300 mb-4 px-2">{project.title}</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {project.teams.map((team, teamIndex) => (
+                    {project.team?.map((team, teamIndex) => (
                       <TeamCard
                         key={team.id}
                         team={team}

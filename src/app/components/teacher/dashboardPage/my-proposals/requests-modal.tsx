@@ -8,11 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/ta
 import { Button } from "@/app/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar"
 import { Badge } from "@/app/components/ui/badge"
+import {Project} from "@/app/components/teacher/dashboardPage/my-proposals/requestsData";
 
-export function RequestsModal({ proposal, isOpen, onClose }) {
-  const [supervisorRequests, setSupervisorRequests] = useState(proposal?.supervisorRequests || [])
-  const [studentRequests, setStudentRequests] = useState(proposal?.studentRequests || [])
-
+export function RequestsModal({ proposal, isOpen, onClose }:{ proposal: Project, isOpen: boolean, onClose: () => void }) {
+  const [supervisorRequests, setSupervisorRequests] = useState(proposal?.supervisorInvites || [])
+  const [studentRequests, setStudentRequests] = useState(proposal?.teamJoinProjectRequests || [])
+  console.log(supervisorRequests)
   if (!proposal) return null
 
   const handleSupervisorAction = (requestId, action) => {
@@ -36,7 +37,7 @@ export function RequestsModal({ proposal, isOpen, onClose }) {
       <DialogContent className="max-w-4xl bg-[#161A35] border-[#2A2F52] text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-            Requests for "{proposal.title}"
+            Requests for &#34;{proposal.title}&#34;
           </DialogTitle>
         </DialogHeader>
 
@@ -89,7 +90,7 @@ export function RequestsModal({ proposal, isOpen, onClose }) {
                         <Avatar className="h-12 w-12">
                           <AvatarImage src="/placeholder.svg?height=48&width=48" />
                           <AvatarFallback className="bg-slate-700 text-slate-300">
-                            {request.name
+                            {request.supervisor.user.email
                               .split(" ")
                               .map((n) => n[0])
                               .join("")}
@@ -98,23 +99,15 @@ export function RequestsModal({ proposal, isOpen, onClose }) {
 
                         <div className="flex-1">
                           <h4 className="font-semibold text-white group-hover/card:text-purple-200 transition-colors">
-                            {request.name}
+                            {request.supervisor.user.email}
                           </h4>
                           <p className="text-sm text-slate-400 mb-2">
-                            {request.department} • {request.position}
+                            {request.supervisor.rank} • {request.supervisor.role}
                           </p>
                           <p className="text-sm text-slate-300 mb-3">{request.message}</p>
 
                           <div className="flex items-center gap-4 text-xs text-slate-400">
-                            <span>Experience: {request.experience} years</span>
-                            <span>•</span>
-                            <span>Specialization: {request.specialization}</span>
-                            {request.researchAreas && (
-                              <>
-                                <span>•</span>
-                                <span>Research Areas: {request.researchAreas}</span>
-                              </>
-                            )}
+
                           </div>
                         </div>
                       </div>
@@ -187,7 +180,7 @@ export function RequestsModal({ proposal, isOpen, onClose }) {
                         <Avatar className="h-12 w-12">
                           <AvatarImage src="/placeholder.svg?height=48&width=48" />
                           <AvatarFallback className="bg-slate-700 text-slate-300">
-                            {request.name
+                            {request.team.name
                               .split(" ")
                               .map((n) => n[0])
                               .join("")}
@@ -195,33 +188,8 @@ export function RequestsModal({ proposal, isOpen, onClose }) {
                         </Avatar>
 
                         <div className="flex-1">
-                          <h4 className="font-semibold text-white group-hover/card:text-purple-200 transition-colors">
-                            {request.name}
-                          </h4>
-                          <p className="text-sm text-slate-400 mb-2">
-                            {request.studentId} • {request.program}
-                          </p>
-                          <p className="text-sm text-slate-300 mb-3">{request.message}</p>
-
-                          <div className="flex items-center gap-4 text-xs text-slate-400">
-                            <span>GPA: {request.gpa}</span>
-                            <span>•</span>
-                            <span>Year: {request.year}</span>
-                            <span>•</span>
-                            <span>Team: {request.teamName}</span>
-                            {request.skills && (
-                              <>
-                                <span>•</span>
-                                <span>Skills: {request.skills}</span>
-                              </>
-                            )}
-                            {request.previousProjects && (
-                              <>
-                                <span>•</span>
-                                <span>Previous Projects: {request.previousProjects}</span>
-                              </>
-                            )}
-                          </div>
+                          <h4 className={"font-semibold text-white group-hover/card:text-purple-200 transition-colors"}>{request.team.name}</h4>
+                          <p className="text-sm text-slate-300 mb-3">{request.team.specialty}</p>
                         </div>
                       </div>
 
