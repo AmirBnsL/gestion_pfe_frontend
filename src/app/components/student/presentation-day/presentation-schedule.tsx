@@ -17,11 +17,11 @@ export function PresentationSchedule() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen p-6">
+      <div className="">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Presentation Schedule</h1>
+           
             <p className="text-slate-400">May 30, 2025 - Academic Year 2024–25</p>
           </div>
           <Button className="bg-blue-600 hover:bg-blue-700">

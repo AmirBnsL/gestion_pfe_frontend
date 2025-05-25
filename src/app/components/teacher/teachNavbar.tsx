@@ -12,7 +12,6 @@ export function TeacherNavbar() {
   const getPageTitle = () => {
     switch (pathname) {
       case "/teacher":
-      case "/teacher/dashboard":
         return "Dashboard"
       case "/teacher/chat":
         return "Chat & Communication"

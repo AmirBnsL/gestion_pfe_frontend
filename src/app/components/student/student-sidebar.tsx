@@ -4,22 +4,21 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { BookOpen, Home, MessageSquare, Users, LogOut,Settings2 } from "lucide-react"
+import { BookOpen, Home, MessageSquare, Users, LogOut, Settings2, CalendarDays } from "lucide-react"
 import { handleLogout } from "@/app/lib/api-client"
-
 
 export function StudentSidebar() {
   const pathname = usePathname()
   const router = useRouter()
 
-  // Navigation items with their paths and icons - specific to student section
+  // Navigation items matching the getPageTitle switch
   const navItems = [
     { icon: Home, path: "/student/project-overview", label: "Project Overview" },
     { icon: Users, path: "/student/teams-list", label: "Teams List" },
     { icon: BookOpen, path: "/student/my-team", label: "My Team" },
-    { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" }
+    { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" },
+    { icon: CalendarDays, path: "/student/presentation-day", label: "Presentation Day" },
   ]
-
 
   return (
     <motion.div
@@ -37,7 +36,12 @@ export function StudentSidebar() {
           <SidebarIcon
             key={item.path}
             icon={<item.icon className="h-6 w-6" />}
-            active={pathname === item.path || pathname.startsWith(`${item.path}/`)}
+            // Mark as active for both exact and alias routes
+            active={
+              pathname === item.path ||
+              (item.path === "/student/my-team" && (pathname === "/student/my-project" || pathname === "/student/my-team")) ||
+              (item.path === "/student/project-overview" && (pathname === "/student" || pathname === "/student/project-overview"))
+            }
             href={item.path}
             tooltip={item.label}
           />
@@ -46,9 +50,9 @@ export function StudentSidebar() {
 
       <div className="mt-auto flex flex-col gap-6">
         <SidebarIcon
-          icon={<Users className="h-6 w-6" />}
-          active={pathname === "/student/profile"}
-          href="/student/profile"
+          icon={<Settings2 className="h-6 w-6" />}
+          active={pathname === "/student/settings"}
+          href="/student/settings"
           tooltip="My Profile"
         />
         <button
@@ -61,10 +65,8 @@ export function StudentSidebar() {
             className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#161A35] text-slate-400 hover:bg-[#1F2347] hover:text-white transition-all duration-300"
           >
             <LogOut className="h-6 w-6" />
-            {/* Glow effect on hover */}
             <div className="absolute inset-0 rounded-lg bg-purple-500/0 group-hover:bg-purple-500/20 transition-all duration-300"></div>
           </motion.div>
-          {/* Tooltip */}
           <div className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             Logout
           </div>
@@ -95,14 +97,10 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
           }`}
       >
         {icon}
-
-        {/* Glow effect on hover */}
         <div
           className={`absolute inset-0 rounded-lg bg-purple-500/0 group-hover:bg-purple-500/20 transition-all duration-300 
           ${active ? "bg-purple-500/20" : ""}`}
         ></div>
-
-        {/* Pulse effect for active icon */}
         {active && (
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
@@ -111,8 +109,6 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
           />
         )}
       </motion.div>
-
-      {/* Active indicator */}
       {active && (
         <motion.div
           initial={{ opacity: 0, x: -5 }}
@@ -120,8 +116,6 @@ function SidebarIcon({ icon, active = false, href, tooltip }: SidebarIconProps) 
           className="absolute -right-3 top-1/2 transform -translate-y-1/2 h-5 w-1 bg-purple-500 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.7)]"
         />
       )}
-
-      {/* Tooltip */}
       {tooltip && (
         <div className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
           {tooltip}

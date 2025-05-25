@@ -12,22 +12,26 @@ export function StudentNavbar() {
   const getPageTitle = () => {
     switch (pathname) {
       case "/student":
+      case "/student/project-overview":
         return "Project Overview"
       case "/student/teams-list":
         return "Teams List"
+      case "/student/my-team":
       case "/student/my-project":
         return "My Team"
       case "/student/chat":
         return "Chat & Communication"
-      case "/student/profile":
+      case "/student/settings":
         return "My Profile"
-      case "/student/project-overview":
-        return "Project Overview"
+      case "/student/presentation-day":
+        return "Presentation Day"
       default:
         if (pathname.includes("project-overview")) return "Project Overview"
         if (pathname.includes("teams-list")) return "Teams List"
-        if (pathname.includes("my-project")) return "My Project"
+        if (pathname.includes("my-team") || pathname.includes("my-project")) return "My Team"
         if (pathname.includes("chat")) return "Chat & Communication"
+        if (pathname.includes("presentation-day")) return "Presentation Day"
+        if (pathname.includes("settings")) return "My Profile"
         return "Student Dashboard"
     }
   }
@@ -45,7 +49,6 @@ export function StudentNavbar() {
         </h1>
 
         <div className="flex items-center gap-4">
-
           <div className="relative">
             <Bell className="h-5 w-5 text-slate-400 hover:text-white transition-colors cursor-pointer" />
             <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border border-slate-900"></span>

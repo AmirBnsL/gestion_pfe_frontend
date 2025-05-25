@@ -34,10 +34,10 @@ export function StudentSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen  p-6">
+      <div className="">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+          
           <p className="text-slate-400">Manage your account preferences</p>
         </div>
 
@@ -121,31 +121,14 @@ export function StudentSettingsPage() {
               <Input value="Student" readOnly className="bg-slate-700 border-slate-600 text-slate-400" />
             </div>
 
-            {/* Preferences */}
-            <div className="space-y-4">
-              <Label className="text-white">Preferences</Label>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="email-notifications"
-                    checked={emailNotifications}
-                    onCheckedChange={setEmailNotifications}
-                  />
-                  <Label htmlFor="email-notifications" className="text-slate-300">
-                    Email Notifications
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="dark-mode" checked={darkMode} onCheckedChange={setDarkMode} />
-                  <Label htmlFor="dark-mode" className="text-slate-300">
-                    Dark Mode
-                  </Label>
-                </div>
-              </div>
-            </div>
 
             <div className="flex justify-end">
-              <Button onClick={handleSave}>Save Changes</Button>
+              <Button
+                onClick={handleSave}
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md shadow-purple-900/20 px-8 py-2 rounded-md font-semibold transition-all duration-300"
+              >
+                Save Changes
+              </Button>
             </div>
           </div>
         </div>
