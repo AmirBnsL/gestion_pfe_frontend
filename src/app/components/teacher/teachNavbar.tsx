@@ -18,8 +18,10 @@ export function TeacherNavbar() {
         return "Chat & Communication"
       case "/teacher/deposit":
         return "Deposit Page"
-      case "/teacher/profile":
+      case "/teacher/settings":
         return "Edit Profile"
+      case "/teacher/presentation-day":  
+        return "Presentation Day"
       default:
         if (pathname.includes("dashboard")) return "Dashboard"
         if (pathname.includes("chat")) return "Chat & Communication"

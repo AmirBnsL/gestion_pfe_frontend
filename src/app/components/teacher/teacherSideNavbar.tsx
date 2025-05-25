@@ -4,17 +4,19 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Home, MessageSquare, FilePlus2, LogOut, Settings2 } from "lucide-react"
+import { Home, MessageSquare, FilePlus2, LogOut, Settings2, CalendarDays } from "lucide-react"
 import { handleLogout } from "@/app/lib/api-client"
 
 export function TeacherSidebar() {
   const pathname = usePathname()
   const router = useRouter()
 
+  // Match nav items to getPageTitle switch
   const navItems = [
     { icon: Home, path: "/teacher/dashboard", label: "Dashboard" },
-    { icon: MessageSquare, path: "/teacher/chat", label: "Chat" },
+    { icon: MessageSquare, path: "/teacher/chat", label: "Chat & Communication" },
     { icon: FilePlus2, path: "/teacher/deposit", label: "Deposit Page" },
+    { icon: CalendarDays, path: "/teacher/presentation-day", label: "Presentation Day" },
   ]
 
   return (
@@ -43,8 +45,8 @@ export function TeacherSidebar() {
       <div className="mt-auto flex flex-col gap-6">
         <SidebarIcon
           icon={<Settings2 className="h-6 w-6" />}
-          active={pathname === "/teacher/profile"}
-          href="/teacher/profile"
+          active={pathname === "/teacher/settings"}
+          href="/teacher/settings"
           tooltip="Edit Profile"
         />
         <button
