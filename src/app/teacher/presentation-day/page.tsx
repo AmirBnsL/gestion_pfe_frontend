@@ -1,5 +1,5 @@
-import { TeacherPresentationSchedule } from "@/app/components/teacher/presentation-day/teacher-presentation-schedule"
+import { PresentationCalendar } from "@/app/components/teacher/presentation-day/presentation-calendar"
 
 export default function TeacherPresentationDayPage() {
-  return <TeacherPresentationSchedule />
+  return <PresentationCalendar />
 }
