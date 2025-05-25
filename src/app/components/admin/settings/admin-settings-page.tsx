@@ -35,7 +35,7 @@ export function AdminSettingsPage() {
 
   return (
     <div className="min-h-screen  ">
-      <div className="max-w-2xl mx-auto">
+      <div className="">
         <div className="mb-8">
         
           <p className="text-slate-400">Manage system preferences and configurations</p>

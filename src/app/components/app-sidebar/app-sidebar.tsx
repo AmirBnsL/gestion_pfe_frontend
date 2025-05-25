@@ -18,7 +18,7 @@ import {
 
 import { handleLogout } from "@/app/lib/api-client"
 
-// Match navItems to the getPageTitle switch
+// Move Settings to the bottom with Logout
 const navItems = [
   { icon: BarChart, path: "/admin/dashboard", label: "Dashboard" },
   { icon: Users, path: "/admin/pending-approvals", label: "Users List" },
@@ -27,7 +27,6 @@ const navItems = [
   { icon: CalendarDays, path: "/admin/presentation", label: "Presentation Management" },
   { icon: SlidersHorizontal, path: "/admin/parameters", label: "Parameters" },
   { icon: HelpCircle, path: "/admin/help", label: "Help" },
-  { icon: Settings, path: "/admin/settings", label: "Settings" },
 ]
 
 export function AppSidebar() {
@@ -57,6 +56,12 @@ export function AppSidebar() {
       </div>
 
       <div className="z-10 mt-auto flex flex-col gap-6">
+        <SidebarIcon
+          icon={<Settings className="h-6 w-6" />}
+          active={pathname === "/admin/settings"}
+          href="/admin/settings"
+          tooltip="Settings"
+        />
         <button
           onClick={handleLogout}
           className="relative group"
