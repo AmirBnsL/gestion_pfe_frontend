@@ -20,9 +20,7 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
         const formData = new FormData(event.currentTarget);
 
         startTransition(async () => {
-
             await updateParameter(formData);
-
         });
     };
 
@@ -33,13 +31,16 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
         >
             {/* Keep hidden input for the year */}
             <input type="hidden" name="year" value={parameter.year} />
-            <Card>
+            <Card className="bg-[#161A35]/60 backdrop-blur-md rounded-xl border border-[#2A2F52] shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group">
+                {/* Ambient gradient effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div className="absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 blur-sm pointer-events-none"></div>
                 <CardHeader>
-                    <CardTitle>{academicYearLabels[parameter.year]} Parameters</CardTitle>
+                    <CardTitle className="text-white">{academicYearLabels[parameter.year]} Parameters</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 relative z-10">
                     <div className="space-y-2">
-                        <Label htmlFor="maxTeamSize">Maximum Team Size</Label>
+                        <Label htmlFor="maxTeamSize" className="text-white">Maximum Team Size</Label>
                         <Input
                             id="maxTeamSize"
                             name="maxTeamSize"
@@ -47,10 +48,10 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
                             min={1}
                             max={20}
                             defaultValue={parameter.maxTeamSize}
-                            className="max-w-xs"
-                            disabled={isPending} // Disable input while pending
+                            className="max-w-xs bg-slate-700 border-slate-600 text-white"
+                            disabled={isPending}
                         />
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-slate-400">
                             The maximum number of students allowed in a team
                         </p>
                     </div>
@@ -58,8 +59,8 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
                     <div className="space-y-6">
                         <div className="flex items-center justify-between max-w-md">
                             <div className="space-y-0.5">
-                                <Label htmlFor="allowTeamCreation">Allow Team Creation</Label>
-                                <p className="text-sm text-muted-foreground">
+                                <Label htmlFor="allowTeamCreation" className="text-white">Allow Team Creation</Label>
+                                <p className="text-sm text-slate-400">
                                     Students can create new teams
                                 </p>
                             </div>
@@ -67,14 +68,14 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
                                 id="allowTeamCreation"
                                 name="allowTeamCreation"
                                 defaultChecked={parameter.allowTeamCreation}
-                                disabled={isPending} // Disable switch while pending
+                                disabled={isPending}
                             />
                         </div>
 
                         <div className="flex items-center justify-between max-w-md">
                             <div className="space-y-0.5">
-                                <Label htmlFor="allowTeamJoining">Allow Team Joining</Label>
-                                <p className="text-sm text-muted-foreground">
+                                <Label htmlFor="allowTeamJoining" className="text-white">Allow Team Joining</Label>
+                                <p className="text-sm text-slate-400">
                                     Students can join existing teams
                                 </p>
                             </div>
@@ -82,14 +83,14 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
                                 id="allowTeamJoining"
                                 name="allowTeamJoining"
                                 defaultChecked={parameter.allowTeamJoining}
-                                disabled={isPending} // Disable switch while pending
+                                disabled={isPending}
                             />
                         </div>
 
                         <div className="flex items-center justify-between max-w-md">
                             <div className="space-y-0.5">
-                                <Label htmlFor="allowWishListCreation">Allow Wish List Creation</Label>
-                                <p className="text-sm text-muted-foreground">
+                                <Label htmlFor="allowWishListCreation" className="text-white">Allow Wish List Creation</Label>
+                                <p className="text-sm text-slate-400">
                                     Students can create wish lists for projects
                                 </p>
                             </div>
@@ -97,13 +98,17 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
                                 id="allowWishListCreation"
                                 name="allowWishListCreation"
                                 defaultChecked={parameter.allowWishListCreation}
-                                disabled={isPending} // Disable switch while pending
+                                disabled={isPending}
                             />
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter>
-                    <Button type="submit" disabled={isPending} className="bg-button-purple">
+                <CardFooter className="relative z-10 flex justify-end">
+                    <Button
+                        type="submit"
+                        disabled={isPending}
+                        className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md shadow-purple-900/20 px-8 py-2 rounded-md font-semibold transition-all duration-300"
+                    >
                         {isPending ? "Saving..." : "Save Changes"}
                     </Button>
                 </CardFooter>

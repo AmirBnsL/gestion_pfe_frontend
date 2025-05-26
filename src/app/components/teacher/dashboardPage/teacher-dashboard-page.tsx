@@ -26,9 +26,7 @@ export function TeacherDashboardPage() {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">
-            Teacher Dashboard
-          </h1>
+  
           <p className="text-slate-400 mt-2">Manage your proposals and supervisions</p>
         </motion.div>
 
