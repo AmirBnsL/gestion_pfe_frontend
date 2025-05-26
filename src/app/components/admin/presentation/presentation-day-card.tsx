@@ -38,11 +38,11 @@ export function PresentationDayCard({ presentationDay, onClick }: PresentationDa
           <div className="flex items-center justify-between text-sm text-slate-400">
             <div className="flex items-center space-x-1">
               <Users className="h-4 w-4" />
-              <span>{presentationDay.groupsCount} groups</span>
+              <span>{presentationDay.slots.length} groups</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="h-4 w-4" />
-              <span>{presentationDay.scheduledSlots} slots</span>
+              <span>{presentationDay.slots.length} slots</span>
             </div>
           </div>
         </div>
