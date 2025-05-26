@@ -28,6 +28,12 @@ export function AppNavbar() {
         return "Presentation Management"
       case "/admin/parameters":
         return "Parameters"
+      case "/admin/project-distribution":
+        return "Project Distribution"
+
+      case "/admin/project-distribution/year":
+        return "Project Distribution"
+
 
     }
   }

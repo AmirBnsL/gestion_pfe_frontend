@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { AppNavbar } from "@/app/components/app-navbar/page"
 import { YearCard } from "./year-card"
 
 // Sample academic years data
@@ -45,16 +44,6 @@ export function ProjectDistributionPage() {
       />
 
       <div className="container mx-auto">
-        {/* Navbar */}
-        <AppNavbar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          filterType={filterType}
-          setFilterType={setFilterType}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-        />
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -62,7 +51,6 @@ export function ProjectDistributionPage() {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-white mb-2">Project Distribution</h1>
           <p className="text-gray-400">Manage project assignments across academic years</p>
         </motion.div>
 

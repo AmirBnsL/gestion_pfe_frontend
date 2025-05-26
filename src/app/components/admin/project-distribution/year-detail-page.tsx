@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { AppNavbar } from "@/app/components/app-navbar/page"
 import { WishlistTable } from "./wishlist-table"
 import { Button } from "@/app/components/ui/button"
 import { Card, CardContent } from "@/app/components/ui/card"
@@ -82,16 +81,6 @@ export function YearDetailPage({ year }: YearDetailPageProps) {
       />
 
       <div className="container mx-auto">
-        {/* Navbar */}
-        <AppNavbar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          filterType={filterType}
-          setFilterType={setFilterType}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-        />
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

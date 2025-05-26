@@ -14,9 +14,11 @@ import {
   Settings,
   CalendarDays,
   SlidersHorizontal,
+  Shuffle,
 } from "lucide-react"
 
 import { handleLogout } from "@/app/lib/api-client"
+import path from "path"
 
 // Move Settings to the bottom with Logout
 const navItems = [
@@ -26,6 +28,7 @@ const navItems = [
   { icon: CheckSquare, path: "/admin/project-management", label: "Project Management" },
   { icon: CalendarDays, path: "/admin/presentation", label: "Presentation Management" },
   { icon: SlidersHorizontal, path: "/admin/parameters", label: "Parameters" },
+  { icon: Shuffle, path: "/admin/project-distribution", label: "Project Distribution" },
   { icon: HelpCircle, path: "/admin/help", label: "Help" },
 ]
 
