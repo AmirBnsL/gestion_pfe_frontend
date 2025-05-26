@@ -66,6 +66,12 @@ export async function addSlotToPresentationDayAction({
 
 
 
-export async function getSlotsByDayIdAction(dayId: string): Promise<PresentationSlot[]> {
-    return (await fetchApi<PresentationSlot[]>(`/presentationDay/${dayId}/slots`)).data;
+export async function getSlotsByDayIdAction(dayId: number): Promise<PresentationSlot[]> {
+    return (await fetchApi<PresentationSlot[]>(`/presentationDay/${dayId.toString()}/slots`)).data;
 }
+
+
+export async function getMySlotsAsTeacher(): Promise<PresentationSlot[]> {
+    return (await fetchApi<PresentationSlot[]>(`/teacher/presentationDays`)).data;
+}
+

@@ -11,6 +11,7 @@ export interface TimeSlot {
   id: string
   startTime: string
   endTime: string
+  presentationDay?: PresentationDay
 }
 
 export interface StudentGroup {
