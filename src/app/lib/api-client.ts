@@ -190,7 +190,7 @@ export async function login(credentials: FormData){
   if (role === "admin") {
     redirect("/admin/dashboard")
   } else if (role === "teacher") {
-    redirect("/teacher")
+    redirect("/teacher/dashboard")
   } else if (role === "student") {
     redirect("/student/project-overview")
   }

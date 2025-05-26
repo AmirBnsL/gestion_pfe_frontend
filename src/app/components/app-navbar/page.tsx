@@ -11,6 +11,7 @@ export function AppNavbar() {
   // Get the page title based on the current path
   const getPageTitle = () => {
     switch (pathname) {
+      case "/admin":
       case "/admin/dashboard":
         return "Dashboard"
       case "/admin/pending-approvals":
@@ -31,8 +32,7 @@ export function AppNavbar() {
       case "/admin/project-distribution":
         return "Project Distribution"
 
-      case "/admin/project-distribution/year":
-        return "Project Distribution"
+    
 
 
     }

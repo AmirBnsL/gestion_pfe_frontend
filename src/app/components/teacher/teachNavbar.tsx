@@ -8,10 +8,11 @@ import Image from "next/image"
 export function TeacherNavbar() {
   const pathname = usePathname()
 
-  // Get the page title based on the current path
+  // Updated getPageTitle logic to match the student logic
   const getPageTitle = () => {
     switch (pathname) {
       case "/teacher":
+      case "/teacher/dashboard":
         return "Dashboard"
       case "/teacher/chat":
         return "Chat & Communication"
@@ -19,13 +20,14 @@ export function TeacherNavbar() {
         return "Deposit Page"
       case "/teacher/settings":
         return "Edit Profile"
-      case "/teacher/presentation-day":  
+      case "/teacher/presentation-day":
         return "Presentation Day"
       default:
         if (pathname.includes("dashboard")) return "Dashboard"
         if (pathname.includes("chat")) return "Chat & Communication"
         if (pathname.includes("deposit")) return "Deposit Page"
-        if (pathname.includes("profile")) return "Edit Profile"
+        if (pathname.includes("settings")) return "Edit Profile"
+        if (pathname.includes("presentation-day")) return "Presentation Day"
         return "Teacher Dashboard"
     }
   }
