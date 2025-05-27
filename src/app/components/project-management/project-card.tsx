@@ -34,11 +34,7 @@ export function ProjectCard({ project, onView, onApprove, onDelete, delay = 0 }:
       <div className="space-y-2 mb-6">
         <div className="flex justify-between text-sm">
           <span className="text-slate-400">Proposer:</span>
-          <span className="text-slate-300">{project.proposer}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-400">Supervisor:</span>
-          <span className="text-slate-300">{project.supervisor}</span>
+          <span className="text-slate-300">{project.proposedBy.firstname +''+ project.proposedBy.lastname}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-slate-400">Category:</span>
@@ -55,7 +51,7 @@ export function ProjectCard({ project, onView, onApprove, onDelete, delay = 0 }:
           <Eye className="h-4 w-4 mr-1" />
           View
         </Button>
-        <Button onClick={onApprove} className="flex-1 bg-green-600/80 hover:bg-green-700 text-white">
+        <Button onClick={onApprove} className="flex-1 bg-green-600/80 hover:bg-green-700 text-white" disabled={project.status == "approved"}>
           <Check className="h-4 w-4 mr-1" />
           Approve
         </Button>

@@ -6,10 +6,13 @@ import {Team} from "@/app/components/student/teams-list/teamTypes";
 
 export interface SupervisorInvite {
   id: number;
-  initiator: string;
-  createdAt: string;
-  status: string;
+  supervisor: Teacher;
+  project: Project;
+  initiator: 'teacher' | 'proposer';
+  createdAt: Date;
+  status: 'pending' | 'accepted' | 'declined';
 }
+
 
 export interface TeamJoinProjectRequest {
   id: number;
