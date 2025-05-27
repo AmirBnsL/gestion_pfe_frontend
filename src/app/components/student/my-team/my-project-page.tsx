@@ -13,6 +13,7 @@ const ManualProjectSelection = dynamic(() => import("./manual-project-selection"
 
 export default function MyProjectPage({ team }: { team: Promise<Team> }) {
   const myFullTeam = use(team)
+    console.log(myFullTeam)
   return (
     <div className="p-6 space-y-8">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>

@@ -6,6 +6,8 @@ import { Button } from "../../ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
 import { MessageSquare, UserPlus, Bell, Check, X } from "lucide-react"
 import { AddMemberModal } from "./add-member-modal"
+import { useRouter } from "next/navigation"
+import {acceptTeamJoinRequest, rejectTeamJoinRequest} from "@/app/components/student/my-team/myTeamActions";
 
 const staticMembers = [
   {
@@ -55,16 +57,19 @@ const staticStudents = [
   }
 ]
 
-export function TeamMembersList() {
+export function TeamMembersList({members,fetchedRequests }:{members : any[],fetchedRequests : any[]}) {
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false)
-  const [requests, setRequests] = useState(staticRequests)
+  const [requests, setRequests] = useState(fetchedRequests.filter(request => request.status === "pending") )
+    const router = useRouter()
 
-  const handleAcceptRequest = (requestId: string) => {
-    setRequests(requests.filter((req) => req.id !== requestId))
+  const handleAcceptRequest = async (requestId: string) => {
+    await acceptTeamJoinRequest(requestId)
+    router.refresh()
   }
 
-  const handleDeclineRequest = (requestId: string) => {
-    setRequests(requests.filter((req) => req.id !== requestId))
+  const handleDeclineRequest = async (requestId: string) => {
+    await rejectTeamJoinRequest(requestId)
+    router.refresh()
   }
 
   const formatDate = (dateString: string) => {
@@ -114,15 +119,16 @@ export function TeamMembersList() {
 
         <TabsContent value="members" className="mt-0">
           <div className="space-y-3">
-            {staticMembers.map((member) => (
+            {members.map((member) => (
               <div key={member.id} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10 border border-slate-700">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={"/placeholder.svg"} alt={member.student.firstname + " " + member.student.lastname} />
                   </Avatar>
                   <div>
                     <p className="font-medium text-slate-200 text-sm">{member.student.firstname + " " + member.student.lastname}</p>
-                    <p className="text-xs text-slate-400">{member.student.job}</p>
+                    <p className="text-xs text-slate-400">{member.job}</p>
                   </div>
                 </div>
                 <Button
@@ -137,7 +143,7 @@ export function TeamMembersList() {
             ))}
           </div>
         </TabsContent>
-
+//here
         <TabsContent value="requests" className="mt-0">
           <div className="space-y-3">
             {requests.length > 0 ? (
@@ -148,14 +154,14 @@ export function TeamMembersList() {
                 >
                   <div className="flex items-center space-x-3">
                     <Avatar className="h-10 w-10 border border-slate-700">
-                      <img src={request.avatar || "/placeholder.svg"} alt={request.name} />
+                      <img src={request.avatar || "/placeholder.svg"} alt={request.fromUser.firstname + " " + request.fromUser.lastname} />
                     </Avatar>
                     <div>
-                      <p className="font-medium text-slate-200 text-sm">{request.name}</p>
+                      <p className="font-medium text-slate-200 text-sm">{request.fromUser.firstname + " "+ request.fromUser.lastname}</p>
                       <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2">
-                        <p className="text-xs text-slate-400">{request.role}</p>
+                        <p className="text-xs text-slate-400">{request.fromUser.job}</p>
                         <span className="hidden xs:inline text-slate-500 text-xs">•</span>
-                        <p className="text-xs text-slate-500">Requested: {formatDate(request.requestDate)}</p>
+                        <p className="text-xs text-slate-500">Requested: {formatDate(request.createdAt)}</p>
                       </div>
                     </div>
                   </div>

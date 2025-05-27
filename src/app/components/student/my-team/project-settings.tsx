@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/app/components/ui/card"
 import { Avatar } from "@/app/components/ui/avatar"
 import { MessageSquare, UserPlus } from "lucide-react"
 import {TeamMembersList} from "./team-members-list"
+import {Team} from "@/app/components/student/teams-list/teams-list-data";
 
 const dummySupervisor = {
   avatarUrl: "/placeholder.svg",
@@ -40,40 +41,41 @@ const dummyProject = {
   teamMembers: dummyTeamMembers
 }
 
-export function ProjectSettings() {
-  const projectTitle = dummyProject.title
-  const projectDescription = dummyProject.description
-  const supervisor = dummyProject.supervisor
-  const teamMembers = dummyProject.teamMembers
+export function ProjectSettings({team}:{team:Team}) {
+  const projectTitle = team.project.title
+  const projectDescription = team.project.description
+  const supervisor = team.project?.supervisedBy[0]
+  const teamMembers = team.members
+  const requests = team.joinRequests || []
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Project Details Card */}
-      <Card className="col-span-1 lg:col-span-2 bg-slate-900/50 border border-slate-800 backdrop-blur-sm shadow-lg">
+      <Card className="col-span-1 lg:col-span-2 bg-slate-900/50  border border-slate-800 backdrop-blur-sm shadow-lg">
         <CardContent className="p-6">
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent mb-1">
-                Project Details
+                Project Details :
               </h2>
               <p className="text-slate-400 text-sm">Information about the assigned project.</p>
             </div>
             <div className="space-y-4">
               {/* Display Project Title */}
               <div className="space-y-1">
-                <h3 className="text-sm font-medium text-slate-300">
-                  Project Title
+                <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent mb-1">
+                  Project Title :
                 </h3>
-                <p className="text-slate-200">{projectTitle}</p>
+                <p className="text-slate-200">{team.project.title}</p>
               </div>
 
               {/* Display Project Description */}
               <div className="space-y-1">
-                <h3 className="text-sm font-medium text-slate-300">
-                  Project Description
+                <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent mb-1">
+                  Project Description :
                 </h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  {projectDescription}
+                  {team.project.description}
                 </p>
               </div>
             </div>
@@ -91,11 +93,11 @@ export function ProjectSettings() {
               <div className="flex items-center space-x-4">
                 <Avatar className="h-12 w-12 border-2 border-purple-500/50">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={supervisor.avatarUrl} alt={supervisor.name} />
+                  <img src={supervisor.avatarUrl} alt={supervisor.firstname} />
                 </Avatar>
                 <div>
-                  <p className="font-medium text-slate-200">{supervisor.name}</p>
-                  <p className="text-sm text-slate-400">{supervisor.specialization}</p>
+                  <p className="font-medium text-slate-200">{supervisor.firstname + ' ' + supervisor.lastname}</p>
+                  <p className="text-sm text-slate-400">{}</p>
                 </div>
               </div>
               <Button
@@ -120,7 +122,7 @@ export function ProjectSettings() {
                   <span className="sr-only">Add team member</span>
                 </Button>
               </div>
-              <TeamMembersList members={teamMembers} />
+              <TeamMembersList members={teamMembers} fetchedRequests={requests} />
             </div>
           </div>
         </CardContent>
