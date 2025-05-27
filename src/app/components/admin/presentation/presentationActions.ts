@@ -5,7 +5,7 @@
 
 import {fetchApi} from "@/app/lib/api-client";
 
-import {PresentationDay, PresentationSlot} from "@/app/components/admin/presentation/presentation-data";
+import {PresentationDay, Pre, PresentationSlot} from "@/app/components/admin/presentation/presentation-data";
 
 export const getPresentationDays = async () => {
 
@@ -75,3 +75,8 @@ export async function getMySlotsAsTeacher(): Promise<PresentationSlot[]> {
     return (await fetchApi<PresentationSlot[]>(`/teacher/presentationDays`)).data;
 }
 
+
+
+export async function getSlotAsStudent(): Promise<any> {
+    return (await fetchApi<any>(`/student/presentationDay/`)).data;
+}

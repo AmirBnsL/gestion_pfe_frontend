@@ -1,10 +1,23 @@
+import {Team} from "@/app/components/student/teams-list/teamTypes";
+import {Teacher} from "@/app/components/pending-approval/pending-approval-types";
+import {AcademicYear} from "@/app/components/parameters/parameters-types";
+
+
 export interface PresentationDay {
-  id: string
+  id: number
   date: string
-  academicYear: string
+  academicYear: AcademicYear,
   status: "draft" | "published"
-  groupsCount: number
-  scheduledSlots: number
+  slots: PresentationSlot[]
+}
+
+export interface PresentationSlot {
+  team: Team
+  room: string
+  judges: Teacher[]
+  id: number
+  startTime: string
+  endTime: string
 }
 
 export interface TimeSlot {
