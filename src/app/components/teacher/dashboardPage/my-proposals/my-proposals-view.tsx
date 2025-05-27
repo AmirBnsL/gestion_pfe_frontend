@@ -6,14 +6,15 @@ import { Eye, Users, UserPlus } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import { ViewTeamsModal } from "./view-teams-modal"
 import { RequestsModal } from "./requests-modal"
-import {ProjectStatus} from "@/app/components/pending-approval/pending-approval-types";
+import {ProjectStatus, Teacher} from "@/app/components/pending-approval/pending-approval-types";
 import {Project} from "@/app/components/teacher/dashboardPage/my-proposals/requestsData";
 
-export function MyProposalsView({proposedProjects}: {proposedProjects: Promise<Project[]> }) {
+export function MyProposalsView({proposedProjects,availableSupervisorsPromise}: {proposedProjects: Promise<Project[]>,availableSupervisorsPromise : Promise<Teacher[]> }) {
   const [selectedProposal, setSelectedProposal] = useState(null)
   const [isViewTeamsModalOpen, setIsViewTeamsModalOpen] = useState(false)
   const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false)
   const proposals = use(proposedProjects)
+
 
   const handleViewTeams = (proposal) => {
     setSelectedProposal(proposal)
@@ -109,6 +110,7 @@ export function MyProposalsView({proposedProjects}: {proposedProjects: Promise<P
 
       {selectedProposal && (
         <RequestsModal
+            availableSupervisorsPromise={availableSupervisorsPromise}
           proposal={selectedProposal}
           isOpen={isRequestsModalOpen}
           onClose={() => setIsRequestsModalOpen(false)}

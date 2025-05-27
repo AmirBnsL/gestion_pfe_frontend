@@ -1,5 +1,8 @@
 import { TeacherDashboardPage } from "@/app/components/teacher/dashboardPage/teacher-dashboard-page"
-import {getMyProposedProjects} from "@/app/components/teacher/dashboardPage/my-proposals/proposalsActions";
+import {
+  getAvailableSupervisors,
+  getMyProposedProjects
+} from "@/app/components/teacher/dashboardPage/my-proposals/proposalsActions";
 import {getMySupervisedProjects} from "@/app/components/teacher/dashboardPage/my-supervisions/supervisionsActions";
 import {
   getMySupervisionInvites
@@ -9,7 +12,7 @@ export default async function TeacherPage() {
   const proposals =  getMyProposedProjects()
   const supervisions =  getMySupervisedProjects()
   const inviteRequests = getMySupervisionInvites() // Placeholder for invite requests, if needed in the future
+  const availableSupervisorsPromise = getAvailableSupervisors(); // Placeholder for available supervisors, if needed in the future
 
-
-  return <TeacherDashboardPage proposals={proposals} supervisions={supervisions} inviteRequests={inviteRequests} />
+  return <TeacherDashboardPage proposals={proposals} supervisions={supervisions} inviteRequests={inviteRequests} availableSupervisorsPromise={availableSupervisorsPromise} />
 }

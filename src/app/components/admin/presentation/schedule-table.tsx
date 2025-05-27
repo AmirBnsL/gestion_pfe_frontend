@@ -42,6 +42,7 @@ export function ScheduleTable({ onSave, onCancel, teamsPromise, judgesPromise,pr
   const teams = use(teamsPromise)
   const judges = use(judgesPromise)
 
+
   const [academicYear, setAcademicYear] = useState(presentationDay?.academicYear || "")
   const [schedule, setSchedule] = useState<PresentationSlot[]>(presentationDay?.slots || [])
   const [isEditing, setIsEditing] = useState(!presentationDay)

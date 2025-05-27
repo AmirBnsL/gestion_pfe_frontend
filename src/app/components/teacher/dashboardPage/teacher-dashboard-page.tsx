@@ -5,8 +5,9 @@ import { MyInviteRequestsView } from "./my-invite-requests/my-invite-requests-vi
 import { motion } from "framer-motion"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/app/components/ui/tabs";
 import {Project, SupervisorInvite} from "@/app/components/teacher/dashboardPage/my-proposals/requestsData";
+import {Teacher} from "@/app/components/pending-approval/pending-approval-types";
 
-export function TeacherDashboardPage({ proposals, supervisions, inviteRequests }: { proposals: Promise<Project[]>, supervisions: Promise<Project[]>, inviteRequests: Promise<SupervisorInvite[]> }) {
+export function TeacherDashboardPage({ proposals, supervisions, inviteRequests,availableSupervisorsPromise }: { proposals: Promise<Project[]>, supervisions: Promise<Project[]>, inviteRequests: Promise<SupervisorInvite[]>,availableSupervisorsPromise: Promise<Teacher[]> }) {
   return (
       <div className="min-h-screen bg-[#0F1022] text-white overflow-hidden relative">
         {/* ...ambient effects... */}
@@ -27,7 +28,7 @@ export function TeacherDashboardPage({ proposals, supervisions, inviteRequests }
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="proposals" className="mt-6">
-                <MyProposalsView proposedProjects={proposals} />
+                <MyProposalsView proposedProjects={proposals} availableSupervisorsPromise={availableSupervisorsPromise}/>
               </TabsContent>
               <TabsContent value="supervisions" className="mt-6">
                 <MySupervisionsView supervisions={supervisions}/>

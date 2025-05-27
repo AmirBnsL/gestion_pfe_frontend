@@ -1,6 +1,11 @@
 import { Button } from "@/app/components/ui/button"
 import React from "react";
 import {SupervisorInvite} from "@/app/components/teacher/dashboardPage/my-proposals/requestsData";
+import {
+    acceptInviteAction,
+    rejectInviteAction
+} from "@/app/components/teacher/dashboardPage/my-invite-requests/mySupervisorInvitesActions";
+import {useRouter} from "next/navigation";
 
 export function MyInviteRequestsView({ inviteRequests }: { inviteRequests: Promise<SupervisorInvite[]> }) {
     // You may want to use useState/useEffect to resolve the promise if this is a client component
@@ -9,17 +14,21 @@ export function MyInviteRequestsView({ inviteRequests }: { inviteRequests: Promi
     console.log(resolvedRequests);
     // Example data structure for InviteRequest:
     // { id: number, projectName: string, inviter: string, date: string }
-
+    const router = useRouter();
     // Replace with your actual fetching logic and state management
     const [requests, setRequests] = React.useState<SupervisorInvite[]>(resolvedRequests);
     React.useEffect(() => {
         inviteRequests.then(setRequests)
     }, [inviteRequests])
 
-    const handleAccept = (id: number) => {
-        // Implement accept logic here
+    const handleAccept = async (id: number) => {
+        await acceptInviteAction(id)
+        router.refresh()
     }
-    const handleReject = (id: number) => {
+    const handleReject = async (id: number) => {
+        await rejectInviteAction(id)
+        router.refresh()
+
         // Implement reject logic here
     }
 
@@ -43,7 +52,7 @@ export function MyInviteRequestsView({ inviteRequests }: { inviteRequests: Promi
                     <tr key={req.id} className="even:bg-[#23244d]/60 odd:bg-[#1a1c3a]/60 hover:bg-purple-600/10 transition-colors duration-200">
                         <td className="p-4 text-white">{req.project.title}</td>
                         <td className="p-4 text-white">{req.project.proposedBy.user.email}</td>
-                        <td className="p-4 text-white">{req.createdAt.toDateString()}</td>
+                        <td className="p-4 text-white">{req.createdAt}</td>
                         <td className="p-4 flex gap-2">
                             <Button
                                 className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-1 rounded-md font-semibold transition-all duration-300"
