@@ -12,6 +12,6 @@ export default function AnnouncementsPageServer() {
 
   const announcementsPromise = getAnnouncements();
 
-
+  console.log(announcementsPromise);
   return <AnnouncementsPageClient announcements={announcementsPromise} />;
 }

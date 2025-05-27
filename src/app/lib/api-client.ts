@@ -20,6 +20,18 @@ export interface User {
   updatedAt: string
 }
 
+
+export interface Announcement {
+  id: number | string
+  title: string
+  body: string
+  audience: string
+  priority: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+
 export interface ExtendedJwtPayload extends JwtPayload {
   role: "admin" | "student" | "teacher"
 }
@@ -153,11 +165,17 @@ export async function createUser(userData: Partial<User>): Promise<User> {
   })).data;
 }
 
+
+
 export async function deleteUser(userId: string): Promise<void> {
   return (await fetchApi<void>(`/user/${userId}`, {
     method: "DELETE",
   })).data;
 }
+
+// Publish an announcement as an admin
+
+
 
 // Authentication Endpoints
 export async function login(credentials: FormData){

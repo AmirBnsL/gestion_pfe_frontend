@@ -2,18 +2,18 @@
 import {fetchApi} from "@/app/lib/api-client";
 
 export enum Audience {
-    All = "All",
-    Students = "Students",
-    Teachers = "Teachers",
-    Admins = "Admins",
+    ALL = "ALL",
+    STUDENTS = "STUDENTS",
+    TEACHERS = "TEACHERS",
+    ADMINS = "ADMINS",
     // Add other relevant audience groups if needed
 }
 
 export enum Priority {
-    Low = "Low",
-    Medium = "Medium",
-    High = "High",
-    Critical = "Critical",
+    LOW = "LOW",
+    MEDIUM = "MEDIUM",
+    HIGH = "HIGH",
+  
     // Add other relevant priority levels if needed
 }
 
@@ -27,6 +27,13 @@ export interface Announcement {
 
 }
 
+
+export async function handleCreateAnnouncement(announcementData: Partial<Announcement>): Promise<Announcement> {
+    return (await fetchApi<Announcement>("/announcement", {
+        method: "POST",
+        body: JSON.stringify(announcementData),
+    })).data;
+}
 
 export async function getAnnouncements(): Promise<Announcement[]> {
     return (await fetchApi<Announcement[]>(`/announcements?size=100&page=1`)).data
