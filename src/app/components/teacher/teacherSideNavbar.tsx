@@ -14,7 +14,7 @@ export function TeacherSidebar() {
   // Match nav items to getPageTitle switch
   const navItems = [
     { icon: Home, path: "/teacher/dashboard", label: "Dashboard" },
-    { icon: MessageSquare, path: "/teacher/chat", label: "Chat & Communication" },
+    
     { icon: FilePlus2, path: "/teacher/deposit", label: "Deposit Page" },
     { icon: CalendarDays, path: "/teacher/presentation-day", label: "Presentation Day" },
   ]

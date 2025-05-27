@@ -16,7 +16,7 @@ export function StudentSidebar() {
     { icon: Home, path: "/student/project-overview", label: "Project Overview" },
     { icon: Users, path: "/student/teams-list", label: "Teams List" },
     { icon: BookOpen, path: "/student/my-team", label: "My Team" },
-    { icon: MessageSquare, path: "/student/chat", label: "Chat & Communication" },
+    
     { icon: CalendarDays, path: "/student/presentation-day", label: "Presentation Day" },
   ]
 

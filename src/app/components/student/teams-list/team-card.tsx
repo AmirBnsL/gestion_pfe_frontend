@@ -117,15 +117,7 @@ export function TeamCard({ team, onViewDetails, parameter }: TeamCardProps) {
           </div>
         )}
 
-        <Button
-          onClick={onViewDetails}
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-slate-400 hover:text-white hover:bg-[#1F2347]"
-        >
-          <Info className="h-4 w-4" />
-          <span className="sr-only">View team details</span>
-        </Button>
+
       </CardFooter>
     </Card>
   )

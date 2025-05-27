@@ -30,7 +30,7 @@ const navItems = [
   { icon: CalendarDays, path: "/admin/presentation", label: "Presentation Management" },
   { icon: SlidersHorizontal, path: "/admin/parameters", label: "Parameters" },
   { icon: Shuffle, path: "/admin/project-distribution", label: "Project Distribution" },
-  { icon: HelpCircle, path: "/admin/help", label: "Help" },
+  
 ]
 
 export function AppSidebar() {

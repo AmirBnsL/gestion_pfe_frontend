@@ -72,15 +72,7 @@ export function ProjectOverviewPage() {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="mt-4">
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium">Project Progress</span>
-                <span className="text-sm font-medium">{projectProgress}%</span>
-              </div>
-              <Progress value={projectProgress} className="h-2 bg-slate-700" indicatorClassName="bg-purple-500" />
-            </div>
-          </CardContent>
+
         </Card>
 
         {/* Team Members Section (lazy-loaded) */}

@@ -21,8 +21,6 @@ export function AppNavbar() {
       case "/admin/project-management":
         return "Project Management"
 
-      case "/admin/help":
-        return "Help"
       case "/admin/settings":
         return "Settings"
       case "/admin/presentation":

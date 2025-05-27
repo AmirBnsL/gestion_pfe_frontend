@@ -117,20 +117,7 @@ export function TeacherSettingsPage() {
               </div>
             </div>
 
-            {/* Role */}
-            <div className="space-y-2">
-              <Label className="text-white">Role</Label>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="supervisor">Supervisor</SelectItem>
-                  <SelectItem value="proposer">Proposer</SelectItem>
-                  <SelectItem value="both">Both</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
 
 
             <div className="flex justify-end">

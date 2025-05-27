@@ -12,8 +12,8 @@ export default function LandingPageNavBar() {
                 <li>Contact</li>
             </ul>
             <div className="flex gap-4">
-                <button className="text-outline-purple outline-outline-purple  outline-2 outline rounded-lg py-2 px-4">Log in</button>
-                <button className="bg-button-purple px-4 py-2 rounded-lg text-primary-text">Sign up</button>
+            <button className="text-outline-purple outline-outline-purple  outline-2 outline rounded-lg py-2 px-4">Log in</button>
+   
             </div>
         </nav>
     )
