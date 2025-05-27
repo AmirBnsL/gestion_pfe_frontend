@@ -23,4 +23,6 @@ export interface Parameter {
     allowTeamJoining: boolean
     allowWishListCreation: boolean
     year: AcademicYear
+    distributionMode: 'manual' | 'automatic'
+    maxTeams?: number // Optional, used for manual distribution
 }

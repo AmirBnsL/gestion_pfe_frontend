@@ -18,6 +18,8 @@ export async function updateParameter(parameter: FormData): Promise<{ success: b
             allowTeamJoining: parameter.get("allowTeamJoining") === "on",
             allowWishListCreation: parameter.get("allowWishListCreation") === "on",
             year: parameter.get("year") as unknown as Parameter["year"],
+            distributionMode: parameter.get("distributionMode") as "manual" | "automatic",
+            maxTeams: parameter.get("maxTeams") ? Number(parameter.get("maxTeams")) : undefined,
         }
 
         const requestOptions = {

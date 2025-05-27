@@ -16,9 +16,8 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
     const [isPending, startTransition] = useTransition();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
         const formData = new FormData(event.currentTarget);
-
         startTransition(async () => {
             await updateParameter(formData);
         });
@@ -29,10 +28,8 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
             onSubmit={handleSubmit}
             className="space-y-6"
         >
-            {/* Keep hidden input for the year */}
             <input type="hidden" name="year" value={parameter.year} />
             <Card className="bg-[#161A35]/60 backdrop-blur-md rounded-xl border border-[#2A2F52] shadow-[0_8px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group">
-                {/* Ambient gradient effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 <div className="absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 blur-sm pointer-events-none"></div>
                 <CardHeader>
@@ -53,6 +50,54 @@ export default function ParameterForm({ parameter }: ParameterFormProps) {
                         />
                         <p className="text-sm text-slate-400">
                             The maximum number of students allowed in a team
+                        </p>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="maxTeams" className="text-white">Maximum Team Per Project</Label>
+                        <Input
+                            id="maxTeams"
+                            name="maxTeams"
+                            type="number"
+                            min={1}
+                            max={20}
+                            defaultValue={parameter.maxTeams}
+                            className="max-w-xs bg-slate-700 border-slate-600 text-white"
+                            disabled={isPending}
+                        />
+                        <p className="text-sm text-slate-400">
+                            The maximum number of teams allowed per project
+                        </p>
+                    </div>
+
+                    {/* Distribution Mode Radio Group */}
+                    <div className="space-y-2">
+                        <Label className="text-white">Distribution Mode</Label>
+                        <div className="flex gap-6 mt-1">
+                            <label className="flex items-center gap-2 text-slate-200">
+                                <input
+                                    type="radio"
+                                    name="distributionMode"
+                                    value="manual"
+                                    defaultChecked={parameter.distributionMode === "manual"}
+                                    disabled={isPending}
+                                    className="accent-purple-600"
+                                />
+                                Manual
+                            </label>
+                            <label className="flex items-center gap-2 text-slate-200">
+                                <input
+                                    type="radio"
+                                    name="distributionMode"
+                                    value="automatic"
+                                    defaultChecked={parameter.distributionMode === "automatic"}
+                                    disabled={isPending}
+                                    className="accent-indigo-600"
+                                />
+                                Automatic
+                            </label>
+                        </div>
+                        <p className="text-sm text-slate-400">
+                            Choose how teams are distributed to projects
                         </p>
                     </div>
 
