@@ -10,6 +10,17 @@ export const getTeams = async () => {
 
 }
 
+export const requestToJoinTeam = async (teamId: string) => {
+    try {
+        const result = await fetchApi<{ message: string }>(`/team/request/${teamId}`, {
+            method: "POST",
+        });
+        return result.data;
+    } catch (e) {
+        throw e.body; // Rethrow the error to be caught in the calling function
+    }
+};
+
 export const createTeam = async (name: string) => {
     // This log should now execute
     console.log("Executing createTeam server action with name:", name);
