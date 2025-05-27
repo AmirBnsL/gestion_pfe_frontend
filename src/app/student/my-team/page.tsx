@@ -19,8 +19,6 @@ const MyProjectPageDynamic = dynamic(
 
 export default  function MyProjectPage() {
   const myTeamPromise =  getMyTeam();
-  const joinRequestsPromise =  getMyJoinRequests();
-  const studentsPromise =  getAllStudents();
 
-  return <MyProjectPageDynamic team={myTeamPromise} joinRequests={joinRequestsPromise} students={studentsPromise} />;
+  return <MyProjectPageDynamic team={myTeamPromise} />;
 }
