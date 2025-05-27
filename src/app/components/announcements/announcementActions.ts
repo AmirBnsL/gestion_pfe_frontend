@@ -36,5 +36,5 @@ export async function handleCreateAnnouncement(announcementData: Partial<Announc
 }
 
 export async function getAnnouncements(): Promise<Announcement[]> {
-    return (await fetchApi<Announcement[]>(`/announcements?size=100&page=1`)).data
+    return (await fetchApi<Announcement[]>(`/announcements?size=100&page=0`)).data
 }
