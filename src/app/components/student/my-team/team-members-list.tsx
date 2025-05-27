@@ -1,52 +1,34 @@
 "use client"
 
 import { useState } from "react"
+import { use } from "react"
 import { Avatar } from "../../ui/avatar"
 import { Button } from "../../ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
 import { MessageSquare, UserPlus, Bell, Check, X } from "lucide-react"
-
 import { AddMemberModal } from "./add-member-modal"
-import {Student} from "@/app/components/pending-approval/pending-approval-types";
+import { Student } from "@/app/components/pending-approval/pending-approval-types"
 
 interface TeamMembersListProps {
   members: {
     id: string,
     joinedAt: string,
     student: Student
-  }[]
+  }[],
+  joinRequests: Promise<any[]>
+ 
 }
 
-// Mock data for pending requests
-const pendingRequests = [
-  {
-    id: "req-1",
-    name: "John Smith",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "Frontend Developer",
-    requestDate: "2025-04-01T10:30:00.000Z",
-  },
-  {
-    id: "req-2",
-    name: "Emily Johnson",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "Backend Developer",
-    requestDate: "2025-04-02T14:15:00.000Z",
-  },
-]
-
-export function TeamMembersList({ members }: TeamMembersListProps) {
+export function TeamMembersList({ members, joinRequests }: TeamMembersListProps) {
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false)
-  const [requests, setRequests] = useState(pendingRequests)
+  const [requests, setRequests] = useState<any[]>(use(joinRequests))
 
   const handleAcceptRequest = (requestId: string) => {
-    // In a real app, you would make an API call here
     setRequests(requests.filter((req) => req.id !== requestId))
     // Then add the member to the team
   }
 
   const handleDeclineRequest = (requestId: string) => {
-    // In a real app, you would make an API call here
     setRequests(requests.filter((req) => req.id !== requestId))
   }
 
@@ -102,7 +84,7 @@ export function TeamMembersList({ members }: TeamMembersListProps) {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10 border border-slate-700">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={"/placeholder.svg"} alt={member.student.firstname +" " + member.student.lastname} />
+                    <img src={"/placeholder.svg"} alt={member.student.firstname + " " + member.student.lastname} />
                   </Avatar>
                   <div>
                     <p className="font-medium text-slate-200 text-sm">{member.student.firstname + " " + member.student.lastname}</p>
@@ -178,7 +160,11 @@ export function TeamMembersList({ members }: TeamMembersListProps) {
         </TabsContent>
       </Tabs>
 
-      <AddMemberModal isOpen={isAddMemberModalOpen} onClose={() => setIsAddMemberModalOpen(false)} />
+        <AddMemberModal
+        isOpen={isAddMemberModalOpen}
+        onClose={() => setIsAddMemberModalOpen(false)}
+        students={students}
+      />
     </div>
   )
 }

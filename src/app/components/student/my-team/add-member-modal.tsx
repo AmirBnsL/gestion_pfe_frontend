@@ -11,58 +11,20 @@ import { Checkbox } from "../../ui/checkbox"
 interface AddMemberModalProps {
   isOpen: boolean
   onClose: () => void
+  students: any[] // Pass students as a prop
 }
 
-// Mock data for available students
-const availableStudents = [
-  {
-    id: "student-1",
-    name: "Alex Johnson",
-    avatar: "/placeholder.svg?height=40&width=40",
-    department: "Computer Science",
-    year: "3rd Year",
-  },
-  {
-    id: "student-2",
-    name: "Maria Garcia",
-    avatar: "/placeholder.svg?height=40&width=40",
-    department: "Computer Science",
-    year: "3rd Year",
-  },
-  {
-    id: "student-3",
-    name: "James Wilson",
-    avatar: "/placeholder.svg?height=40&width=40",
-    department: "Software Engineering",
-    year: "2nd Year",
-  },
-  {
-    id: "student-4",
-    name: "Sophia Chen",
-    avatar: "/placeholder.svg?height=40&width=40",
-    department: "Data Science",
-    year: "4th Year",
-  },
-  {
-    id: "student-5",
-    name: "Mohammed Ali",
-    avatar: "/placeholder.svg?height=40&width=40",
-    department: "Computer Science",
-    year: "3rd Year",
-  },
-]
-
-export function AddMemberModal({ isOpen, onClose }: AddMemberModalProps) {
+export function AddMemberModal({ isOpen, onClose, students }: AddMemberModalProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedStudents, setSelectedStudents] = useState<string[]>([])
 
-  const filteredStudents = availableStudents.filter((student) =>
-    student.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredStudents = students.filter((student) =>
+    `${student.firstname} ${student.lastname}`.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const handleToggleStudent = (studentId: string) => {
     setSelectedStudents((prev) =>
-      prev.includes(studentId) ? prev.filter((id) => id !== studentId) : [...prev, studentId],
+      prev.includes(studentId) ? prev.filter((id) => id !== studentId) : [...prev, studentId]
     )
   }
 
@@ -104,14 +66,16 @@ export function AddMemberModal({ isOpen, onClose }: AddMemberModalProps) {
                 >
                   <div className="flex items-center space-x-3">
                     <Avatar className="h-10 w-10 border border-slate-700">
-                      <img src={student.avatar || "/placeholder.svg"} alt={student.name} />
+                      <img src={"/placeholder.svg"} alt={`${student.firstname} ${student.lastname}`} />
                     </Avatar>
                     <div>
-                      <p className="font-medium text-slate-200 text-sm">{student.name}</p>
+                      <p className="font-medium text-slate-200 text-sm">
+                        {student.firstname} {student.lastname}
+                      </p>
                       <div className="flex items-center gap-2">
-                        <p className="text-xs text-slate-400">{student.department}</p>
+                        <p className="text-xs text-slate-400">{student.specialty}</p>
                         <span className="text-slate-500 text-xs">•</span>
-                        <p className="text-xs text-slate-500">{student.year}</p>
+                        <p className="text-xs text-slate-500">{student.academicYear}</p>
                       </div>
                     </div>
                   </div>

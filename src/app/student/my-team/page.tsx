@@ -1,7 +1,5 @@
-
 import dynamic from "next/dynamic"
-import {getMyTeam} from "@/app/components/student/my-team/my-project-actions";
-
+import { getAllStudents, getMyJoinRequests, getMyTeam } from "@/app/components/student/my-team/my-project-actions"
 
 const MyProjectPage = dynamic(
   () =>
@@ -9,12 +7,13 @@ const MyProjectPage = dynamic(
       (mod) => mod.default
     ),
   {
-    ssr: true, // This enables server-side rendering for MyProjectPage
-    
+    ssr: true,
   }
 )
 
-export default function MyProject() {
-    const myTeam = getMyTeam()
-  return <MyProjectPage team={myTeam} />
+export default async function MyProject() {
+  const myTeam =  getMyTeam()
+  const joinRequests =  getMyJoinRequests()
+  const students =  getAllStudents()
+  return <MyProjectPage team={ myTeam} joinRequests={ joinRequests} students={ students} />
 }
