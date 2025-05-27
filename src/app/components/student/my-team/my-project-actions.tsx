@@ -15,10 +15,19 @@ export async function getMyTeam ():Promise<Team > {
     }
 }
 
+
+export interface TeamJoinRequest {
+  id: string
+  team: Team
+  fromUser: Student
+  status: string
+  createdAt: string
+}
+
 // Get all join requests for the current student
-export async function getMyJoinRequests(): Promise<Student[]> {
+export async function getMyJoinRequests(): Promise<TeamJoinRequest[]> {
     try {
-        return (await fetchApi<Student[]>('/student/requests')).data
+        return (await fetchApi<TeamJoinRequest[]>('/student/requests')).data
         
     } catch (error) {
         throw error.body;

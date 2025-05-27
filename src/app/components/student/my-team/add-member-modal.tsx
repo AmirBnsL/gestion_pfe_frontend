@@ -8,17 +8,33 @@ import { Avatar } from "../../ui/avatar"
 import { Search, UserPlus } from "lucide-react"
 import { Checkbox } from "../../ui/checkbox"
 
+const staticStudents = [
+  {
+    id: "3",
+    firstname: "David",
+    lastname: "Williams",
+    specialty: "Frontend",
+    academicYear: "2nd Year"
+  },
+  {
+    id: "4",
+    firstname: "Eva",
+    lastname: "Martinez",
+    specialty: "Backend",
+    academicYear: "3rd Year"
+  }
+]
+
 interface AddMemberModalProps {
   isOpen: boolean
   onClose: () => void
-  students: any[] // Pass students as a prop
 }
 
-export function AddMemberModal({ isOpen, onClose, students }: AddMemberModalProps) {
+export function AddMemberModal({ isOpen, onClose }: AddMemberModalProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedStudents, setSelectedStudents] = useState<string[]>([])
 
-  const filteredStudents = students.filter((student) =>
+  const filteredStudents = staticStudents.filter((student) =>
     `${student.firstname} ${student.lastname}`.toLowerCase().includes(searchQuery.toLowerCase())
   )
 

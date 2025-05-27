@@ -1,7 +1,13 @@
 import dynamic from "next/dynamic"
-import { getAllStudents, getMyJoinRequests, getMyTeam } from "@/app/components/student/my-team/my-project-actions"
+import { getAllStudents, getMyJoinRequests, getMyTeam, TeamJoinRequest } from "@/app/components/student/my-team/my-project-actions"
+import { Team } from "@/app/components/student/teams-list/teamTypes";
+import { Student } from "@/app/lib/api-client";
 
-const MyProjectPage = dynamic(
+
+
+
+
+const MyProjectPageDynamic = dynamic(
   () =>
     import("../../components/student/my-team/my-project-page").then(
       (mod) => mod.default
@@ -11,9 +17,10 @@ const MyProjectPage = dynamic(
   }
 )
 
-export default async function MyProject() {
-  const myTeam =  getMyTeam()
-  const joinRequests =  getMyJoinRequests()
-  const students =  getAllStudents()
-  return <MyProjectPage team={ myTeam} joinRequests={ joinRequests} students={ students} />
+export default  function MyProjectPage() {
+  const myTeamPromise =  getMyTeam();
+  const joinRequestsPromise =  getMyJoinRequests();
+  const studentsPromise =  getAllStudents();
+
+  return <MyProjectPageDynamic team={myTeamPromise} joinRequests={joinRequestsPromise} students={studentsPromise} />;
 }
